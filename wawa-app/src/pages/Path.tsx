@@ -606,32 +606,39 @@ function UnitRoadMapView({
               })}
 
               {/* Final Gate Exam Checkpoint Card (Image 3 Final Test trophy milestone) */}
-              <div className="rounded-3xl border-3 border-amber-400 bg-gradient-to-r from-amber-50 to-amber-100/90 p-5 shadow-[0_6px_0_0_var(--color-amber-600)]">
-                <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-amber-500 bg-amber-300 text-3xl shadow-md animate-bounce">
-                    🏆
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                      <h3 className="font-display text-lg font-black text-amber-950">
-                        Final Test — Ujian Kelulusan Gerbang {gate.index}
-                      </h3>
-                      <Chip size="sm" color="amber">Standar Lulus {GATE_PASS_PCT}%</Chip>
+              {(() => {
+                const gateLesson = units.flatMap((u) => u.lessons).find((l) => l.kind === 'gate') || units[units.length - 1]?.lessons[units[units.length - 1]?.lessons.length - 1]
+                const targetQuizUrl = gateLesson ? `/pelajaran/${lang}/${gateLesson.id}` : `/pelajaran/${lang}/${units[0]?.lessons[0]?.id}`
+
+                return (
+                  <div className="rounded-3xl border-3 border-amber-400 bg-amber-400/20 dark:bg-amber-950/80 p-5 shadow-[0_6px_0_0_var(--color-amber-600)]">
+                    <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-amber-500 bg-amber-300 text-3xl shadow-md animate-bounce">
+                        🏆
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                          <h3 className="font-display text-lg font-black text-ink">
+                            Final Test — Ujian Kelulusan Gerbang {gate.index}
+                          </h3>
+                          <Chip size="sm" color="amber">Standar Lulus {GATE_PASS_PCT}%</Chip>
+                        </div>
+                        <p className="mt-1 text-[13px] font-medium text-ink-soft">
+                          Uji seluruh materi dari {units.length} unit di gerbang ini untuk membuka sertifikasi level berikutnya!
+                        </p>
+                      </div>
+                      <Link to={targetQuizUrl}>
+                        <button
+                          type="button"
+                          className="rounded-2xl border-2 border-amber-600 bg-amber-400 hover:bg-amber-300 px-6 py-3 font-display text-[14px] font-black text-ink shadow-[0_4px_0_0_var(--color-amber-700)] transition-all active:translate-y-1 cursor-pointer"
+                        >
+                          Ikuti Ujian Akhir →
+                        </button>
+                      </Link>
                     </div>
-                    <p className="mt-1 text-[13px] text-amber-900">
-                      Uji seluruh materi dari {units.length} unit di gerbang ini untuk membuka sertifikasi level berikutnya!
-                    </p>
                   </div>
-                  <Link to={`/ujian`}>
-                    <button
-                      type="button"
-                      className="rounded-2xl border-2 border-amber-600 bg-amber-400 px-6 py-3 font-display text-[14px] font-black text-ink shadow-[0_4px_0_0_var(--color-amber-700)] transition-all hover:bg-amber-300 active:translate-y-1 cursor-pointer"
-                    >
-                      Ikuti Ujian Akhir →
-                    </button>
-                  </Link>
-                </div>
-              </div>
+                )
+              })()}
             </div>
           )}
         </div>

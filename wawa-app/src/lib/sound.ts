@@ -83,23 +83,28 @@ class BgmEngine {
 
     // Listen for first user interaction to unlock audio context if autoplay was blocked
     const unlockAudio = () => {
-      if (this.pendingAutoplay && this.audio) {
+      if (this.audio) {
         const state = useAudio.getState()
         if (state.bgmEnabled && state.isPlaying) {
-          this.audio.play().then(() => {
-            this.pendingAutoplay = false
-          }).catch(() => undefined)
+          if (this.audio.paused) {
+            this.play()
+          }
+          this.pendingAutoplay = false
         }
       }
     }
 
     window.addEventListener('click', unlockAudio, { passive: true })
+    window.addEventListener('pointerdown', unlockAudio, { passive: true })
     window.addEventListener('keydown', unlockAudio, { passive: true })
     window.addEventListener('touchstart', unlockAudio, { passive: true })
 
-    // Sync initial state
+    // Sync initial state and attempt start immediately
     const initialState = useAudio.getState()
     this.syncWithState(initialState)
+    if (initialState.bgmEnabled && initialState.isPlaying) {
+      this.play()
+    }
   }
 
   private syncWithState(state: ReturnType<typeof useAudio.getState>) {

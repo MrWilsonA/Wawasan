@@ -50,12 +50,14 @@ export const useAudio = create<AudioState>()(
       sfxEnabled: true,
       sfxVolume: 0.65,
       currentTrackId: 'curious-focus',
-      isPlaying: false,
+      isPlaying: true,
 
       setBgmEnabled: (enabled) => {
         set({ bgmEnabled: enabled })
         if (!enabled && get().isPlaying) {
           get().pauseBgm()
+        } else if (enabled && !get().isPlaying) {
+          get().playBgm()
         }
       },
 
@@ -83,7 +85,7 @@ export const useAudio = create<AudioState>()(
       },
 
       playBgm: () => {
-        set({ bgmEnabled: true, isPlaying: true })
+        set({ isPlaying: true, bgmEnabled: true })
       },
 
       pauseBgm: () => {
@@ -91,21 +93,18 @@ export const useAudio = create<AudioState>()(
       },
 
       setTrack: (trackId) => {
-        const track = TRACKS.find((t) => t.id === trackId)
-        if (track) {
-          set({ currentTrackId: trackId })
-        }
+        set({ currentTrackId: trackId })
       },
     }),
     {
-      name: 'wawa-audio-settings-v1',
-      // only persist settings, not transient playback status if user closed tab
+      name: 'wawa-audio-settings-v2',
       partialize: (state) => ({
         bgmEnabled: state.bgmEnabled,
         bgmVolume: state.bgmVolume,
         sfxEnabled: state.sfxEnabled,
         sfxVolume: state.sfxVolume,
         currentTrackId: state.currentTrackId,
+        isPlaying: state.isPlaying,
       }),
     },
   ),
