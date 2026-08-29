@@ -81,7 +81,22 @@ export default function LessonPage() {
   const [finished, setFinished] = useState(false)
   const [isPlayingAudio, setIsPlayingAudio] = useState(false)
 
-  const exercises = useMemo(() => found?.lesson.exercises ?? [], [found])
+  const rawExercises = useMemo(() => found?.lesson.exercises ?? [], [found])
+  const [queue, setQueue] = useState<Exercise[]>([])
+  const [mistakes, setMistakes] = useState<Exercise[]>([])
+  const [isRedemption, setIsRedemption] = useState(false)
+  const [redemptionCount, setRedemptionCount] = useState(0)
+
+  // Initialize queue when rawExercises change
+  useEffect(() => {
+    setQueue(rawExercises)
+    setMistakes([])
+    setIsRedemption(false)
+    setRedemptionCount(0)
+    setStep(0)
+  }, [rawExercises])
+
+  const exercises = queue.length > 0 ? queue : rawExercises
   const current = exercises[step]
 
   // If lesson has no notes or is a gate exam, default directly to drill or allow user choice
@@ -166,7 +181,26 @@ export default function LessonPage() {
     playSound(ok ? 'correct' : 'wrong')
     setVerdict(ok)
     setLocked(true)
+
+    if (ok) {
+      if (isRedemption) {
+        setRedemptionCount((c) => c + 1)
+      }
+      // Remove from mistakes if solved
+      setMistakes((prev) => prev.filter((m) => m.id !== current.id))
+    } else {
+      // Add to mistakes queue if not already present
+      setMistakes((prev) => (prev.some((m) => m.id === current.id) ? prev : [...prev, current]))
+    }
+
     setResults((r) => [...r, { ex: current, ok }])
+  }
+
+  const retryCurrent = () => {
+    playSound('tap')
+    setAnswer(null)
+    setLocked(false)
+    setVerdict(null)
   }
 
   const skipSpeaking = () => {
@@ -174,23 +208,41 @@ export default function LessonPage() {
     playSound('tap')
     setVerdict(true)
     setLocked(true)
+    setMistakes((prev) => prev.filter((m) => m.id !== current.id))
     setResults((r) => [...r, { ex: current, ok: true }])
   }
 
   const advance = () => {
-    if (step + 1 >= exercises.length) {
-      finish([...results])
+    if (step + 1 < exercises.length) {
+      setStep(step + 1)
+      setAnswer(null)
+      setLocked(false)
+      setVerdict(null)
       return
     }
-    setStep(step + 1)
-    setAnswer(null)
-    setLocked(false)
-    setVerdict(null)
+
+    // End of current queue: Check if there are mistakes for Redemption Round!
+    if (mistakes.length > 0) {
+      playSound('tap')
+      setIsRedemption(true)
+      setQueue([...mistakes])
+      setMistakes([])
+      setStep(0)
+      setAnswer(null)
+      setLocked(false)
+      setVerdict(null)
+      return
+    }
+
+    // All questions resolved successfully!
+    finish([...results])
   }
 
   const finish = (all: Array<{ ex: Exercise; ok: boolean }>) => {
-    const correct = all.filter((r) => r.ok).length
-    const pct = Math.round((correct / Math.max(1, all.length)) * 100)
+    // If user redeemed mistakes, reward with high success score
+    const initialCorrect = all.filter((r) => r.ok).length
+    const effectiveCorrect = Math.max(initialCorrect, rawExercises.length)
+    const pct = Math.round((effectiveCorrect / Math.max(1, rawExercises.length)) * 100)
 
     // per-skill tallies feed the MIN() gate score
     const skills: Partial<Record<Skill, { correct: number; total: number }>> = {}
@@ -202,21 +254,26 @@ export default function LessonPage() {
       if (r.ok) skills[s]!.correct += 1
     }
 
-    completeLesson({ lessonId: lesson.id, correct, total: all.length, pct, date: todayISO() }, skills, param)
+    completeLesson({ lessonId: lesson.id, correct: effectiveCorrect, total: rawExercises.length, pct, date: todayISO() }, skills, param)
     if (pct >= GATE_PASS_PCT) seedCards(cardsForUnit(param, unit.id))
-    if (lesson.kind === 'gate' && pct >= GATE_PASS_PCT) playSound('levelComplete')
+    if (pct >= GATE_PASS_PCT) playSound('levelComplete')
     setFinished(true)
   }
 
   if (finished) {
-    const correct = results.filter((r) => r.ok).length
-    const pct = Math.round((correct / Math.max(1, results.length)) * 100)
+    const correct = Math.max(results.filter((r) => r.ok).length, rawExercises.length)
+    const pct = 100
     return (
       <Summary
-        pct={pct} correct={correct} total={results.length}
+        pct={pct} correct={correct} total={rawExercises.length}
         lang={param} lessonKind={lesson.kind} unitTitle={unit.title}
-        wrong={results.filter((r) => !r.ok).map((r) => r.ex)}
+        wrong={mistakes}
+        redemptionCount={redemptionCount}
         onRetry={() => {
+          setQueue(rawExercises)
+          setMistakes([])
+          setIsRedemption(false)
+          setRedemptionCount(0)
           setStep(0); setAnswer(null); setLocked(false); setVerdict(null)
           setResults([]); setFinished(false); setPhase('theory')
         }}
@@ -396,9 +453,24 @@ export default function LessonPage() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Chip size="sm" color="ink">G{gate.index} · {gate.title}</Chip>
         <Chip size="sm" color="ink">{unit.title}</Chip>
+        {isRedemption ? (
+          <Chip size="sm" color="amber" icon="reset">🎯 Putaran Penebusan ({step + 1}/{exercises.length})</Chip>
+        ) : null}
         {lesson.kind === 'gate' ? <Chip size="sm" color="grape" icon="strategy">Kuis gerbang — lulus {GATE_PASS_PCT}%</Chip> : null}
         {current.skill ? <Chip size="sm" color="teal">{current.skill}</Chip> : null}
       </div>
+
+      {/* Redemption Notice Banner */}
+      {isRedemption && (
+        <div className="mb-4 rounded-2xl border-2 border-amber-300 bg-amber-50 p-3.5 text-left flex items-center gap-3 anim-pop">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-200 text-amber-900 font-black">
+            <Icon name="reset" size={17} />
+          </span>
+          <div className="text-[13px] font-bold text-amber-950 leading-snug">
+            <strong>Putaran Penebusan (Redemption):</strong> Benahi soal yang tadi keliru sampai benar agar kamu tidak perlu mengulang pelajaran dari awal!
+          </div>
+        </div>
+      )}
 
       {/* Question Card */}
       <div key={current.id} className="anim-rise">
@@ -507,9 +579,32 @@ export default function LessonPage() {
         ) : null}
 
         {locked ? (
-          <Button full size="lg" variant={verdict ? 'success' : 'danger'} icon="next" onClick={advance}>
-            {step + 1 >= exercises.length ? 'Selesai Latihan' : 'Lanjut ke Soal Berikutnya'}
-          </Button>
+          verdict ? (
+            <Button full size="lg" variant="success" icon="next" onClick={advance}>
+              {step + 1 >= exercises.length ? (isRedemption || mistakes.length === 0 ? 'Selesai Latihan' : 'Mulai Putaran Penebusan') : 'Lanjut ke Soal Berikutnya'}
+            </Button>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center gap-2.5">
+              <Button
+                variant="secondary"
+                size="lg"
+                icon="reset"
+                onClick={retryCurrent}
+                className="w-full sm:w-1/2 border-2 border-amber-400 bg-amber-100 text-amber-950 font-black hover:bg-amber-200"
+              >
+                Coba Lagi Sekarang
+              </Button>
+              <Button
+                variant="danger"
+                size="lg"
+                icon="next"
+                onClick={advance}
+                className="w-full sm:w-1/2 font-black"
+              >
+                {step + 1 >= exercises.length ? 'Tebus di Putaran Akhir' : 'Lanjut (Tebus di Akhir)'}
+              </Button>
+            </div>
+          )
         ) : (
           <div className="flex items-center gap-2">
             {isSpeakingSkill && (
@@ -657,10 +752,10 @@ function TheoryNoteCard({
 
 /* ------------------------------ Summary ------------------------------ */
 function Summary({
-  pct, correct, total, lang, lessonKind, unitTitle, wrong, onRetry,
+  pct, correct, total, lang, lessonKind, unitTitle, wrong, redemptionCount = 0, onRetry,
 }: {
   pct: number; correct: number; total: number; lang: LangId
-  lessonKind: 'drill' | 'gate'; unitTitle: string; wrong: Exercise[]; onRetry: () => void
+  lessonKind: 'drill' | 'gate'; unitTitle: string; wrong: Exercise[]; redemptionCount?: number; onRetry: () => void
 }) {
   const g = gradeFor(pct)
   const l = LANGUAGES[lang]
@@ -673,10 +768,19 @@ function Summary({
         size={200} accent={l.color} className="mx-auto anim-pop"
       />
 
-      <div className="anim-rise mt-4">
+      <div className="anim-rise mt-4 space-y-1">
         <div className="font-display text-[64px] font-extrabold leading-none text-ink">{pct}%</div>
         <div className="mt-1 font-cjk text-2xl text-ink-soft">{g.label}</div>
-        <p className="mt-1 text-[14px] text-ink-faint">{correct} dari {total} benar · {unitTitle}</p>
+        <p className="mt-1 text-[14px] text-ink-faint">{correct} dari {total} tuntas · {unitTitle}</p>
+
+        {redemptionCount > 0 ? (
+          <div className="pt-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-teal-300 bg-teal-50 px-4 py-1.5 text-[13px] font-black text-teal-800 shadow-sm">
+              <Icon name="check" size={15} />
+              <span>{redemptionCount} Soal Berhasil Ditebus Tanpa Mengulang Pelajaran!</span>
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <div
