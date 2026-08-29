@@ -159,9 +159,9 @@ export const CN_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'cn-c-nada3', front: '你好 — bagaimana diucapkan?', back: 'ní hǎo — dua nada 3 berturut-turut, yang pertama jadi nada 2', reading: 'nǐ hǎo → ní hǎo', lang: 'cn', tag: 'Nada' },
-          { id: 'cn-c-bu', front: '不 di depan nada 4', back: 'Berubah jadi bú (nada 2): 不是 bú shì', lang: 'cn', tag: 'Nada' },
-          { id: 'cn-c-yi', front: '一 di depan nada 4 / nada 1-2-3', back: 'nada 4 → yí (一个) · nada 1/2/3 → yì (一天)', lang: 'cn', tag: 'Nada' },
+          { id: 'cn-c-nada3', front: '你好', back: 'Dua nada 3 berurutan: 你 berubah jadi nada 2 (ní hǎo)', reading: 'nǐ hǎo → ní hǎo', lang: 'cn', tag: 'Nada' },
+          { id: 'cn-c-bu', front: '不是', back: '不 di depan nada 4: berubah jadi nada 2 (bú shì)', reading: 'bú shì', lang: 'cn', tag: 'Nada' },
+          { id: 'cn-c-yi', front: '一天', back: '一 di depan nada 1/2/3: berubah jadi nada 4 (yì tiān)', reading: 'yì tiān', lang: 'cn', tag: 'Nada' },
         ],
       },
       {

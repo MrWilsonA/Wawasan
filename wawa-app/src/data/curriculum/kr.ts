@@ -219,9 +219,9 @@ export const KR_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'kr-c-design', front: 'ㄱ ㄴ ㅁ ㅅ ㅇ', back: 'Gambar organ bicara: lidah menekuk · lidah menempel · bibir · gigi · kerongkongan', lang: 'kr', tag: 'Hangeul' },
-          { id: 'kr-c-vokal', front: 'Vokal hangeul dibentuk dari?', back: '· langit (천) + ㅡ bumi (지) + ㅣ manusia (인)', lang: 'kr', tag: 'Hangeul' },
-          { id: 'kr-c-harmoni', front: '-아요 atau -어요?', back: 'Harmoni vokal: batang ㅏ/ㅗ (terang) → -아요 · lainnya (gelap) → -어요', lang: 'kr', tag: 'Hangeul' },
+          { id: 'kr-c-design', front: 'ㄱ · ㄴ · ㅁ · ㅅ · ㅇ', back: 'Gambar organ bicara: lidah menekuk · lidah menempel · bibir · gigi · kerongkongan', reading: 'g n m s ng', lang: 'kr', tag: 'Hangeul' },
+          { id: 'kr-c-vokal', front: '• · ㅡ · ㅣ (천지인)', back: 'Vokal Hangeul: • langit (천) + ㅡ bumi (지) + ㅣ manusia (인)', reading: 'cheon-ji-in', lang: 'kr', tag: 'Hangeul' },
+          { id: 'kr-c-harmoni', front: '-아요 / -어요', back: 'Harmoni vokal: batang ㅏ/ㅗ (terang) → -아요 · lainnya (gelap) → -어요', reading: '-ayo / -eoyo', lang: 'kr', tag: 'Hangeul' },
         ],
       },
       {
@@ -418,8 +418,8 @@ export const KR_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'kr-c-batchim', front: '옷 · 낮 · 꽃 — bunyi akhirnya?', back: 'Semuanya [t]. 27 batchim runtuh jadi hanya 7 bunyi', lang: 'kr', tag: 'Batchim' },
-          { id: 'kr-c-yeoneum', front: '한국어 diucapkan?', back: '[한구거] han-gu-geo — 연음, batchim pindah ke ㅇ berikutnya', lang: 'kr', tag: 'Batchim' },
+          { id: 'kr-c-batchim', front: '옷 · 낮 · 꽃 [옫 · 낟 · 꼳]', back: '27 variasi batchim menciut menjadi 7 letup: [t]', reading: 'ot · nat · kkot', lang: 'kr', tag: 'Batchim' },
+          { id: 'kr-c-yeoneum', front: '한국어 [한구거]', back: 'Hukum Yeoneum: batchim pindah ke vokal berikutnya', reading: 'han-gu-geo', lang: 'kr', tag: 'Batchim' },
         ],
       },
       {
@@ -501,8 +501,8 @@ export const KR_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'kr-c-hakgyo', front: '학교 diucapkan?', back: '[학꾜] — 경음화 penegangan', lang: 'kr', tag: 'Bunyi' },
-          { id: 'kr-c-jota', front: '좋다 diucapkan?', back: '[조타] — 격음화, ㅎ+ㄷ → ㅌ', lang: 'kr', tag: 'Bunyi' },
+          { id: 'kr-c-hakgyo', front: '학교 [학꾜]', back: 'Hukum Gyeong-eumhwa (penegangan): hak-kkyo', reading: 'hak-kkyo', lang: 'kr', tag: 'Bunyi' },
+          { id: 'kr-c-jota', front: '좋다 [조타]', back: 'Hukum Aserasi: ㅎ+ㄷ → ㅌ (jo-ta)', reading: 'jo-ta', lang: 'kr', tag: 'Bunyi' },
         ],
       },
     ],
@@ -588,7 +588,7 @@ export const KR_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'kr-c-angka', front: 'Kapan pakai 고유어 vs 한자어?', back: '고유어: usia, jam, jumlah benda · 한자어: menit, uang, tanggal, nomor', lang: 'kr', tag: 'Angka' },
+          { id: 'kr-c-angka', front: '고유어 vs 한자어', back: '고유어 (Asli): usia, jam, jumlah · 한자어 (Sino): menit, uang, tanggal, nomor', reading: 'goyueo vs hanjaeo', lang: 'kr', tag: 'Angka' },
         ],
       },
     ],
@@ -682,8 +682,8 @@ export const KR_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'kr-c-partikel', front: 'Partikel Korea berubah tergantung?', back: 'Ada tidaknya BATCHIM: 저는/학생은 · 저를/밥을 · 제가/학생이', lang: 'kr', tag: 'Partikel' },
-          { id: 'kr-c-eseo', front: '에 vs 에서', back: '에 = statis/tujuan (집에 있어요) · 에서 = aktivitas/asal (집에서 먹어요)', lang: 'kr', tag: 'Partikel' },
+          { id: 'kr-c-partikel', front: '은/는 · 이/가 · 을/를', back: 'Partikel berubah tergantung ada/tidaknya batchim', reading: 'eun/neun · i/ga · eul/reul', lang: 'kr', tag: 'Partikel' },
+          { id: 'kr-c-eseo', front: '에 vs 에서', back: '에 = statis/tujuan (집에 있어요) · 에서 = aktivitas/asal (집에서 먹어요)', reading: 'e vs eseo', lang: 'kr', tag: 'Partikel' },
         ],
       },
       {

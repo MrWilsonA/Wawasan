@@ -100,9 +100,44 @@ export default function LessonPage() {
   const { lesson, unit, gate } = found
   const a = answer ?? (current ? blankAnswer(current) : ({} as Answer))
 
+  // Helper to sanitize text for native TTS speech synthesis
+  const cleanAudioSpeechText = (rawText: string, langId: LangId): string => {
+    if (!rawText) return ''
+    let text = rawText.trim()
+
+    // 1. Remove parenthetical explanations e.g. (artinya...), (nada 4), (konsonan)
+    text = text.replace(/\(.*?\)/g, '').trim()
+
+    // 2. If contains ' — ' or ' - ', strip following Indonesian text
+    if (text.includes(' — ')) {
+      text = text.split(' — ')[0].trim()
+    } else if (text.includes(' - ') && !text.startsWith('-')) {
+      text = text.split(' - ')[0].trim()
+    }
+
+    // 3. If contains question marks or prompts, strip them
+    if (text.includes('?')) {
+      text = text.split('?')[0].trim()
+    }
+
+    // 4. For Asian scripts (jp, cn, kr), if native characters exist, extract them
+    if (langId === 'cn' || langId === 'jp' || langId === 'kr') {
+      const cjkMatches = text.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\uac00-\ud7af]+/g)
+      if (cjkMatches && cjkMatches.length > 0) {
+        return cjkMatches.join(' ')
+      }
+    }
+
+    // 5. Remove Indonesian question/prompt words if present
+    text = text.replace(/bagaimana diucapkan|di depan nada|dalam bahasa|artinya apa|diucapkan|bunyi akhirnya/gi, '').trim()
+
+    return text || rawText
+  }
+
   // Play audio for current exercise display / text
   const playCurrentAudio = (textToSpeak?: string) => {
-    const text = textToSpeak || current?.display || current?.prompt
+    const raw = textToSpeak || current?.display || current?.prompt
+    const text = cleanAudioSpeechText(raw || '', param)
     if (!text || typeof window === 'undefined' || !('speechSynthesis' in window)) return
 
     window.speechSynthesis.cancel()
@@ -112,7 +147,7 @@ export default function LessonPage() {
     const utterance = new SpeechSynthesisUtterance(text)
     const voiceMap: Record<LangId, string> = { jp: 'ja-JP', cn: 'zh-CN', kr: 'ko-KR', en: 'en-GB' }
     utterance.lang = voiceMap[param] || 'en-US'
-    utterance.rate = 0.9
+    utterance.rate = 0.85
 
     const voices = window.speechSynthesis.getVoices()
     const prefix = utterance.lang.slice(0, 2).toLowerCase()
@@ -269,25 +304,28 @@ export default function LessonPage() {
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
-              {unitCards.map((card) => (
-                <button
-                  key={card.id}
-                  type="button"
-                  onClick={() => playCurrentAudio(card.front)}
-                  className="flex items-center justify-between rounded-xl border border-sand bg-paper p-3 text-left transition-colors hover:bg-cream hover:border-teal-400 cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700 border border-teal-200">
-                      <Icon name="sound" size={15} />
-                    </span>
-                    <div>
-                      <div className="font-cjk text-[18px] font-bold text-ink">{card.front}</div>
-                      <div className="text-[11.5px] font-bold text-ink-soft">{card.reading || card.front}</div>
+              {unitCards.map((card) => {
+                const cleanWord = cleanAudioSpeechText(card.front, param)
+                return (
+                  <button
+                    key={card.id}
+                    type="button"
+                    onClick={() => playCurrentAudio(cleanWord || card.reading || card.front)}
+                    className="flex items-center justify-between rounded-xl border border-sand bg-paper p-3 text-left transition-colors hover:bg-cream hover:border-teal-400 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-700 border border-teal-200">
+                        <Icon name="sound" size={15} />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-cjk text-[18px] font-bold text-ink truncate">{cleanWord || card.front}</div>
+                        <div className="text-[11.5px] font-bold text-ink-soft truncate">{card.reading || card.front}</div>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-[12px] font-bold text-teal-800">{card.back}</span>
-                </button>
-              ))}
+                    <span className="text-[12px] font-bold text-teal-800 shrink-0 ml-2 text-right">{card.back}</span>
+                  </button>
+                )
+              })}
             </div>
           </Card>
         ) : null}
