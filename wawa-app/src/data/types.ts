@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/ui/icons'
+
 /** Shared domain types for the WAWAさん curriculum. */
 
 export type LangId = 'jp' | 'cn' | 'kr' | 'en'
@@ -6,7 +8,6 @@ export type Language = {
   id: LangId
   name: string
   nativeName: string
-  flag: string
   exam: string
   examFull: string
   levels: string[]
@@ -29,7 +30,7 @@ export type Gate = {
   subtitle: string
   /** e.g. "2 minggu" */
   duration: string
-  icon: string
+  icon: IconName
   units: Unit[]
 }
 

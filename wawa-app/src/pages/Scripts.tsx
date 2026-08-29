@@ -1,35 +1,61 @@
-import { useMemo, useState } from 'react'
-import { Card, Chip, DataTable, SectionTitle, Tabs, cx, Callout } from '@/components/ui'
-import { Wawa } from '@/brand/Wawa'
+import { useEffect, useMemo, useState } from 'react'
+import { Card, Chip, DataTable, Icon, SectionTitle, Tabs, cx, Callout } from '@/components/ui'
 import {
   HIRAGANA, KATAKANA, KANJI_ORIGINS, RADICALS, JAMO_CONSONANTS, JAMO_VOWELS,
   CONFUSABLES, HANZI_EVOLUTION, JP_SCRIPT_TIMELINE, KR_SCRIPT_TIMELINE,
   SEJONG_QUOTE, RIKUSHO,
 } from '@/data/scripts'
 import type { ScriptChar } from '@/data/types'
+import type { LangId } from '@/data/types'
+import { useProgress } from '@/store/useProgress'
+import { LANGUAGES } from '@/data/languages'
 
-type TabId = 'hiragana' | 'katakana' | 'kanji' | 'radikal' | 'hangeul' | 'sejarah'
+type TabId = 'hiragana' | 'katakana' | 'kanji' | 'radikal' | 'hangeul' | 'alphabet' | 'sejarah'
+
+const DEFAULT_TAB: Record<LangId, TabId> = { jp: 'hiragana', cn: 'kanji', kr: 'hangeul', en: 'alphabet' }
 
 export default function Scripts() {
-  const [tab, setTab] = useState<TabId>('hiragana')
+  const activeLang = useProgress((s) => s.activeLang)
+  const lang = LANGUAGES[activeLang]
+  const [tab, setTab] = useState<TabId>(() => DEFAULT_TAB[activeLang])
   const [picked, setPicked] = useState<ScriptChar | null>(null)
   const [query, setQuery] = useState('')
 
-  const tabs = [
-    { id: 'hiragana' as const, label: 'ひらがな', count: HIRAGANA.length },
-    { id: 'katakana' as const, label: 'カタカナ', count: KATAKANA.length },
-    { id: 'kanji' as const, label: '漢字 asal-usul', count: KANJI_ORIGINS.length },
-    { id: 'radikal' as const, label: '部首 radikal', count: RADICALS.length },
-    { id: 'hangeul' as const, label: '한글', count: JAMO_CONSONANTS.length + JAMO_VOWELS.length },
-    { id: 'sejarah' as const, label: '📜 Sejarah' },
-  ]
+  const tabs = useMemo(() => {
+    const history = { id: 'sejarah' as const, label: `Sejarah ${lang.name}`, icon: 'story' as const }
+    if (activeLang === 'jp') return [
+      { id: 'hiragana' as const, label: 'ひらがな', count: HIRAGANA.length },
+      { id: 'katakana' as const, label: 'カタカナ', count: KATAKANA.length },
+      { id: 'kanji' as const, label: '漢字 Kanji', count: KANJI_ORIGINS.length },
+      history,
+    ]
+    if (activeLang === 'cn') return [
+      { id: 'kanji' as const, label: '汉字 Hanzi', count: KANJI_ORIGINS.length },
+      { id: 'radikal' as const, label: '部首 Radikal', count: RADICALS.length },
+      history,
+    ]
+    if (activeLang === 'kr') return [
+      { id: 'hangeul' as const, label: '한글 Hangeul', count: JAMO_CONSONANTS.length + JAMO_VOWELS.length },
+      history,
+    ]
+    return [
+      { id: 'alphabet' as const, label: 'Sound & spelling', count: 12 },
+      history,
+    ]
+  }, [activeLang, lang.name])
+
+  useEffect(() => {
+    setTab(DEFAULT_TAB[activeLang])
+    setPicked(null)
+    setQuery('')
+  }, [activeLang])
 
   return (
     <div className="space-y-5">
       <SectionTitle
-        eyebrow="Prinsip 2 — Aksara lewat cerita"
-        title="Penjelajah Aksara"
-        sub="Setiap huruf punya bagian “Dari Mana Asalnya?”. Karakter yang punya cerita bertahan di memori 5–10× lebih lama."
+        eyebrow={`Mode ${lang.name} · konten terpisah`}
+        title={activeLang === 'en' ? 'Bunyi & Ejaan Inggris' : `Penjelajah Aksara ${lang.name}`}
+        sub={`Halaman ini hanya menampilkan sistem tulisan, sejarah, dan contoh yang relevan untuk ${lang.name}.`}
       />
 
       <Tabs tabs={tabs} value={tab} onChange={(v) => { setTab(v); setPicked(null) }} />
@@ -39,20 +65,22 @@ export default function Scripts() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari huruf, romanisasi, atau arti…"
-          className="w-full rounded-2xl border-2 border-sand bg-white px-4 py-3 text-[15px] font-semibold text-ink outline-none placeholder:text-ink-faint focus:border-teal-400"
+          className="w-full rounded-2xl border-2 border-sand bg-paper px-4 py-3 text-[15px] font-semibold text-ink outline-none placeholder:text-ink-faint focus:border-teal-400"
         />
       ) : null}
 
       {tab === 'hiragana' ? <KanaGrid chars={HIRAGANA} query={query} onPick={setPicked} accent="#e8564f" /> : null}
       {tab === 'katakana' ? <KanaGrid chars={KATAKANA} query={query} onPick={setPicked} accent="#e8564f" /> : null}
-      {tab === 'kanji' ? <KanjiGrid query={query} onPick={setPicked} /> : null}
+      {tab === 'kanji' ? <KanjiGrid query={query} onPick={setPicked} lang={activeLang === 'cn' ? 'cn' : 'jp'} /> : null}
       {tab === 'radikal' ? <RadicalList /> : null}
       {tab === 'hangeul' ? <HangeulView query={query} onPick={setPicked} /> : null}
-      {tab === 'sejarah' ? <HistoryView /> : null}
+      {tab === 'alphabet' ? <AlphabetView query={query} /> : null}
+      {tab === 'sejarah' ? <HistoryView lang={activeLang} /> : null}
 
       {picked ? <CharDetail char={picked} onClose={() => setPicked(null)} /> : null}
 
       {tab === 'hiragana' || tab === 'katakana' ? <ConfusableCard lang="jp" /> : null}
+      {tab === 'kanji' && activeLang === 'cn' ? <ConfusableCard lang="cn" /> : null}
       {tab === 'radikal' ? <ConfusableCard lang="cn" /> : null}
       {tab === 'hangeul' ? <ConfusableCard lang="kr" /> : null}
     </div>
@@ -79,7 +107,7 @@ function KanaGrid({
           <button
             key={c.char}
             onClick={() => onPick(c)}
-            className="group rounded-2xl border-2 border-sand bg-white px-1 py-3 text-center transition-colors hover:bg-cream"
+            className="group rounded-2xl border-2 border-sand bg-paper px-1 py-3 text-center transition-colors hover:bg-cream"
           >
             <div className="font-cjk text-[30px] leading-none text-ink">{c.char}</div>
             <div className="mt-1.5 text-[11px] font-extrabold uppercase text-ink-faint">{c.roman}</div>
@@ -99,7 +127,7 @@ function KanaGrid({
 }
 
 /* ------------------------------ Kanji grid ------------------------------ */
-function KanjiGrid({ query, onPick }: { query: string; onPick: (c: ScriptChar) => void }) {
+function KanjiGrid({ query, onPick, lang }: { query: string; onPick: (c: ScriptChar) => void; lang: 'jp' | 'cn' }) {
   const [group, setGroup] = useState<string>('semua')
   const groups = ['semua', ...new Set(KANJI_ORIGINS.map((k) => k.group!))]
 
@@ -130,13 +158,13 @@ function KanjiGrid({ query, onPick }: { query: string; onPick: (c: ScriptChar) =
             <button
               key={k.char}
               onClick={() => onPick(k)}
-              className="flex items-start gap-3 rounded-2xl border-2 border-sand bg-white p-3.5 text-left transition-colors hover:bg-cream"
+              className="flex items-start gap-3 rounded-2xl border-2 border-sand bg-paper p-3.5 text-left transition-colors hover:bg-cream"
             >
               <span className="font-cjk text-[40px] leading-none text-ink">{k.char}</span>
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-[14.5px] font-extrabold text-ink">{k.meaning}</span>
                 <span className="block text-[12px] text-ink-faint">
-                  {k.onyomi} · {k.kunyomi}
+                  {lang === 'cn' ? k.pinyin : `${k.onyomi} · ${k.kunyomi}`}
                 </span>
                 <span className="mt-1 block line-clamp-2 text-[12px] leading-snug text-ink-soft">{k.story}</span>
               </span>
@@ -172,7 +200,7 @@ function RadicalList() {
           size="sm"
           tabs={[
             { id: 'all', label: `Semua radikal`, count: RADICALS.length },
-            { id: 'danger', label: '⚠️ Radikal berbahaya', count: RADICALS.filter((r) => r.danger).length },
+            { id: 'danger', label: 'Radikal berbahaya', icon: 'warning' as const, count: RADICALS.filter((r) => r.danger).length },
           ]}
           value={onlyDanger ? 'danger' : 'all'}
           onChange={(v) => setOnlyDanger(v === 'danger')}
@@ -186,7 +214,7 @@ function RadicalList() {
               key={r.radical}
               className={cx(
                 'rounded-2xl border-2 p-3.5',
-                r.danger ? 'border-coral-200 bg-coral-50' : 'border-sand bg-white',
+                r.danger ? 'border-coral-200 bg-coral-50' : 'border-sand bg-paper',
               )}
             >
               <div className="flex items-baseline gap-2.5">
@@ -199,7 +227,7 @@ function RadicalList() {
               <div className="mt-2 font-cjk text-[16px] text-ink-soft">{r.examples}</div>
               {r.danger ? (
                 <div className="mt-2 border-t-2 border-coral-200 pt-2 text-[12.5px] leading-relaxed text-coral-600">
-                  ⚠️ {r.danger}
+                  {r.danger}
                 </div>
               ) : null}
             </div>
@@ -245,7 +273,7 @@ function HangeulView({ query, onPick }: { query: string; onPick: (c: ScriptChar)
                   <button
                     key={c.char}
                     onClick={() => onPick(c)}
-                    className="rounded-2xl border-2 border-sand bg-white px-1 py-3 text-center transition-colors hover:bg-cream"
+                    className="rounded-2xl border-2 border-sand bg-paper px-1 py-3 text-center transition-colors hover:bg-cream"
                   >
                     <div className="font-cjk text-[30px] leading-none text-ink">{c.char}</div>
                     <div className="mt-1.5 text-[11px] font-extrabold uppercase text-ink-faint">{c.roman}</div>
@@ -260,8 +288,84 @@ function HangeulView({ query, onPick }: { query: string; onPick: (c: ScriptChar)
   )
 }
 
+/* ------------------------------ English sounds ------------------------------ */
+const ENGLISH_SOUND_GROUPS = [
+  { symbol: 'A', sound: '/æ/ · /eɪ/ · /ə/', examples: 'cat · name · about', trap: 'Satu huruf tidak selalu satu bunyi.' },
+  { symbol: 'E', sound: '/e/ · /iː/ · diam', examples: 'bed · me · make', trap: 'Final -e sering tidak dibunyikan.' },
+  { symbol: 'I', sound: '/ɪ/ · /aɪ/ · /i/', examples: 'sit · time · taxi', trap: '/ɪ/ bukan /i/ Indonesia.' },
+  { symbol: 'O', sound: '/ɒ/ · /oʊ/ · /ə/', examples: 'hot · home · memory', trap: 'Vokal lemah sering berubah menjadi schwa.' },
+  { symbol: 'U', sound: '/ʌ/ · /uː/ · /juː/', examples: 'cup · rule · use', trap: '/ʌ/ tidak sama dengan /a/ penuh.' },
+  { symbol: 'TH', sound: '/θ/ · /ð/', examples: 'think · this', trap: 'Lidah menyentuh ringan di antara gigi.' },
+  { symbol: 'SH', sound: '/ʃ/', examples: 'ship · nation', trap: 'Bunyi sama bisa punya ejaan berbeda.' },
+  { symbol: 'CH', sound: '/tʃ/ · /k/ · /ʃ/', examples: 'chair · chemistry · machine', trap: 'Asal kata memengaruhi bunyinya.' },
+  { symbol: 'OO', sound: '/uː/ · /ʊ/', examples: 'food · good', trap: 'Panjang-pendek mengubah kualitas vokal.' },
+  { symbol: 'EA', sound: '/iː/ · /e/ · /eɪ/', examples: 'team · head · break', trap: 'Jangan menebak hanya dari huruf.' },
+  { symbol: 'R', sound: '/r/', examples: 'right · carry', trap: 'Bukan getar /r/ seperti Bahasa Indonesia.' },
+  { symbol: '-ED', sound: '/t/ · /d/ · /ɪd/', examples: 'walked · played · wanted', trap: 'Tentukan dari bunyi terakhir kata dasar.' },
+]
+
+function AlphabetView({ query }: { query: string }) {
+  const q = query.trim().toLowerCase()
+  const groups = ENGLISH_SOUND_GROUPS.filter((g) =>
+    !q || [g.symbol, g.sound, g.examples, g.trap].join(' ').toLowerCase().includes(q),
+  )
+  return (
+    <div className="space-y-4">
+      <Callout kind="tip" title="Mode Inggris dimulai dari bunyi, bukan nama huruf">
+        Alfabetnya sudah dikenal, tetapi hubungan huruf–bunyi tidak konsisten. Fokus di sini adalah pola
+        ejaan yang paling sering mengecoh penutur Bahasa Indonesia.
+      </Callout>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {groups.map((g) => (
+          <Card key={g.symbol}>
+            <div className="flex items-start gap-3">
+              <span className="flex h-14 min-w-14 items-center justify-center rounded-2xl bg-leaf-50 px-3 font-display text-xl font-extrabold text-leaf-600">
+                {g.symbol}
+              </span>
+              <div>
+                <div className="font-mono text-[14px] font-bold text-ink">{g.sound}</div>
+                <div className="mt-1 text-[13px] text-ink-soft">{g.examples}</div>
+              </div>
+            </div>
+            <p className="mt-3 border-t-2 border-sand pt-3 text-[12.5px] leading-relaxed text-ink-faint">{g.trap}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* ------------------------------ History ------------------------------ */
-function HistoryView() {
+const EN_SCRIPT_TIMELINE = [
+  { period: 'abad 5 M', event: 'Alfabet Latin tiba bersama penutur Jermanik yang menulis Old English.' },
+  { period: '1066', event: 'Penaklukan Norman memasukkan ribuan kata Prancis dan membuat ejaan makin berlapis.' },
+  { period: 'abad 15–17', event: 'Great Vowel Shift mengubah bunyi vokal panjang, sementara banyak ejaan lama tetap dipertahankan.' },
+  { period: '1476', event: 'Percetakan William Caxton membantu membakukan ejaan sebelum perubahan bunyi selesai.' },
+  { period: 'hari ini', event: 'Ejaan Inggris menyimpan sejarah kata; bunyi harus dipelajari bersama contoh, bukan ditebak huruf demi huruf.' },
+]
+
+function HistoryView({ lang }: { lang: LangId }) {
+  if (lang === 'kr') {
+    return (
+      <Card>
+        <SectionTitle eyebrow="Korea" title="Sejarah Hangeul" />
+        <Timeline items={KR_SCRIPT_TIMELINE} accent="#4a7fe0" />
+        <div className="mt-5 rounded-3xl border-2 border-sky-200 bg-sky-50 p-5">
+          <div className="mb-2 font-display text-[15px] font-extrabold text-ink">Kata pengantar Raja Sejong — 훈민정음</div>
+          <pre className="overflow-x-auto whitespace-pre-wrap font-cjk text-[16px] leading-relaxed text-ink">{SEJONG_QUOTE.hanja}</pre>
+          <p className="mt-3 text-[14px] italic leading-relaxed text-ink-soft">“{SEJONG_QUOTE.id}”</p>
+        </div>
+      </Card>
+    )
+  }
+  if (lang === 'en') {
+    return (
+      <Card>
+        <SectionTitle eyebrow="Inggris" title="Kenapa ejaannya tidak konsisten?" sub="Bunyinya terus berubah; banyak ejaannya membeku." />
+        <Timeline items={EN_SCRIPT_TIMELINE} accent="#56bd3d" />
+      </Card>
+    )
+  }
   return (
     <div className="space-y-5">
       <Card>
@@ -272,7 +376,7 @@ function HistoryView() {
         />
         <div className="space-y-2.5">
           {RIKUSHO.map((r) => (
-            <div key={r.name} className="rounded-2xl border-2 border-sand bg-white p-3.5">
+            <div key={r.name} className="rounded-2xl border-2 border-sand bg-paper p-3.5">
               <div className="flex flex-wrap items-baseline gap-2">
                 <span className="font-cjk text-[22px] font-bold text-ink">{r.name}</span>
                 <span className="text-[12px] font-bold text-ink-faint">{r.roman}</span>
@@ -296,7 +400,7 @@ function HistoryView() {
         </div>
       </Card>
 
-      <Card>
+      {lang === 'cn' ? <Card>
         <SectionTitle eyebrow="3.300 tahun" title="Evolusi Hanzi — lima tahap" />
         <DataTable
           head={['Tahap', 'Periode', 'Media', 'Ciri']}
@@ -314,32 +418,12 @@ function HistoryView() {
           itu <strong className="text-ink">bukan karena Anda kurang imajinatif</strong> — kemiripannya
           memang hilang 2.200 tahun lalu, secara sengaja.
         </Callout>
-      </Card>
+      </Card> : null}
 
-      <Card>
+      {lang === 'jp' ? <Card>
         <SectionTitle eyebrow="Jepang" title="Bagaimana aksara tiba di Jepang" />
         <Timeline items={JP_SCRIPT_TIMELINE} accent="#e8564f" />
-      </Card>
-
-      <Card>
-        <SectionTitle eyebrow="Korea" title="Sejarah Hangeul" />
-        <Timeline items={KR_SCRIPT_TIMELINE} accent="#4a7fe0" />
-        <div className="mt-5 rounded-3xl border-2 border-kr bg-sky-50 p-5" style={{ borderColor: '#4a7fe0' }}>
-          <div className="mb-2 font-display text-[15px] font-extrabold text-ink">
-            Kata pengantar Raja Sejong — 훈민정음
-          </div>
-          <pre className="overflow-x-auto whitespace-pre-wrap font-cjk text-[16px] leading-relaxed text-ink">
-            {SEJONG_QUOTE.hanja}
-          </pre>
-          <p className="mt-3 border-t-2 border-white pt-3 text-[14px] italic leading-relaxed text-ink-soft">
-            “{SEJONG_QUOTE.id}”
-          </p>
-          <div className="mt-3 flex items-start gap-3 rounded-2xl border-2 border-white bg-white/70 p-3">
-            <Wawa expression="teach" size={56} accent="#4a7fe0" cropped className="shrink-0" />
-            <p className="text-[13px] leading-relaxed text-ink-soft">{SEJONG_QUOTE.note}</p>
-          </div>
-        </div>
-      </Card>
+      </Card> : null}
     </div>
   )
 }
@@ -372,7 +456,7 @@ function CharDetail({ char, onClose }: { char: ScriptChar; onClose: () => void }
       aria-modal="true"
     >
       <div
-        className="anim-rise w-full max-w-lg rounded-3xl border-2 border-sand bg-white p-6 shadow-[0_8px_0_0_rgba(23,49,60,0.2)]"
+        className="anim-rise w-full max-w-lg rounded-3xl border-2 border-sand bg-paper p-6 shadow-[0_8px_0_0_var(--color-drop)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
@@ -392,9 +476,9 @@ function CharDetail({ char, onClose }: { char: ScriptChar; onClose: () => void }
           <button
             onClick={onClose}
             aria-label="Tutup"
-            className="rounded-xl border-2 border-sand bg-white px-2.5 py-1.5 text-ink-faint"
+            className="rounded-xl border-2 border-sand bg-paper px-2.5 py-1.5 text-ink-faint"
           >
-            ✕
+            <Icon name="close" size={18} />
           </button>
         </div>
 

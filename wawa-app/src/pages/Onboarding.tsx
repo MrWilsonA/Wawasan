@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Wawa } from '@/brand/Wawa'
 import { Logo } from '@/brand/Logo'
-import { Button, Card, Chip, cx } from '@/components/ui'
+import { Button, Card, Chip, Icon, FlagIcon, cx } from '@/components/ui'
 import { LANGUAGES, langList } from '@/data/languages'
+import { tint } from '@/lib/tint'
 import type { LangId } from '@/data/types'
 import { useProgress } from '@/store/useProgress'
 import { PRINCIPLES } from '@/data/reference'
@@ -52,7 +53,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
   return (
     <div className="anim-rise grid w-full items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
       <div>
-        <Chip color="amber" className="mb-4">Bahasa pengantar: Indonesia 🇮🇩</Chip>
+        <Chip color="amber" className="mb-4" icon="star">Bahasa pengantar: Indonesia</Chip>
         <h1 className="text-[38px] leading-[1.08] text-ink sm:text-[52px]">
           Belajar <span className="font-cjk text-jp">日本語</span>,{' '}
           <span className="font-cjk text-cn">汉语</span>,{' '}
@@ -72,7 +73,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
           ))}
         </div>
 
-        <Button size="lg" className="mt-8" onClick={onNext}>Mulai perjalanan →</Button>
+        <Button size="lg" className="mt-8" onClick={onNext} iconRight="right">Mulai perjalanan</Button>
       </div>
 
       <div className="relative flex justify-center">
@@ -82,7 +83,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
         <div className="anim-bob relative">
           <Wawa expression="wave" size={260} title="Wawa, maskot WAWAさん" />
         </div>
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-2xl border-2 border-sand bg-white px-4 py-2 text-center shadow-[0_4px_0_0_#e8e1d0]">
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-2xl border-2 border-sand bg-paper px-4 py-2 text-center shadow-[0_4px_0_0_var(--color-drop)]">
           <div className="font-display text-[15px] font-extrabold text-ink">Wawa</div>
           <div className="text-[11px] text-ink-faint">Tarsius dari Sulawesi</div>
         </div>
@@ -107,7 +108,7 @@ function StepName({ name, setName, onNext }: { name: string; setName: (v: string
         autoFocus
         className="mt-5 w-full rounded-2xl border-2 border-sand bg-cream px-4 py-3.5 text-center font-display text-lg font-extrabold text-ink outline-none placeholder:font-sans placeholder:font-semibold placeholder:text-ink-faint focus:border-teal-400"
       />
-      <Button size="lg" full className="mt-4" onClick={onNext}>Lanjut →</Button>
+      <Button size="lg" full className="mt-4" onClick={onNext} iconRight="right">Lanjut</Button>
       <button onClick={onNext} className="mt-3 text-[13px] font-bold text-ink-faint underline underline-offset-4">
         Lewati
       </button>
@@ -136,12 +137,12 @@ function StepLang({ lang, setLang, onNext }: { lang: LangId | null; setLang: (l:
               aria-pressed={active}
               className={cx(
                 'rounded-3xl border-2 p-5 text-left transition-all',
-                active ? 'shadow-[0_5px_0_0_rgba(23,49,60,0.14)]' : 'border-sand bg-white hover:bg-cream',
+                active ? 'shadow-[0_5px_0_0_var(--color-drop)]' : 'border-sand bg-paper hover:bg-cream',
               )}
-              style={active ? { borderColor: l.color, backgroundColor: l.colorSoft } : undefined}
+              style={active ? { borderColor: l.color, backgroundColor: tint(l.color) } : undefined}
             >
               <div className="flex items-center gap-3">
-                <span className="text-3xl leading-none" aria-hidden>{l.flag}</span>
+                <FlagIcon lang={l.id} size={30} />
                 <span className="leading-tight">
                   <span className="block font-display text-xl font-extrabold text-ink">{l.name}</span>
                   <span className="block font-cjk text-[15px] text-ink-soft">{l.nativeName}</span>
@@ -166,7 +167,7 @@ function StepLang({ lang, setLang, onNext }: { lang: LangId | null; setLang: (l:
       </div>
 
       <Button size="lg" full className="mt-5" disabled={!lang} onClick={onNext}>
-        {lang ? `Belajar ${LANGUAGES[lang].name} →` : 'Pilih satu bahasa dulu'}
+        {lang ? `Belajar ${LANGUAGES[lang].name}` : 'Pilih satu bahasa dulu'}
       </Button>
     </div>
   )
@@ -174,10 +175,10 @@ function StepLang({ lang, setLang, onNext }: { lang: LangId | null; setLang: (l:
 
 /* ------------------------------- Step 3 ------------------------------- */
 const GOALS = [
-  { min: 15, label: 'Santai', desc: '15 menit/hari', icon: '🌱' },
-  { min: 30, label: 'Serius', desc: '30 menit/hari', icon: '🌿' },
-  { min: 60, label: 'Sesi penuh', desc: '60 menit — template resmi WAWAさん', icon: '🌳' },
-  { min: 120, label: 'Intensif', desc: '2 jam/hari', icon: '🔥' },
+  { min: 15, label: 'Santai', desc: '15 menit/hari', icon: 'seedling' as const },
+  { min: 30, label: 'Serius', desc: '30 menit/hari', icon: 'leaf' as const },
+  { min: 60, label: 'Sesi penuh', desc: '60 menit — template resmi WAWAさん', icon: 'tree' as const },
+  { min: 120, label: 'Intensif', desc: '2 jam/hari', icon: 'streak' as const },
 ]
 
 function StepGoal({
@@ -204,10 +205,10 @@ function StepGoal({
             aria-pressed={goal === g.min}
             className={cx(
               'flex items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition-colors',
-              goal === g.min ? 'border-teal-400 bg-teal-50' : 'border-sand bg-white hover:bg-cream',
+              goal === g.min ? 'border-teal-400 bg-teal-50' : 'border-sand bg-paper hover:bg-cream',
             )}
           >
-            <span className="text-2xl leading-none" aria-hidden>{g.icon}</span>
+            <Icon name={g.icon} size={22} className="text-ink-soft" />
             <span className="leading-tight">
               <span className="block font-display text-[16px] font-extrabold text-ink">{g.label}</span>
               <span className="block text-[13px] text-ink-soft">{g.desc}</span>
@@ -221,14 +222,14 @@ function StepGoal({
         <ol className="grid gap-1.5 sm:grid-cols-2">
           {PRINCIPLES.map((p) => (
             <li key={p.n} className="flex gap-2 text-[13.5px] text-ink-soft">
-              <span aria-hidden>{p.icon}</span>
+              <Icon name={p.icon} size={15} />
               <span><strong className="text-ink">{p.title}</strong> — {p.subtitle}</span>
             </li>
           ))}
         </ol>
       </Card>
 
-      <Button size="lg" full className="mt-5" onClick={onFinish}>Masuk ke WAWAさん 🎉</Button>
+      <Button size="lg" full className="mt-5" onClick={onFinish} iconRight="right">Masuk ke WAWAさん</Button>
     </div>
   )
 }

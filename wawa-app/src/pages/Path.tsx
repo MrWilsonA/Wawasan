@@ -1,8 +1,9 @@
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Wawa } from '@/brand/Wawa'
-import { Card, Chip, ProgressBar, cx } from '@/components/ui'
+import { Card, Chip, Icon, FlagIcon, ProgressBar, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
+import { tint } from '@/lib/tint'
 import type { LangId, Lesson, Unit } from '@/data/types'
 import { gatesFor, gateStatus, GATE_PASS_PCT } from '@/data/curriculum'
 import { useProgress } from '@/store/useProgress'
@@ -23,13 +24,17 @@ export default function Path() {
   const lang = LANGUAGES[param]
   const gates = gatesFor(param)
   const statuses = gateStatus(param, completed)
+  const unitOffsets = gates.map((_, gateIndex) =>
+    gates.slice(0, gateIndex).reduce((total, gate) => total + gate.units.length, 0),
+  )
+  const currentLevel = Math.max(0, statuses.findIndex((status) => status.unlocked && status.done < status.total))
 
   return (
     <div className="space-y-6">
       {/* header */}
       <Card className="!p-0">
-        <div className="flex flex-wrap items-center gap-4 p-5" style={{ backgroundColor: lang.colorSoft }}>
-          <span className="text-4xl leading-none" aria-hidden>{lang.flag}</span>
+        <div className="flex flex-wrap items-center gap-4 p-5" style={{ backgroundColor: tint(lang.color) }}>
+          <FlagIcon lang={param} size={40} />
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl leading-tight">
               {lang.name} <span className="font-cjk text-ink-soft">{lang.nativeName}</span>
@@ -40,7 +45,7 @@ export default function Path() {
             {lang.levels.map((lv) => (
               <span
                 key={lv}
-                className="rounded-full border-2 bg-white px-2.5 py-1 text-[11px] font-extrabold"
+                className="rounded-full border-2 bg-paper px-2.5 py-1 text-[11px] font-extrabold"
                 style={{ borderColor: lang.color, color: lang.color }}
               >
                 {lv}
@@ -53,31 +58,75 @@ export default function Path() {
         </div>
       </Card>
 
+      {/* compact roadmap keeps the full order visible before the detailed path */}
+      <Card>
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <div className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-600">Peta pembelajaran</div>
+            <h2 className="mt-1 text-[22px]">Level berurutan</h2>
+          </div>
+          <p className="max-w-md text-[12.5px] leading-relaxed text-ink-soft">
+            Ikuti dari Level 1. Level berikutnya terbuka setelah evaluasi level sebelumnya lulus {GATE_PASS_PCT}%.
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {statuses.map((status, index) => {
+            const finished = status.total > 0 && status.done === status.total
+            const current = index === currentLevel && status.unlocked && !finished
+            const content = (
+              <>
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 font-display text-[14px] font-extrabold"
+                  style={status.unlocked ? { borderColor: lang.color, backgroundColor: tint(lang.color), color: lang.color } : undefined}
+                >
+                  {finished ? <Icon name="check" size={17} /> : status.unlocked ? index + 1 : <Icon name="lock" size={15} />}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-extrabold uppercase tracking-wide text-ink-faint">Level {index + 1}</span>
+                  <span className="block truncate font-display text-[13.5px] font-extrabold text-ink">{status.gate.title}</span>
+                </span>
+                <span className="text-[11px] font-extrabold text-ink-faint">{status.done}/{status.total}</span>
+              </>
+            )
+            const classes = cx(
+              'flex items-center gap-2.5 rounded-2xl border-2 p-2.5 text-left transition-colors',
+              finished ? 'border-leaf-200 bg-leaf-50' : current ? 'border-teal-200 bg-teal-50' : status.unlocked ? 'border-sand bg-paper hover:bg-cream' : 'border-sand/60 bg-shell opacity-60',
+            )
+            return status.unlocked ? (
+              <a key={status.gate.index} href={`#level-${index + 1}`} className={classes}>{content}</a>
+            ) : (
+              <div key={status.gate.index} className={classes}>{content}</div>
+            )
+          })}
+        </div>
+      </Card>
+
       {/* the path */}
       <div className="space-y-8">
         {gates.map((gate, gi) => {
           const st = statuses[gi]
           return (
-            <section key={gate.index}>
+            <section key={gate.index} id={`level-${gi + 1}`} className="scroll-mt-36">
               <div
                 className={cx(
                   'sticky top-[70px] z-20 mb-4 flex flex-wrap items-center gap-3 rounded-2xl border-2 px-4 py-3 lg:top-2',
-                  st.unlocked ? 'border-sand bg-white' : 'border-sand/60 bg-shell',
+                  st.unlocked ? 'border-sand bg-paper' : 'border-sand/60 bg-shell',
                 )}
               >
                 <span
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 text-xl"
                   style={{
-                    backgroundColor: st.unlocked ? lang.colorSoft : '#f0ece1',
-                    borderColor: st.unlocked ? lang.color : '#ded7c6',
+                    backgroundColor: st.unlocked ? tint(lang.color) : 'var(--color-shell)',
+                    borderColor: st.unlocked ? lang.color : 'var(--color-sand)',
+                    color: st.unlocked ? lang.color : 'var(--color-ink-faint)',
                   }}
                   aria-hidden
                 >
-                  {st.unlocked ? gate.icon : '🔒'}
+                  <Icon name={st.unlocked ? gate.icon : 'lock'} size={20} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="font-display text-[17px] font-extrabold text-ink">
-                    Gerbang {gate.index} — {gate.title}
+                    Level {gi + 1} <span className="text-ink-faint">· Gerbang {gate.index}</span> — {gate.title}
                   </div>
                   <div className="text-[13px] text-ink-soft">{gate.subtitle}</div>
                 </div>
@@ -90,7 +139,7 @@ export default function Path() {
               </div>
 
               {!st.unlocked ? (
-                <Card tone="sand" className="border-dashed text-center">
+                <Card tone="shell" className="border-dashed text-center">
                   <div className="mb-2 flex justify-center opacity-50">
                     <Wawa expression="sleep" size={110} accent={lang.color} />
                   </div>
@@ -103,7 +152,7 @@ export default function Path() {
               ) : (
                 <div className="space-y-6">
                   {gate.units.map((unit, ui) => (
-                    <UnitRow key={unit.id} unit={unit} lang={param} align={ui % 2 === 0 ? 'left' : 'right'} />
+                    <UnitRow key={unit.id} unit={unit} lang={param} order={unitOffsets[gi] + ui + 1} />
                   ))}
                 </div>
               )}
@@ -117,7 +166,7 @@ export default function Path() {
 
 /* ------------------------------------------------------------------ */
 
-function UnitRow({ unit, lang, align }: { unit: Unit; lang: LangId; align: 'left' | 'right' }) {
+function UnitRow({ unit, lang, order }: { unit: Unit; lang: LangId; order: number }) {
   const completed = useProgress((s) => s.completed)
   const l = LANGUAGES[lang]
   const done = unit.lessons.filter((x) => completed[x.id]).length
@@ -125,21 +174,22 @@ function UnitRow({ unit, lang, align }: { unit: Unit; lang: LangId; align: 'left
 
   return (
     <Card className={cx('relative overflow-hidden', allDone && 'border-leaf-200')}>
-      <div className={cx('flex flex-col gap-4 md:flex-row', align === 'right' && 'md:flex-row-reverse')}>
+      <div className="flex flex-col gap-4 md:flex-row">
         {/* unit summary */}
-        <div className="md:w-[280px] md:shrink-0">
+        <div className="md:w-[300px] md:shrink-0">
           <div className="flex items-start gap-3">
             <span
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 font-cjk text-lg font-bold"
-              style={{ backgroundColor: l.colorSoft, borderColor: l.color, color: l.color }}
-              aria-hidden
+              className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border-2 font-display font-extrabold"
+              style={{ backgroundColor: tint(l.color), borderColor: l.color, color: l.color }}
             >
-              {unit.badge.slice(0, 3)}
+              <span className="text-[9px] uppercase tracking-wide">Unit</span>
+              <span className="text-xl leading-none">{order}</span>
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Chip size="sm" color="ink">{unit.level}</Chip>
-                {allDone ? <Chip size="sm" color="leaf">✓ selesai</Chip> : null}
+                <Chip size="sm" color="teal">{unit.badge.slice(0, 8)}</Chip>
+                {allDone ? <Chip size="sm" color="leaf" icon="check">selesai</Chip> : null}
               </div>
               <h3 className="mt-1 text-[17px] leading-tight text-ink">{unit.title}</h3>
               <p className="mt-0.5 text-[13px] leading-snug text-ink-soft">{unit.subtitle}</p>
@@ -158,7 +208,7 @@ function UnitRow({ unit, lang, align }: { unit: Unit; lang: LangId; align: 'left
               to={`/materi/${lang}/${unit.id}`}
               className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-extrabold text-teal-600 underline underline-offset-4"
             >
-              📖 Baca materi ({unit.notes.length})
+              <Icon name="words" size={15} />Baca materi ({unit.notes.length})
             </Link>
           ) : null}
         </div>
@@ -189,17 +239,19 @@ function LessonNode({ lesson, lang, index }: { lesson: Lesson; lang: LangId; ind
       <span
         className={cx(
           'relative flex h-[68px] w-[68px] items-center justify-center rounded-full border-[3px] text-2xl transition-transform',
-          'shadow-[0_5px_0_0_rgba(23,49,60,0.18)] group-hover:-translate-y-0.5 group-active:translate-y-[3px] group-active:shadow-[0_2px_0_0_rgba(23,49,60,0.18)]',
+          'shadow-[0_5px_0_0_var(--color-drop)] group-hover:-translate-y-0.5 group-active:translate-y-[3px] group-active:shadow-[0_2px_0_0_var(--color-drop)]',
         )}
         style={{
-          backgroundColor: passed ? '#79d162' : result ? '#ffcd3c' : isGate ? l.colorSoft : '#ffffff',
-          borderColor: passed ? '#2c7a1c' : result ? '#ad7a05' : isGate ? l.color : '#ded7c6',
+          backgroundColor: passed ? '#79d162' : result ? '#ffcd3c' : isGate ? tint(l.color) : 'var(--color-paper)',
+          borderColor: passed ? '#2c7a1c' : result ? '#ad7a05' : isGate ? l.color : 'var(--color-sand)',
+          // completed/attempted nodes keep dark ink on their bright fill in both themes
+          color: passed || result ? '#17313c' : isGate ? l.color : 'var(--color-ink)',
         }}
         aria-hidden
       >
-        {passed ? '★' : isGate ? '🏁' : index + 1}
+        {passed ? <Icon name="star" size={26} /> : isGate ? <Icon name="strategy" size={24} /> : index + 1}
         {isGate ? (
-          <span className="absolute -bottom-1 rounded-full border-2 border-ink bg-white px-1.5 text-[9px] font-extrabold uppercase text-ink">
+          <span className="absolute -bottom-1 rounded-full border-2 border-ink bg-paper px-1.5 text-[9px] font-extrabold uppercase text-ink">
             gerbang
           </span>
         ) : null}

@@ -1,7 +1,8 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Wawa } from '@/brand/Wawa'
-import { Button, Callout, Card, Chip, DataTable, Mono, cx } from '@/components/ui'
+import { Button, Callout, Card, Chip, DataTable, Icon, Mono, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
+import { tint } from '@/lib/tint'
 import type { LangId, Note } from '@/data/types'
 import { findUnit } from '@/data/curriculum'
 import { useProgress } from '@/store/useProgress'
@@ -30,9 +31,9 @@ export default function UnitNotes() {
       </div>
 
       <Card className="!p-0 overflow-hidden">
-        <div className="flex items-center gap-4 p-5" style={{ backgroundColor: l.colorSoft }}>
+        <div className="flex items-center gap-4 p-5" style={{ backgroundColor: tint(l.color) }}>
           <span
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 bg-white font-cjk text-xl font-bold"
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 bg-paper font-cjk text-xl font-bold"
             style={{ borderColor: l.color, color: l.color }}
             aria-hidden
           >
@@ -51,7 +52,7 @@ export default function UnitNotes() {
       {unit.cards?.length ? (
         <Card>
           <div className="mb-3 flex items-center gap-2">
-            <span className="text-xl" aria-hidden>🃏</span>
+            <Icon name="layers" size={20} className="text-grape-500" />
             <h2 className="text-xl">Kartu Hari Ini</h2>
             <Chip size="sm" color="grape">{unit.cards.length} kartu</Chip>
           </div>
@@ -87,19 +88,20 @@ export default function UnitNotes() {
                 key={les.id}
                 to={`/pelajaran/${param}/${les.id}`}
                 className={cx(
-                  'flex items-center gap-3 rounded-2xl border-2 bg-white px-4 py-3 transition-colors hover:bg-cream',
+                  'flex items-center gap-3 rounded-2xl border-2 bg-paper px-4 py-3 transition-colors hover:bg-cream',
                   r ? 'border-leaf-200' : 'border-sand',
                 )}
               >
                 <span
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 font-display text-[14px] font-extrabold"
                   style={{
-                    backgroundColor: r ? '#d3f2c9' : l.colorSoft,
+                    backgroundColor: r ? '#d3f2c9' : tint(l.color),
                     borderColor: r ? '#56bd3d' : l.color,
+                    color: r ? '#2c7a1c' : l.color,
                   }}
                   aria-hidden
                 >
-                  {les.kind === 'gate' ? '🏁' : r ? '★' : i + 1}
+                  {les.kind === 'gate' ? <Icon name="strategy" size={17} /> : r ? <Icon name="star" size={17} /> : i + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-display text-[14.5px] font-extrabold text-ink">{les.title}</span>
@@ -108,14 +110,14 @@ export default function UnitNotes() {
                   </span>
                 </span>
                 <span className="shrink-0 text-[13px] font-extrabold text-ink-faint">
-                  {r ? `${r.pct}%` : '→'}
+                  {r ? `${r.pct}%` : <Icon name="right" size={16} />}
                 </span>
               </Link>
             )
           })}
         </div>
         <Link to={`/pelajaran/${param}/${unit.lessons[0].id}`}>
-          <Button full size="lg" className="mt-4">▶ Mulai unit ini</Button>
+          <Button full size="lg" className="mt-4" icon="play">Mulai unit ini</Button>
         </Link>
       </Card>
     </div>

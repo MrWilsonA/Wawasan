@@ -1,13 +1,17 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Logo, WawaMark } from '@/brand/Logo'
-import { useProgress, useDueCards, MAX_HEARTS_CONST } from '@/store/useProgress'
-import { LANGUAGES } from '@/data/languages'
-import { cx } from '@/components/ui'
+import { useProgress, useDueCards } from '@/store/useProgress'
+import { LANGUAGES, LANG_ORDER } from '@/data/languages'
+import { cx, Icon, FlagIcon, type IconName } from '@/components/ui'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { AudioControl, TopBarAudioPill } from '@/components/layout/AudioControl'
+import { Scenery } from '@/components/decor/Scenery'
+import { playSound, preloadSounds } from '@/lib/sound'
 
-type NavItem = { to: string; label: string; icon: string; badge?: number }
+type NavItem = { to: string; label: string; icon: IconName; badge?: number }
 
-export function Shell({ children }: { children: React.ReactNode }) {
+export function Shell({ children, onOpenSplash }: { children: React.ReactNode; onOpenSplash: () => void }) {
   const activeLang = useProgress((s) => s.activeLang)
   const lang = LANGUAGES[activeLang]
   const due = useDueCards()
@@ -15,27 +19,42 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const location = useLocation()
 
   useEffect(() => setMobileOpen(false), [location.pathname])
+  useEffect(() => preloadSounds(), [])
+
+  const openSplash = () => {
+    playSound('tap')
+    onOpenSplash()
+  }
 
   const nav: NavItem[] = [
-    { to: '/', label: 'Beranda', icon: '🏠' },
-    { to: `/belajar/${activeLang}`, label: 'Jalur Belajar', icon: '🗺️' },
-    { to: '/ulang', label: 'Kartu Ulang', icon: '🔁', badge: due.length },
-    { to: '/aksara', label: 'Aksara', icon: '文' },
-    { to: '/menulis', label: 'Latihan Menulis', icon: '✍️' },
-    { to: '/ujian', label: 'Kalkulator Ujian', icon: '🎯' },
-    { to: '/referensi', label: 'Referensi', icon: '📊' },
-    { to: '/metode', label: 'Metode', icon: '🧭' },
-    { to: '/profil', label: 'Profil', icon: '🦊' },
+    { to: '/', label: 'Beranda', icon: 'home' },
+    { to: `/belajar/${activeLang}`, label: 'Jalur Belajar', icon: 'path' },
+    { to: '/ulang', label: 'Kartu Ulang', icon: 'review', badge: due.length },
+    { to: '/menyimak', label: `Menyimak ${lang.name}`, icon: 'listen' },
+    { to: '/aksara', label: activeLang === 'en' ? 'Bunyi & Ejaan' : `Aksara ${lang.name}`, icon: 'script' },
+    ...(activeLang === 'jp' || activeLang === 'cn'
+      ? [{ to: '/karakter', label: activeLang === 'jp' ? 'Bank Kanji' : 'Bank Hanzi', icon: 'characters' as const }]
+      : []),
+    ...(activeLang === 'en'
+      ? [{ to: '/kamus', label: 'Kamus Inggris', icon: 'dictionary' as const }]
+      : []),
+    { to: '/tanya', label: 'Latihan AI', icon: 'bot' },
+    { to: '/menulis', label: 'Latihan Menulis', icon: 'writing' },
+    { to: '/ujian', label: 'Kalkulator Ujian', icon: 'exam' },
+    { to: '/referensi', label: 'Referensi', icon: 'reference' },
+    { to: '/metode', label: 'Metode', icon: 'method' },
+    { to: '/profil', label: 'Profil', icon: 'profile' },
   ]
 
   return (
-    <div className="min-h-screen bg-shell">
+    <div className="relative min-h-screen">
+      <Scenery lang={activeLang} />
       {/* ---------- Desktop sidebar ---------- */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r-2 border-sand bg-white lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r-2 border-sand bg-paper lg:flex">
         <div className="px-5 py-5">
-          <NavLink to="/" aria-label="WAWAさん — beranda">
+          <button type="button" onClick={openSplash} aria-label="Buka menu bahasa WAWA">
             <Logo size={42} badgeColor={lang.color} />
-          </NavLink>
+          </button>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
@@ -44,43 +63,48 @@ export function Shell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        <LangSwitcher />
+        <div className="space-y-2 border-t-2 border-sand p-3">
+          <AudioControl compact />
+          <ThemeToggle />
+        </div>
       </aside>
 
       {/* ---------- Mobile header ---------- */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b-2 border-sand bg-white px-4 py-3 lg:hidden">
-        <NavLink to="/" aria-label="WAWAさん — beranda">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b-2 border-sand bg-paper px-4 py-3 lg:hidden">
+        <button type="button" onClick={openSplash} aria-label="Buka menu bahasa WAWA">
           <Logo size={34} badgeColor={lang.color} />
-        </NavLink>
+        </button>
         <div className="flex items-center gap-2">
           <MiniStats />
           <button
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="Buka menu"
             aria-expanded={mobileOpen}
-            className="rounded-xl border-2 border-sand bg-white px-3 py-2 text-lg leading-none shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none"
+            className="rounded-xl border-2 border-sand bg-paper px-3 py-2 text-lg leading-none shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none"
           >
-            {mobileOpen ? '✕' : '☰'}
+            <Icon name={mobileOpen ? 'close' : 'menu'} size={20} />
           </button>
         </div>
       </header>
 
       {mobileOpen ? (
-        <div className="fixed inset-x-0 top-[62px] z-40 border-b-2 border-sand bg-white p-3 shadow-[0_6px_0_0_rgba(23,49,60,0.06)] lg:hidden">
+        <div className="fixed inset-x-0 top-[62px] z-40 border-b-2 border-sand bg-paper p-3 shadow-[0_6px_0_0_var(--color-drop)] lg:hidden">
           <nav className="grid grid-cols-2 gap-2">
             {nav.map((n) => (
               <SideLink key={n.to} item={n} compact />
             ))}
           </nav>
-          <div className="mt-3 border-t-2 border-sand pt-3">
-            <LangSwitcher inline />
+          <div className="mt-3 space-y-2 border-t-2 border-sand pt-3">
+            <AudioControl compact />
+            <ThemeToggle />
           </div>
         </div>
       ) : null}
 
       {/* ---------- Main ---------- */}
-      <div className="lg:pl-[248px]">
+      <div className="relative z-10 lg:pl-[248px]">
         <TopBar />
+        <LanguageTabs />
         <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-5 sm:px-6 lg:pb-16">{children}</main>
       </div>
     </div>
@@ -102,7 +126,7 @@ function SideLink({ item, compact }: { item: NavItem; compact?: boolean }) {
         )
       }
     >
-      <span className="w-6 text-center text-lg leading-none" aria-hidden>{item.icon}</span>
+      <span className="flex w-6 justify-center"><Icon name={item.icon} size={19} /></span>
       <span className="flex-1">{item.label}</span>
       {item.badge ? (
         <span className="rounded-full bg-coral-400 px-2 py-0.5 text-[11px] font-extrabold text-white">
@@ -113,31 +137,43 @@ function SideLink({ item, compact }: { item: NavItem; compact?: boolean }) {
   )
 }
 
-function LangSwitcher({ inline }: { inline?: boolean }) {
-  const { languages, activeLang, setActiveLang } = useProgress()
-  const list = languages.length ? languages : (['jp'] as const)
+function LanguageTabs() {
+  const { activeLang, setActiveLang } = useProgress()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const selectLanguage = (id: (typeof LANG_ORDER)[number]) => {
+    playSound('tap')
+    setActiveLang(id)
+    if (/^\/(belajar|pelajaran|materi)\//.test(location.pathname)) {
+      navigate(`/belajar/${id}`)
+    } else if (location.pathname === '/karakter' && id !== 'jp' && id !== 'cn') {
+      navigate('/aksara')
+    } else if (location.pathname === '/kamus' && id !== 'en') {
+      navigate('/')
+    }
+  }
   return (
-    <div className={cx(!inline && 'border-t-2 border-sand p-3')}>
-      <div className="mb-2 px-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-ink-faint">
-        Bahasa aktif
-      </div>
-      <div className={cx('grid gap-1.5', inline ? 'grid-cols-4' : 'grid-cols-2')}>
-        {list.map((id) => {
+    <div className="border-b-2 border-sand bg-paper/95 px-3 sm:px-6" role="tablist" aria-label="Pilih bahasa belajar">
+      <div className="mx-auto flex w-full max-w-6xl gap-1 overflow-x-auto py-2">
+        {LANG_ORDER.map((id) => {
           const l = LANGUAGES[id]
           const active = id === activeLang
           return (
             <button
               key={id}
-              onClick={() => setActiveLang(id)}
+              onClick={() => selectLanguage(id)}
+              role="tab"
+              aria-selected={active}
               className={cx(
-                'flex flex-col items-center gap-0.5 rounded-2xl border-2 px-2 py-2 transition-colors',
-                active ? 'bg-white' : 'border-transparent hover:bg-shell',
+                'flex min-w-max flex-1 items-center justify-center gap-2 rounded-xl border-2 px-3 py-2 transition-all sm:px-4',
+                active ? 'bg-paper shadow-[0_3px_0_0_var(--color-drop)]' : 'border-transparent text-ink-faint hover:bg-shell',
               )}
               style={active ? { borderColor: l.color } : undefined}
-              aria-pressed={active}
             >
-              <span className="text-lg leading-none" aria-hidden>{l.flag}</span>
-              <span className="font-cjk text-[11px] font-bold text-ink-soft">{l.nativeName}</span>
+              <FlagIcon lang={id} size={20} />
+              <span className="font-display text-[12.5px] font-extrabold text-ink sm:text-[13.5px]">{l.name}</span>
+              <span className="hidden font-cjk text-[10.5px] font-bold text-ink-faint md:inline">{l.nativeName}</span>
             </button>
           )
         })}
@@ -148,26 +184,22 @@ function LangSwitcher({ inline }: { inline?: boolean }) {
 
 function MiniStats() {
   const streak = useProgress((s) => s.streak)
-  const hearts = useProgress((s) => s.hearts)
   return (
     <div className="flex items-center gap-1.5 text-[13px] font-extrabold">
       <span className="flex items-center gap-1 rounded-full border-2 border-amber-200 bg-amber-50 px-2 py-1">
-        <span aria-hidden>🔥</span>{streak}
-      </span>
-      <span className="flex items-center gap-1 rounded-full border-2 border-coral-200 bg-coral-50 px-2 py-1">
-        <span aria-hidden>❤️</span>{hearts}
+        <Icon name="streak" size={14} />{streak}
       </span>
     </div>
   )
 }
 
 function TopBar() {
-  const { streak, xp, hearts, name, activeLang } = useProgress()
+  const { streak, xp, name, activeLang } = useProgress()
   const lang = LANGUAGES[activeLang]
   const due = useDueCards()
 
   return (
-    <div className="hidden items-center justify-between border-b-2 border-sand bg-white px-6 py-3 lg:flex">
+    <div className="hidden items-center justify-between border-b-2 border-sand bg-paper px-6 py-3 lg:flex">
       <div className="flex items-center gap-2.5">
         <WawaMark size={30} badgeColor={lang.color} />
         <div className="leading-tight">
@@ -181,10 +213,10 @@ function TopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Pill icon="🔥" value={streak} label="hari" color="amber" />
-        <Pill icon="⚡" value={xp} label="XP" color="teal" />
-        <Pill icon="❤️" value={`${hearts}/${MAX_HEARTS_CONST}`} label="nyawa" color="coral" />
-        {due.length > 0 ? <Pill icon="🔁" value={due.length} label="jatuh tempo" color="grape" /> : null}
+        <TopBarAudioPill />
+        <Pill icon="streak" value={streak} label="hari" color="amber" />
+        <Pill icon="xp" value={xp} label="XP" color="teal" />
+        {due.length > 0 ? <Pill icon="review" value={due.length} label="jatuh tempo" color="grape" /> : null}
       </div>
     </div>
   )
@@ -192,14 +224,14 @@ function TopBar() {
 
 function Pill({
   icon, value, label, color,
-}: { icon: string; value: React.ReactNode; label: string; color: 'amber' | 'teal' | 'coral' | 'grape' }) {
+}: { icon: IconName; value: React.ReactNode; label: string; color: 'amber' | 'teal' | 'coral' | 'grape' }) {
   const map = {
     amber: 'border-amber-200 bg-amber-50', teal: 'border-teal-200 bg-teal-50',
     coral: 'border-coral-200 bg-coral-50', grape: 'border-grape-200 bg-grape-50',
   }
   return (
     <span className={cx('flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5', map[color])}>
-      <span className="text-base leading-none" aria-hidden>{icon}</span>
+      <Icon name={icon} size={16} />
       <span className="font-display text-[15px] font-extrabold text-ink">{value}</span>
       <span className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">{label}</span>
     </span>

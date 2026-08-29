@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Dark mode is class-driven (.dark on <html>) so the user's choice wins over
+   the OS setting; ThemeProvider syncs the class and honours "system". */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    WAWAさん — Design tokens
    Flat cartoon-vector system. NO GRADIENTS ANYWHERE.
@@ -8,10 +12,6 @@
 
 @theme {
   /* Brand core */
-  --color-ink: #17313c;
-  --color-ink-soft: #4a6572;
-  --color-ink-faint: #8ba3ae;
-
   --color-teal-50: #e6f7f5;
   --color-teal-100: #c2ebe6;
   --color-teal-200: #8ddbd2;
@@ -61,21 +61,11 @@
   --color-sky-500: #1580c9;
   --color-sky-600: #0d629d;
 
-  /* Surfaces */
-  --color-cream: #fffcf3;
-  --color-paper: #ffffff;
-  --color-sand: #f4efe2;
-  --color-shell: #f7f4ec;
-
   /* Language accents */
   --color-jp: #e8564f;
-  --color-jp-soft: #ffe7e5;
   --color-cn: #f5a623;
-  --color-cn-soft: #fff2dc;
   --color-kr: #4a7fe0;
-  --color-kr-soft: #e6efff;
   --color-en: #56bd3d;
-  --color-en-soft: #e9f8e4;
 
   --font-display: "Baloo 2", "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
   --font-sans: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
@@ -85,10 +75,97 @@
   --radius-blob: 1.75rem;
 }
 
+/* ------------------------------------------------------------------
+   Semantic surface tokens.
+   Every component references these, never a raw light/dark colour — so
+   the dark theme is one block of overrides instead of hundreds of
+   `dark:` utilities scattered through the JSX.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-ink: #17313c;
+  --color-ink-soft: #4a6572;
+  --color-ink-faint: #8ba3ae;
+
+  --color-cream: #fffcf3;
+  --color-paper: #ffffff;
+  --color-sand: #eae2d0;
+  --color-shell: #f7f4ec;
+
+  /* the hard-shadow colour used by buttons/cards */
+  --color-drop: #e2dac6;
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Deep desaturated blue-green rather than pure grey — keeps the
+     cartoon warmth instead of turning the app into a dev tool. */
+  --color-ink: #eef4f3;
+  --color-ink-soft: #a9bfc4;
+  --color-ink-faint: #6d858c;
+
+  --color-cream: #17252b;
+  --color-paper: #1b2c33;
+  --color-sand: #2c414a;
+  --color-shell: #101c21;
+  --color-drop: #0a1418;
+
+  /* Pastel tints are unreadable on dark; pull the 50/100 steps down to
+     dim, saturated backdrops and push the 600/700 text steps up. */
+  --color-teal-50: #0d2b2a;
+  --color-teal-100: #124440;
+  --color-teal-200: #1b6459;
+  --color-teal-600: #63d6c6;
+  --color-teal-700: #8fe6d9;
+
+  --color-amber-50: #2e2410;
+  --color-amber-100: #4a3814;
+  --color-amber-200: #6d5219;
+  --color-amber-500: #ffcd3c;
+  --color-amber-600: #ffdf7a;
+
+  --color-coral-50: #331810;
+  --color-coral-100: #4d2318;
+  --color-coral-200: #743523;
+  --color-coral-500: #ff9c86;
+  --color-coral-600: #ffab9c;
+
+  --color-leaf-50: #14290f;
+  --color-leaf-100: #1e4016;
+  --color-leaf-200: #2f6222;
+  --color-leaf-500: #8fdd78;
+  --color-leaf-600: #a8e396;
+
+  --color-grape-50: #201a33;
+  --color-grape-100: #322752;
+  --color-grape-200: #4a3a77;
+  --color-grape-500: #b7a4f0;
+  --color-grape-600: #cfc1f7;
+
+  --color-sky-50: #0d2436;
+  --color-sky-100: #133550;
+  --color-sky-200: #1d5177;
+  --color-sky-500: #7ec8f7;
+  --color-sky-600: #a3daff;
+
+  /* Language accents lifted for contrast on dark ground */
+  --color-jp: #ff8079;
+  --color-cn: #ffc25c;
+  --color-kr: #86aeff;
+  --color-en: #86dd6e;
+}
+
 @layer base {
   * { -webkit-tap-highlight-color: transparent; }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-shell);
+  }
 
   body {
     background-color: var(--color-shell);
@@ -96,13 +173,13 @@
     font-family: var(--font-sans);
     font-weight: 600;
     overflow-x: hidden;
+    transition: background-color .25s ease, color .25s ease;
   }
 
   h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
 
   ::selection { background: var(--color-amber-200); color: var(--color-ink); }
 
-  /* Scrollbar */
   ::-webkit-scrollbar { width: 12px; height: 12px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
@@ -121,43 +198,57 @@
 
 @layer utilities {
   /* Hard "sticker" shadow — the core of the cartoon look. No blur, no gradient. */
-  .shadow-hard      { box-shadow: 0 4px 0 0 var(--tw-shadow-color, #d9d2c2); }
-  .shadow-hard-lg   { box-shadow: 0 6px 0 0 var(--tw-shadow-color, #d9d2c2); }
-  .shadow-hard-xl   { box-shadow: 0 8px 0 0 var(--tw-shadow-color, #d9d2c2); }
-  .shadow-hard-none { box-shadow: none; }
+  .shadow-hard      { box-shadow: 0 4px 0 0 var(--color-drop); }
+  .shadow-hard-lg   { box-shadow: 0 6px 0 0 var(--color-drop); }
 
   .font-cjk { font-family: var(--font-cjk); }
 
-  /* Paper grid used behind path / worksheet views */
   .bg-grid {
     background-image:
-      linear-gradient(to right, rgba(23,49,60,0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(23,49,60,0.05) 1px, transparent 1px);
+      linear-gradient(to right, color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px);
     background-size: 28px 28px;
   }
   .bg-dots {
-    background-image: radial-gradient(circle, rgba(23,49,60,0.09) 1.6px, transparent 1.6px);
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--color-ink) 10%, transparent) 1.6px, transparent 1.6px);
     background-size: 22px 22px;
   }
+
+  /* Clamp helpers (line-clamp plugin is core in v4 but keep explicit) */
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 }
 
 /* ---------- Animations (subtle, cartoon-friendly) ---------- */
 @keyframes wawa-bob   { 0%,100% { transform: translateY(0) }  50% { transform: translateY(-7px) } }
 @keyframes wawa-pop   { 0% { transform: scale(0.7); opacity: 0 } 70% { transform: scale(1.06) } 100% { transform: scale(1); opacity: 1 } }
 @keyframes wawa-shake { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-8px) } 40% { transform: translateX(7px) } 60% { transform: translateX(-5px) } 80% { transform: translateX(3px) } }
-@keyframes wawa-blink { 0%,92%,100% { transform: scaleY(1) } 96% { transform: scaleY(0.08) } }
 @keyframes wawa-rise  { from { transform: translateY(14px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
 @keyframes wawa-spin  { to { transform: rotate(360deg) } }
-@keyframes wawa-tail  { 0%,100% { transform: rotate(-3deg) } 50% { transform: rotate(5deg) } }
 @keyframes wawa-sheen { 0%,100% { transform: scale(1) } 50% { transform: scale(1.12) } }
-@keyframes stroke-draw { to { stroke-dashoffset: 0 } }
+@keyframes wawa-fade  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes wawa-eq-1  { 0%, 100% { height: 25% } 50% { height: 95% } }
+@keyframes wawa-eq-2  { 0%, 100% { height: 85% } 50% { height: 30% } }
+@keyframes wawa-eq-3  { 0%, 100% { height: 40% } 50% { height: 100% } }
+
+/* Ambient scenery motion */
+@keyframes drift-fall {
+  0%   { transform: translate(0, -8%) rotate(0deg); opacity: 0 }
+  10%  { opacity: 1 }
+  90%  { opacity: 1 }
+  100% { transform: translate(var(--drift-x, 40px), 108vh) rotate(var(--drift-r, 320deg)); opacity: 0 }
+}
+@keyframes sway { 0%,100% { transform: rotate(var(--sway-a, -2deg)) } 50% { transform: rotate(var(--sway-b, 2.5deg)) } }
+@keyframes bob-slow { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
 
 .anim-bob   { animation: wawa-bob 3.2s ease-in-out infinite; }
 .anim-pop   { animation: wawa-pop .3s cubic-bezier(.34,1.56,.64,1) both; }
 .anim-shake { animation: wawa-shake .42s ease-in-out; }
 .anim-rise  { animation: wawa-rise .35s ease-out both; }
 .anim-spin  { animation: wawa-spin 1s linear infinite; }
-.anim-sheen { animation: wawa-sheen 2s ease-in-out infinite; }
+.anim-fade  { animation: wawa-fade .4s ease-out both; }
+.anim-sway  { animation: sway 6s ease-in-out infinite; transform-origin: top center; }
+.anim-bob-slow { animation: bob-slow 7s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

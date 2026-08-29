@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { cx, Button } from '@/components/ui'
+import { cx, Icon } from '@/components/ui'
 import type {
   ChoiceExercise, FillExercise, TypeExercise, MatchExercise,
   OrderExercise, SortExercise, JudgeExercise,
@@ -47,7 +47,7 @@ export function ChoiceView({
               'rounded-2xl border-2 px-4 py-3.5 text-left text-[15px] font-bold transition-colors',
               'shadow-[0_3px_0_0_var(--sh,#e8e1d0)] active:translate-y-[2px] active:shadow-none disabled:active:translate-y-0',
               ex.big && 'font-cjk text-2xl',
-              state === 'idle' && 'border-sand bg-white text-ink hover:bg-cream',
+              state === 'idle' && 'border-sand bg-paper text-ink hover:bg-cream',
               state === 'picked' && 'border-teal-400 bg-teal-50 text-teal-700 [--sh:var(--color-teal-200)]',
               state === 'right' && 'border-leaf-400 bg-leaf-50 text-leaf-600 [--sh:var(--color-leaf-200)]',
               state === 'wrong' && 'border-coral-400 bg-coral-50 text-coral-600 [--sh:var(--color-coral-200)]',
@@ -57,8 +57,8 @@ export function ChoiceView({
               {String.fromCharCode(65 + i)}
             </span>
             {opt}
-            {locked && isAnswer ? <span className="ml-2" aria-hidden>✓</span> : null}
-            {locked && isPicked && !isAnswer ? <span className="ml-2" aria-hidden>✕</span> : null}
+            {locked && isAnswer ? <Icon name="check" size={16} className="ml-2 inline" /> : null}
+            {locked && isPicked && !isAnswer ? <Icon name="close" size={16} className="ml-2 inline" /> : null}
           </button>
         )
       })}
@@ -91,13 +91,13 @@ export function JudgeView({
               className={cx(
                 'rounded-2xl border-2 px-4 py-4 font-display text-[17px] font-extrabold transition-colors',
                 'shadow-[0_3px_0_0_var(--sh,#e8e1d0)] active:translate-y-[2px] active:shadow-none disabled:active:translate-y-0',
-                state === 'idle' && 'border-sand bg-white text-ink hover:bg-cream',
+                state === 'idle' && 'border-sand bg-paper text-ink hover:bg-cream',
                 state === 'picked' && 'border-teal-400 bg-teal-50 text-teal-700 [--sh:var(--color-teal-200)]',
                 state === 'right' && 'border-leaf-400 bg-leaf-50 text-leaf-600 [--sh:var(--color-leaf-200)]',
                 state === 'wrong' && 'border-coral-400 bg-coral-50 text-coral-600 [--sh:var(--color-coral-200)]',
               )}
             >
-              {i === 0 ? '⭕ ' : '❌ '}{labels[i]}
+              <Icon name={i === 0 ? 'judge' : 'wrong'} size={19} />{labels[i]}
             </button>
           )
         })}
@@ -148,10 +148,10 @@ export function FillView({
                       ? answers[i] === ex.answers[i]
                         ? 'border-solid border-leaf-400 bg-leaf-50 text-leaf-600'
                         : 'border-solid border-coral-400 bg-coral-50 text-coral-600'
-                      : 'border-solid border-teal-400 bg-white text-ink'
+                      : 'border-solid border-teal-400 bg-paper text-ink'
                     : active === i
-                      ? 'border-teal-400 bg-white'
-                      : 'border-sand bg-white/60',
+                      ? 'border-teal-400 bg-paper'
+                      : 'border-sand bg-paper/60',
                 )}
               >
                 {answers[i] ?? ' '}
@@ -177,8 +177,8 @@ export function FillView({
               onClick={() => place(token)}
               className={cx(
                 'rounded-xl border-2 px-4 py-2.5 font-cjk text-[19px] font-bold transition-colors',
-                'shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none',
-                used ? 'border-sand bg-shell text-ink-faint opacity-40' : 'border-sand bg-white text-ink hover:bg-cream',
+                'shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none',
+                used ? 'border-sand bg-shell text-ink-faint opacity-40' : 'border-sand bg-paper text-ink hover:bg-cream',
               )}
             >
               {token}
@@ -205,7 +205,7 @@ export function TypeView({
         autoCapitalize="off"
         spellCheck={false}
         className={cx(
-          'w-full rounded-2xl border-2 bg-white px-4 py-4 font-cjk text-[22px] text-ink outline-none transition-colors',
+          'w-full rounded-2xl border-2 bg-paper px-4 py-4 font-cjk text-[22px] text-ink outline-none transition-colors',
           'placeholder:font-sans placeholder:text-[16px] placeholder:font-semibold placeholder:text-ink-faint',
           locked
             ? verdict ? 'border-leaf-400 bg-leaf-50' : 'border-coral-400 bg-coral-50'
@@ -273,12 +273,12 @@ export function MatchView({
                 ok === true && 'border-leaf-400 bg-leaf-50 text-leaf-600',
                 ok === false && 'border-coral-400 bg-coral-50 text-coral-600',
                 ok === null && pickedLeft === i && 'border-teal-400 bg-teal-50',
-                ok === null && pickedLeft !== i && (linked !== null && linked !== undefined ? 'border-grape-300 bg-grape-50' : 'border-sand bg-white hover:bg-cream'),
+                ok === null && pickedLeft !== i && (linked !== null && linked !== undefined ? 'border-grape-300 bg-grape-50' : 'border-sand bg-paper hover:bg-cream'),
               )}
             >
               <span>{left}</span>
               {linked !== null && linked !== undefined ? (
-                <span className="rounded-lg bg-white px-2 py-0.5 font-sans text-[11px] font-extrabold text-ink-faint">
+                <span className="rounded-lg bg-paper px-2 py-0.5 font-sans text-[11px] font-extrabold text-ink-faint">
                   {rights.findIndex((r) => r.i === linked) + 1}
                 </span>
               ) : null}
@@ -297,7 +297,7 @@ export function MatchView({
               onClick={() => tapRight(r.i)}
               className={cx(
                 'flex w-full items-center gap-2 rounded-2xl border-2 px-4 py-3 text-left text-[14.5px] font-bold transition-colors',
-                taken ? 'border-sand bg-shell text-ink-faint opacity-50' : 'border-sand bg-white text-ink hover:bg-cream',
+                taken ? 'border-sand bg-shell text-ink-faint opacity-50' : 'border-sand bg-paper text-ink hover:bg-cream',
                 !locked && pickedLeft !== null && !taken && 'border-teal-300',
               )}
             >
@@ -343,7 +343,7 @@ export function OrderView({
             key={pos}
             disabled={locked}
             onClick={() => onChange(picked.filter((_, i) => i !== pos))}
-            className="rounded-xl border-2 border-sand bg-white px-3.5 py-2 font-cjk text-[17px] font-bold text-ink shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none"
+            className="rounded-xl border-2 border-sand bg-paper px-3.5 py-2 font-cjk text-[17px] font-bold text-ink shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none"
           >
             {ex.chunks[idx]}
           </button>
@@ -366,8 +366,8 @@ export function OrderView({
               onClick={() => onChange([...picked, i])}
               className={cx(
                 'rounded-xl border-2 px-3.5 py-2 font-cjk text-[17px] font-bold transition-colors',
-                'shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none',
-                used ? 'border-sand bg-shell text-transparent opacity-40' : 'border-sand bg-white text-ink hover:bg-cream',
+                'shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none',
+                used ? 'border-sand bg-shell text-transparent opacity-40' : 'border-sand bg-paper text-ink hover:bg-cream',
               )}
             >
               {c}
@@ -408,8 +408,8 @@ export function SortView({
             onClick={() => setHeld(held === i ? null : i)}
             className={cx(
               'rounded-xl border-2 px-3.5 py-2 font-cjk text-[16px] font-bold transition-colors',
-              'shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none',
-              held === i ? 'border-teal-400 bg-teal-50 text-teal-700' : 'border-sand bg-white text-ink hover:bg-cream',
+              'shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none',
+              held === i ? 'border-teal-400 bg-teal-50 text-teal-700' : 'border-sand bg-paper text-ink hover:bg-cream',
             )}
           >
             {ex.items[i].text}
@@ -445,7 +445,7 @@ export function SortView({
                         'cursor-pointer rounded-lg border-2 px-2.5 py-1 font-cjk text-[14.5px] font-bold',
                         ok === true && 'border-leaf-400 bg-leaf-50 text-leaf-600',
                         ok === false && 'border-coral-400 bg-coral-50 text-coral-600',
-                        ok === null && 'border-sand bg-white text-ink',
+                        ok === null && 'border-sand bg-paper text-ink',
                       )}
                     >
                       {ex.items[i].text}
@@ -464,14 +464,5 @@ export function SortView({
         </div>
       ) : null}
     </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-export function SkipButton({ onSkip }: { onSkip: () => void }) {
-  return (
-    <Button variant="ghost" size="md" onClick={onSkip}>
-      Lewati
-    </Button>
   )
 }

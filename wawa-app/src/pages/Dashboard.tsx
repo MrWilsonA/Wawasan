@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Wawa, type WawaExpression } from '@/brand/Wawa'
-import { Button, Card, Chip, ProgressBar, Ring, SectionTitle, Stat, cx } from '@/components/ui'
+import { Button, Card, Chip, Icon, ProgressBar, Ring, SectionTitle, Stat, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
+import { tint } from '@/lib/tint'
 import { DAILY_TEMPLATE, WEEKLY_RHYTHM, WEEKLY_NOTE, MIN_SKILL_RULE } from '@/data/reference'
 import { gateStatus, nextLesson, progressPct } from '@/data/curriculum'
 import { useProgress, useDueCards, useXpToday } from '@/store/useProgress'
@@ -41,12 +42,12 @@ export default function Dashboard() {
       <Card className="relative overflow-hidden !p-0">
         <div className="grid gap-0 md:grid-cols-[1fr_auto]">
           <div className="p-6">
-            <Chip color="teal" className="mb-3">
-              {lang.flag} {lang.name} · {lang.exam}
+            <Chip color="teal" className="mb-3" icon="grad">
+              {lang.name} · {lang.exam}
             </Chip>
             <h1 className="text-3xl leading-tight sm:text-[34px]">
               {goalPct >= 100
-                ? `Target hari ini tercapai, ${name || 'Pelajar'}! 🎉`
+                ? `Target hari ini tercapai, ${name || 'Pelajar'}!`
                 : next
                   ? next.lesson.title
                   : 'Semua unit selesai!'}
@@ -57,26 +58,37 @@ export default function Dashboard() {
                 : `Kamu sudah menyelesaikan seluruh jalur ${lang.name} yang tersedia. Jaga dengan kartu ulang harian.`}
             </p>
 
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Chip size="sm" color="ink" icon="script">{lang.script}</Chip>
+              <Chip size="sm" color="sky" icon="words">{lang.wordOrder}</Chip>
+              <Chip size="sm" color="amber" icon="sparkle">{lang.tagline}</Chip>
+            </div>
+
             <div className="mt-5 flex flex-wrap gap-2.5">
               {next ? (
                 <Link to={`/pelajaran/${activeLang}/${next.lesson.id}`}>
-                  <Button size="lg">▶ Lanjut belajar</Button>
+                  <Button size="lg" icon="play">Lanjut belajar</Button>
                 </Link>
               ) : (
                 <Link to={`/belajar/${activeLang}`}><Button size="lg">Lihat jalur</Button></Link>
               )}
               {due.length > 0 ? (
                 <Link to="/ulang">
-                  <Button size="lg" variant="secondary">🔁 {due.length} kartu jatuh tempo</Button>
+                  <Button size="lg" variant="secondary" icon="review">{due.length} kartu jatuh tempo</Button>
                 </Link>
               ) : null}
             </div>
           </div>
 
-          <div className="flex items-end justify-center bg-cream p-6 md:w-[300px]">
-            <div className="text-center">
+          <div
+            className="relative flex items-end justify-center overflow-hidden p-6 md:w-[300px]"
+            style={{ backgroundColor: tint(lang.color, 14) }}
+          >
+            <span className="absolute -right-10 -top-12 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: lang.color }} />
+            <span className="absolute -bottom-14 -left-12 h-32 w-32 rounded-full opacity-15" style={{ backgroundColor: lang.color }} />
+            <div className="relative text-center">
               <Wawa expression={mood} size={185} accent={lang.color} className="anim-bob" />
-              <div className="mt-1 rounded-2xl border-2 border-sand bg-white px-3 py-2 text-[13px] font-bold text-ink-soft">
+              <div className="mt-1 rounded-2xl border-2 border-sand bg-paper px-3 py-2 text-[13px] font-bold text-ink-soft">
                 {goalPct >= 100
                   ? 'Kerja bagus! Istirahat itu bagian dari belajar.'
                   : streak === 0
@@ -112,16 +124,16 @@ export default function Dashboard() {
           <div className="leading-tight">
             <div className="font-display text-[15px] font-extrabold text-ink">Jalur {lang.name}</div>
             <div className="text-[13px] text-ink-soft">
-              {gates.filter((g) => g.unlocked).length} dari 6 gerbang terbuka
+              {gates.filter((g) => g.unlocked).length} dari {gates.length} level terbuka
             </div>
           </div>
         </Card>
 
         <div className="grid grid-cols-2 gap-3 sm:col-span-2 sm:grid-cols-2 lg:col-span-2">
-          <Stat icon="🔥" value={streak} label="hari beruntun" color="amber" />
-          <Stat icon="⚡" value={xp} label="total XP" color="teal" />
-          <Stat icon="🔁" value={due.length} label="kartu hari ini" color="grape" />
-          <Stat icon="🎯" value={gs.score || '—'} label="nilai gerbang" color="leaf" />
+          <Stat icon="streak" value={streak} label="hari beruntun" color="amber" />
+          <Stat icon="xp" value={xp} label="total XP" color="teal" />
+          <Stat icon="review" value={due.length} label="kartu hari ini" color="grape" />
+          <Stat icon="exam" value={gs.score || '—'} label="nilai gerbang" color="leaf" />
         </div>
       </div>
 
@@ -130,33 +142,34 @@ export default function Dashboard() {
         <Card>
           <SectionTitle
             eyebrow="Alur wajib"
-            title="Enam Gerbang"
-            sub="Gerbang berikutnya terkunci sampai gerbang sebelumnya lulus 85%."
+            title="Level Belajar Berurutan"
+            sub="Mulai dari Level 1. Satu level harus selesai sebelum level berikutnya terbuka."
             right={<Link to={`/belajar/${activeLang}`}><Button size="sm" variant="secondary">Buka jalur</Button></Link>}
           />
           <div className="space-y-2">
-            {gates.map((g) => (
+            {gates.map((g, index) => (
               <div
                 key={g.gate.index}
                 className={cx(
                   'flex items-center gap-3 rounded-2xl border-2 px-3.5 py-2.5',
-                  g.unlocked ? 'border-sand bg-white' : 'border-sand/60 bg-shell opacity-60',
+                  g.unlocked ? 'border-sand bg-paper' : 'border-sand/60 bg-shell opacity-60',
                 )}
               >
                 <span
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 text-lg"
                   style={{
-                    backgroundColor: g.unlocked ? lang.colorSoft : '#f0ece1',
-                    borderColor: g.unlocked ? lang.color : '#ded7c6',
+                    backgroundColor: g.unlocked ? tint(lang.color) : 'var(--color-shell)',
+                    borderColor: g.unlocked ? lang.color : 'var(--color-sand)',
+                    color: g.unlocked ? lang.color : 'var(--color-ink-faint)',
                   }}
                   aria-hidden
                 >
-                  {g.unlocked ? g.gate.icon : '🔒'}
+                  <Icon name={g.unlocked ? g.gate.icon : 'lock'} size={19} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-display text-[14.5px] font-extrabold text-ink">
-                      G{g.gate.index} · {g.gate.title}
+                      Level {index + 1} · {g.gate.title}
                     </span>
                     {g.gateQuizPct !== null ? (
                       <Chip size="sm" color={g.gateQuizPct >= 85 ? 'leaf' : 'coral'}>
@@ -217,7 +230,7 @@ export default function Dashboard() {
             <div key={t.range} className="rounded-2xl border-2 border-sand bg-cream p-3.5">
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="text-xl leading-none" aria-hidden>{t.icon}</span>
-                <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-extrabold text-ink-faint">
+                <span className="rounded-full bg-paper px-2 py-0.5 text-[11px] font-extrabold text-ink-faint">
                   {t.range} mnt
                 </span>
               </div>

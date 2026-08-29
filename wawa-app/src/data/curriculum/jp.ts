@@ -12,7 +12,7 @@ export const JP_GATES: Gate[] = [
     title: 'Sistem Bunyi',
     subtitle: 'Mendengar & menirukan sebelum melihat tulisan',
     duration: '2 minggu',
-    icon: '🔊',
+    icon: 'sound',
     units: [
       {
         id: 'jp-g0-u1',
@@ -244,7 +244,7 @@ export const JP_GATES: Gate[] = [
     title: 'Aksara',
     subtitle: 'Sejarah → bentuk → urutan guratan → latihan tangan',
     duration: '6 minggu',
-    icon: '✍️',
+    icon: 'writing',
     units: [
       {
         id: 'jp-g1-u1',
@@ -1069,7 +1069,7 @@ export const JP_GATES: Gate[] = [
     title: 'Kata Inti',
     subtitle: '±800 kata frekuensi tertinggi',
     duration: '12 minggu',
-    icon: '📚',
+    icon: 'words',
     units: [
       {
         id: 'jp-g2-u1',
@@ -1220,7 +1220,7 @@ export const JP_GATES: Gate[] = [
     title: 'Tulang Kalimat',
     subtitle: 'Partikel + bentuk kata kerja + keigo',
     duration: '20 minggu',
-    icon: '🦴',
+    icon: 'grammar',
     units: [
       {
         id: 'jp-g3-u1',
@@ -2068,7 +2068,7 @@ export const JP_GATES: Gate[] = [
     title: 'Produksi',
     subtitle: 'Output terkontrol → output bebas → koreksi',
     duration: 'berkelanjutan',
-    icon: '🗣️',
+    icon: 'production',
     units: [
       {
         id: 'jp-g4-u1',
@@ -2144,7 +2144,7 @@ export const JP_GATES: Gate[] = [
     title: 'Strategi Ujian',
     subtitle: 'Format soal, manajemen waktu, simulasi berwaktu',
     duration: '8 minggu sebelum tes',
-    icon: '🎯',
+    icon: 'strategy',
     units: [
       {
         id: 'jp-g5-u1',

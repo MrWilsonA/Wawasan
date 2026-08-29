@@ -1,16 +1,13 @@
 /**
- * The WAWAさん logo system.
- *
- * `WawaMark` is Wawa's head reduced until it still reads at 20px — that
- * reduction *is* the logo. Same ink weight, same flat fills, no gradients,
- * so the mark and the full mascot are obviously the same character.
+ * Compact brand system based on the same outline-free pet tarsier used by
+ * the full Wawa mascot. The mark stays readable in the 28–42px UI range.
  */
-
-const INK = '#17313c'
-const FUR = '#f6d9a8'
-const EAR = '#ffb3a3'
-const EYE = '#ffcd3c'
-const NOSE = '#e08a76'
+const FUR = '#c98246'
+const CREAM = '#fff0c9'
+const EAR = '#f5a27e'
+const AMBER = '#f7b928'
+const PUPIL = '#39251f'
+const NOSE = '#a9563c'
 
 export function WawaMark({
   size = 40,
@@ -19,42 +16,31 @@ export function WawaMark({
   className = '',
 }: {
   size?: number
-  /** draw the rounded-square brand tile behind the head */
   badge?: boolean
   badgeColor?: string
   className?: string
 }) {
   return (
     <svg viewBox="0 0 100 100" width={size} height={size} className={className} aria-hidden="true">
-      {badge ? (
-        <rect x="2" y="2" width="96" height="96" rx="28" fill={badgeColor} stroke={INK} strokeWidth="5" />
-      ) : null}
+      {badge ? <rect x="3" y="3" width="94" height="94" rx="29" fill={badgeColor} /> : null}
+      {badge ? <circle cx="50" cy="51" r="40" fill={CREAM} opacity="0.96" /> : null}
 
-      {/* ears */}
-      <ellipse cx="22" cy="34" rx="13" ry="15" fill={FUR} stroke={INK} strokeWidth="4.5" transform="rotate(-16 22 34)" />
-      <ellipse cx="22" cy="35" rx="6" ry="7.5" fill={EAR} transform="rotate(-16 22 35)" />
-      <ellipse cx="78" cy="34" rx="13" ry="15" fill={FUR} stroke={INK} strokeWidth="4.5" transform="rotate(16 78 34)" />
-      <ellipse cx="78" cy="35" rx="6" ry="7.5" fill={EAR} transform="rotate(16 78 35)" />
+      <circle cx="25" cy="34" r="16" fill={FUR} />
+      <circle cx="75" cy="34" r="16" fill={FUR} />
+      <circle cx="25" cy="35" r="9" fill={EAR} />
+      <circle cx="75" cy="35" r="9" fill={EAR} />
+      <ellipse cx="50" cy="55" rx="34" ry="32" fill={FUR} />
 
-      {/* tuft + head */}
-      <path d="M41 24 L50 12 L59 24 Z" fill={FUR} stroke={INK} strokeWidth="4.5" strokeLinejoin="round" />
-      <ellipse cx="50" cy="54" rx="33" ry="31" fill={FUR} stroke={INK} strokeWidth="4.5" />
-      <ellipse cx="50" cy="69" rx="15" ry="11" fill="#fff6e2" />
-
-      {/* eyes — the defining feature */}
-      <circle cx="34" cy="52" r="15" fill={EYE} stroke={INK} strokeWidth="4.5" />
-      <circle cx="34" cy="52" r="8" fill={INK} />
-      <circle cx="31" cy="49" r="3.2" fill="#fff" />
-      <circle cx="66" cy="52" r="15" fill={EYE} stroke={INK} strokeWidth="4.5" />
-      <circle cx="66" cy="52" r="8" fill={INK} />
-      <circle cx="63" cy="49" r="3.2" fill="#fff" />
-
-      {/* nose + smile */}
-      <path d="M50 63 L54 68 Q50 71 46 68 Z" fill={NOSE} stroke={INK} strokeWidth="2.6" strokeLinejoin="round" />
-      <g fill="none" stroke={INK} strokeWidth="4" strokeLinecap="round">
-        <path d="M50 72 Q45 78 40 74" />
-        <path d="M50 72 Q55 78 60 74" />
-      </g>
+      <path d="M50 78c-15 0-28-11-29-27-1-12 6-21 16-21 6 0 11 4 13 10 2-6 7-10 13-10 10 0 17 9 16 21-1 16-14 27-29 27z" fill={CREAM} />
+      <circle cx="36" cy="52" r="13" fill={AMBER} />
+      <circle cx="64" cy="52" r="13" fill={AMBER} />
+      <circle cx="36" cy="53" r="7" fill={PUPIL} />
+      <circle cx="64" cy="53" r="7" fill={PUPIL} />
+      <circle cx="33" cy="49" r="2.4" fill="#fff" />
+      <circle cx="61" cy="49" r="2.4" fill="#fff" />
+      <ellipse cx="50" cy="65" rx="4.5" ry="3.8" fill={NOSE} />
+      <path d="M41 70c6 7 12 7 18 0-2 10-16 10-18 0z" fill={PUPIL} />
+      <path d="M46 20l4-10 5 10z" fill={FUR} />
     </svg>
   )
 }
@@ -76,16 +62,22 @@ export function Logo({
       {showWordmark ? (
         <span className="leading-none">
           <span
-            className="block font-display font-extrabold tracking-tight text-ink"
+            className="flex items-baseline font-display font-extrabold tracking-[-0.035em] text-ink"
             style={{ fontSize: size * 0.56 }}
           >
-            WAWA<span className="font-cjk text-teal-500">さん</span>
+            WAWA
+            <span
+              className="ml-1 rounded-md bg-teal-50 px-1 py-0.5 font-cjk text-teal-600"
+              style={{ fontSize: size * 0.38 }}
+            >
+              さん
+            </span>
           </span>
           <span
-            className="block font-bold uppercase tracking-[0.18em] text-ink-faint"
-            style={{ fontSize: size * 0.2, marginTop: size * 0.06 }}
+            className="mt-1 block font-extrabold uppercase tracking-[0.2em] text-ink-faint"
+            style={{ fontSize: size * 0.18 }}
           >
-            Belajar Bahasa
+            Bahasa jadi dekat
           </span>
         </span>
       ) : null}

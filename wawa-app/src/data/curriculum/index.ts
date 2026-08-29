@@ -3,12 +3,35 @@ import { JP_GATES } from './jp'
 import { CN_GATES } from './cn'
 import { KR_GATES } from './kr'
 import { EN_GATES } from './en'
+import { CN_EXTRA } from './cn-extra'
+import { KR_EXTRA } from './kr-extra'
+import { EN_EXTRA } from './en-extra'
+
+/**
+ * Extra units live in separate `*-extra.ts` files so the base curriculum files
+ * stay readable. They are spliced in BEFORE the unit that closes the gate,
+ * because a gate quiz must remain the last thing a learner meets in its gate.
+ */
+function withExtras(gates: Gate[], extras: Record<number, Unit[]>): Gate[] {
+  return gates.map((gate) => {
+    const add = extras[gate.index] ?? []
+    const merged = [...gate.units, ...add]
+
+    // Whatever the authoring order, the unit that closes the gate has to be the
+    // last one a learner meets — the 85% quiz is what unlocks the next gate.
+    const closer = merged.filter((u) => u.lessons.some((l) => l.kind === 'gate'))
+    if (!closer.length) return add.length ? { ...gate, units: merged } : gate
+
+    const rest = merged.filter((u) => !closer.includes(u))
+    return { ...gate, units: [...rest, ...closer] }
+  })
+}
 
 export const CURRICULUM: Record<LangId, Gate[]> = {
   jp: JP_GATES,
-  cn: CN_GATES,
-  kr: KR_GATES,
-  en: EN_GATES,
+  cn: withExtras(CN_GATES, CN_EXTRA),
+  kr: withExtras(KR_GATES, KR_EXTRA),
+  en: withExtras(EN_GATES, EN_EXTRA),
 }
 
 export function gatesFor(lang: LangId): Gate[] {

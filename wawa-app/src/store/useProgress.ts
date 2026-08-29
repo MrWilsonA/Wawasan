@@ -37,8 +37,6 @@ type State = {
   streak: number
   bestStreak: number
   lastActiveDate: string | null
-  hearts: number
-  heartsRefilledOn: string | null
 
   /* ---- learning ---- */
   completed: Record<string, LessonResult>
@@ -57,8 +55,6 @@ type State = {
   setDailyGoal: (m: number) => void
   touchStreak: () => void
   completeLesson: (r: LessonResult, skills: Partial<Record<Skill, { correct: number; total: number }>>, lang: LangId) => void
-  loseHeart: () => void
-  refillHearts: () => void
   seedCards: (cards: Card[]) => void
   reviewCard: (id: string, rating: 'lupa' | 'susah' | 'gampang') => void
   logError: (e: Omit<ErrorEntry, 'id' | 'date'>) => void
@@ -72,8 +68,6 @@ const emptySkills = (): SkillScores => ({ menyimak: [], membaca: [], menulis: []
 const initialSkills = (): Record<LangId, SkillScores> => ({
   jp: emptySkills(), cn: emptySkills(), kr: emptySkills(), en: emptySkills(),
 })
-
-const MAX_HEARTS = 5
 
 export const useProgress = create<State>()(
   persist(
@@ -89,8 +83,6 @@ export const useProgress = create<State>()(
       streak: 0,
       bestStreak: 0,
       lastActiveDate: null,
-      hearts: MAX_HEARTS,
-      heartsRefilledOn: null,
 
       completed: {},
       skillScores: initialSkills(),
@@ -116,22 +108,13 @@ export const useProgress = create<State>()(
       /** Streak survives a same-day repeat and one calendar day of gap. */
       touchStreak: () => {
         const today = todayISO()
-        const { lastActiveDate, streak, bestStreak, hearts, heartsRefilledOn } = get()
-        const patch: Partial<State> = {}
-
-        if (heartsRefilledOn !== today) {
-          patch.hearts = MAX_HEARTS
-          patch.heartsRefilledOn = today
-        } else {
-          patch.hearts = hearts
-        }
+        const { lastActiveDate, streak, bestStreak } = get()
 
         if (lastActiveDate === today) {
-          set(patch)
           return
         }
         const next = lastActiveDate && addDays(lastActiveDate, 1) === today ? streak + 1 : 1
-        set({ ...patch, streak: next, bestStreak: Math.max(bestStreak, next), lastActiveDate: today })
+        set({ streak: next, bestStreak: Math.max(bestStreak, next), lastActiveDate: today })
       },
 
       completeLesson: (r, skills, lang) => {
@@ -156,9 +139,6 @@ export const useProgress = create<State>()(
           }
         })
       },
-
-      loseHeart: () => set((s) => ({ hearts: Math.max(0, s.hearts - 1) })),
-      refillHearts: () => set({ hearts: MAX_HEARTS, heartsRefilledOn: todayISO() }),
 
       seedCards: (cards) =>
         set((s) => {
@@ -210,7 +190,6 @@ export const useProgress = create<State>()(
         set({
           name: '', onboarded: false, activeLang: 'jp', languages: [], dailyGoalMin: 60,
           xp: 0, xpByDay: {}, streak: 0, bestStreak: 0, lastActiveDate: null,
-          hearts: MAX_HEARTS, heartsRefilledOn: null,
           completed: {}, skillScores: initialSkills(), deck: {}, cardBank: {},
           errorJournal: [], writingSessions: [],
         }),
@@ -241,5 +220,3 @@ export const useProblemChars = () => {
   for (const e of journal) counts.set(e.char, (counts.get(e.char) ?? 0) + 1)
   return [...counts.entries()].filter(([, n]) => n >= 3).map(([char, n]) => ({ char, n }))
 }
-
-export const MAX_HEARTS_CONST = MAX_HEARTS

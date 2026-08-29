@@ -11,7 +11,7 @@ export const EN_GATES: Gate[] = [
     title: 'Sistem Bunyi',
     subtitle: '44 fonem + word stress',
     duration: '2 minggu',
-    icon: '🔊',
+    icon: 'sound',
     units: [
       {
         id: 'en-g0-u1',
@@ -86,7 +86,7 @@ export const EN_GATES: Gate[] = [
     title: 'Kosakata Akademik',
     subtitle: 'AWL, collocation, dan parafrase',
     duration: '8 minggu',
-    icon: '📚',
+    icon: 'words',
     units: [
       {
         id: 'en-g2-u1',
@@ -190,7 +190,7 @@ export const EN_GATES: Gate[] = [
     title: 'Ketepatan Tata Bahasa',
     subtitle: 'B2 → C1: struktur yang menaikkan band',
     duration: '10 minggu',
-    icon: '🦴',
+    icon: 'grammar',
     units: [
       {
         id: 'en-g3-u1',
@@ -385,7 +385,7 @@ export const EN_GATES: Gate[] = [
     title: 'Produksi',
     subtitle: 'Writing & Speaking terstruktur',
     duration: 'berkelanjutan',
-    icon: '🗣️',
+    icon: 'production',
     units: [
       {
         id: 'en-g4-u1',
@@ -574,7 +574,7 @@ export const EN_GATES: Gate[] = [
     title: 'Strategi Ujian',
     subtitle: 'Skala baru TOEFL 2026 & taktik per bagian',
     duration: '12 minggu',
-    icon: '🎯',
+    icon: 'strategy',
     units: [
       {
         id: 'en-g5-u1',

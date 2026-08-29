@@ -8,7 +8,7 @@ export const KR_GATES: Gate[] = [
     title: 'Bunyi Jamo',
     subtitle: '10 vokal + 14 konsonan, dan tiga tingkat konsonan',
     duration: '1 minggu',
-    icon: '🔊',
+    icon: 'sound',
     units: [
       {
         id: 'kr-g0-u1',
@@ -95,7 +95,7 @@ export const KR_GATES: Gate[] = [
     title: 'Hangeul',
     subtitle: 'Jamo → suku kata → batchim → perubahan bunyi',
     duration: '3 minggu',
-    icon: '한',
+    icon: 'letters',
     units: [
       {
         id: 'kr-g1-u1',
@@ -514,7 +514,7 @@ export const KR_GATES: Gate[] = [
     title: 'Kata Inti',
     subtitle: '±800 kata + dua sistem angka',
     duration: '10 minggu',
-    icon: '📚',
+    icon: 'words',
     units: [
       {
         id: 'kr-g2-u1',
@@ -600,7 +600,7 @@ export const KR_GATES: Gate[] = [
     title: 'Tulang Kalimat',
     subtitle: 'Partikel + tingkat tutur + konjugasi',
     duration: '16 minggu',
-    icon: '🦴',
+    icon: 'grammar',
     units: [
       {
         id: 'kr-g3-u1',
@@ -940,7 +940,7 @@ export const KR_GATES: Gate[] = [
     title: 'Produksi',
     subtitle: 'Karangan & bicara',
     duration: 'berkelanjutan',
-    icon: '🗣️',
+    icon: 'production',
     units: [
       {
         id: 'kr-g4-u1',
@@ -1015,7 +1015,7 @@ export const KR_GATES: Gate[] = [
     title: 'Strategi Ujian',
     subtitle: 'Sistem TOPIK & taktik per bagian',
     duration: '6 minggu',
-    icon: '🎯',
+    icon: 'strategy',
     units: [
       {
         id: 'kr-g5-u1',

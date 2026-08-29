@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Wawa } from '@/brand/Wawa'
-import { Button, Chip, ProgressBar, cx } from '@/components/ui'
+import { Button, Chip, Icon, ProgressBar, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
 import type { Exercise, LangId, Skill } from '@/data/types'
 import { findLesson, cardsForUnit, GATE_PASS_PCT } from '@/data/curriculum'
 import { useProgress } from '@/store/useProgress'
 import { gradeFor } from '@/lib/scoring'
 import { todayISO } from '@/lib/srs'
+import { playSound } from '@/lib/sound'
 import {
   ChoiceView, JudgeView, FillView, TypeView, MatchView, OrderView, SortView, checkTyped,
 } from '@/components/lesson/Exercises'
@@ -65,7 +66,7 @@ function grade(ex: Exercise, a: Answer): boolean {
 export default function LessonPage() {
   const { lang: param, id } = useParams()
   const navigate = useNavigate()
-  const { completeLesson, seedCards, hearts, loseHeart, refillHearts } = useProgress()
+  const { completeLesson, seedCards } = useProgress()
 
   const found = isLang(param) && id ? findLesson(param, id) : null
 
@@ -88,10 +89,10 @@ export default function LessonPage() {
 
   const check = () => {
     const ok = grade(current, a)
+    playSound(ok ? 'correct' : 'wrong')
     setVerdict(ok)
     setLocked(true)
     setResults((r) => [...r, { ex: current, ok }])
-    if (!ok) loseHeart()
   }
 
   const advance = () => {
@@ -121,6 +122,7 @@ export default function LessonPage() {
 
     completeLesson({ lessonId: lesson.id, correct, total: all.length, pct, date: todayISO() }, skills, param)
     if (pct >= GATE_PASS_PCT) seedCards(cardsForUnit(param, unit.id))
+    if (lesson.kind === 'gate' && pct >= GATE_PASS_PCT) playSound('levelComplete')
     setFinished(true)
   }
 
@@ -134,28 +136,9 @@ export default function LessonPage() {
         wrong={results.filter((r) => !r.ok).map((r) => r.ex)}
         onRetry={() => {
           setStep(0); setAnswer(null); setLocked(false); setVerdict(null)
-          setResults([]); setFinished(false); refillHearts()
+          setResults([]); setFinished(false)
         }}
       />
-    )
-  }
-
-  if (hearts === 0) {
-    return (
-      <div className="mx-auto max-w-lg py-10 text-center">
-        <Wawa expression="sad" size={190} accent={lang.color} className="mx-auto" />
-        <h1 className="mt-4 text-3xl">Nyawa habis</h1>
-        <p className="mx-auto mt-2 max-w-sm text-[15px] text-ink-soft">
-          Lima kesalahan di satu sesi berarti materinya belum menempel. Baca ulang materi unit ini
-          sebelum mencoba lagi — itu bagian dari metodenya, bukan hukuman.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2.5">
-          {unit.notes?.length ? (
-            <Link to={`/materi/${param}/${unit.id}`}><Button size="lg">📖 Baca materi</Button></Link>
-          ) : null}
-          <Button size="lg" variant="secondary" onClick={refillHearts}>Isi ulang nyawa</Button>
-        </div>
-      </div>
     )
   }
 
@@ -168,30 +151,29 @@ export default function LessonPage() {
         <button
           onClick={() => navigate(`/belajar/${param}`)}
           aria-label="Keluar dari pelajaran"
-          className="rounded-xl border-2 border-sand bg-white px-3 py-2 text-lg leading-none text-ink-faint shadow-[0_3px_0_0_#e8e1d0] active:translate-y-[2px] active:shadow-none"
+          className="rounded-xl border-2 border-sand bg-paper px-3 py-2 text-lg leading-none text-ink-faint shadow-[0_3px_0_0_var(--color-drop)] active:translate-y-[2px] active:shadow-none"
         >
-          ✕
+          <Icon name="close" size={20} />
         </button>
         <div className="flex-1">
           <ProgressBar value={step} max={exercises.length} height={16} color={lesson.kind === 'gate' ? 'grape' : 'leaf'} />
         </div>
-        <div className="flex items-center gap-1" aria-label={`${hearts} nyawa tersisa`}>
-          <span className="text-lg leading-none" aria-hidden>❤️</span>
-          <span className="font-display text-[17px] font-extrabold text-ink">{hearts}</span>
-        </div>
+        <span className="min-w-[54px] text-right font-display text-[13px] font-extrabold text-ink-faint">
+          {step + 1}/{exercises.length}
+        </span>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Chip size="sm" color="ink">G{gate.index} · {gate.title}</Chip>
         <Chip size="sm" color="ink">{unit.title}</Chip>
-        {lesson.kind === 'gate' ? <Chip size="sm" color="grape">🏁 Kuis gerbang — lulus {GATE_PASS_PCT}%</Chip> : null}
+        {lesson.kind === 'gate' ? <Chip size="sm" color="grape" icon="strategy">Kuis gerbang — lulus {GATE_PASS_PCT}%</Chip> : null}
         {current.skill ? <Chip size="sm" color="teal">{current.skill}</Chip> : null}
       </div>
 
       {/* ---------- question ---------- */}
       <div key={current.id} className="anim-rise">
         {current.display ? (
-          <div className="mb-4 rounded-3xl border-2 border-sand bg-white px-6 py-7 text-center">
+          <div className="mb-4 rounded-3xl border-2 border-sand bg-paper px-6 py-7 text-center">
             <div className="font-cjk text-[42px] leading-tight text-ink sm:text-[54px]">{current.display}</div>
             {current.reading ? (
               <div className="mt-1.5 text-[14px] font-bold text-ink-faint">{current.reading}</div>
@@ -272,7 +254,7 @@ export default function LessonPage() {
             />
             <div className="min-w-0 flex-1">
               <div className={cx('font-display text-[17px] font-extrabold', verdict ? 'text-leaf-600' : 'text-coral-600')}>
-                {verdict ? 'Benar! 🎉' : 'Belum tepat'}
+                {verdict ? 'Benar!' : 'Belum tepat'}
               </div>
               <p className="mt-0.5 text-[14px] leading-relaxed text-ink-soft">{current.explain}</p>
             </div>
@@ -329,16 +311,16 @@ function Summary({
         <div className="font-display text-[15px] font-extrabold text-ink">Tindakan wajib</div>
         <p className="mt-1 text-[14.5px] leading-relaxed text-ink-soft">{g.action}</p>
         {lessonKind === 'gate' ? (
-          <p className="mt-2.5 border-t-2 border-white/70 pt-2.5 text-[13.5px] font-bold text-ink-soft">
+          <p className="mt-2.5 border-t-2 border-sand/70 pt-2.5 text-[13.5px] font-bold text-ink-soft">
             {passedGate
-              ? `✅ Gerbang lulus (≥${GATE_PASS_PCT}%). Gerbang berikutnya terbuka.`
-              : `🔒 Gerbang belum lulus. Butuh minimal ${GATE_PASS_PCT}% — nilai ${pct}% berarti ulang gerbang, tanpa pengecualian.`}
+              ? `Gerbang lulus (≥${GATE_PASS_PCT}%). Gerbang berikutnya terbuka.`
+              : `Gerbang belum lulus. Butuh minimal ${GATE_PASS_PCT}% — nilai ${pct}% berarti ulang gerbang, tanpa pengecualian.`}
           </p>
         ) : null}
       </div>
 
       {wrong.length ? (
-        <div className="mt-5 rounded-3xl border-2 border-sand bg-white p-5 text-left">
+        <div className="mt-5 rounded-3xl border-2 border-sand bg-paper p-5 text-left">
           <div className="mb-2.5 font-display text-[15px] font-extrabold text-ink">
             Butir yang salah ({wrong.length}) — tandai untuk ulangan H+3
           </div>
@@ -358,7 +340,7 @@ function Summary({
       <div className="mt-6 flex flex-wrap justify-center gap-2.5">
         <Link to={`/belajar/${lang}`}><Button size="lg">Kembali ke jalur</Button></Link>
         <Button size="lg" variant="secondary" onClick={onRetry}>Ulangi pelajaran</Button>
-        {pct >= 85 ? <Link to="/ulang"><Button size="lg" variant="amber">🔁 Kartu ulang</Button></Link> : null}
+        {pct >= 85 ? <Link to="/ulang"><Button size="lg" variant="amber" icon="review">Kartu ulang</Button></Link> : null}
       </div>
     </div>
   )

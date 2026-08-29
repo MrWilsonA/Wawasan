@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Wawa } from '@/brand/Wawa'
 import { Callout, Card, Chip, DataTable, SectionTitle, Tabs, cx } from '@/components/ui'
 import {
@@ -9,11 +9,26 @@ import {
   scoreJlpt, ieltsOverall, ieltsRoundingExplain, ieltsRawToBand, ieltsBandName,
   toeflOverall, toeflToOld, toeflCefr, scoreTopik, scoreHsk, monthsFor,
 } from '@/lib/scoring'
+import { useProgress } from '@/store/useProgress'
+import type { LangId } from '@/data/types'
 
 type Tab = 'jlpt' | 'hsk' | 'topik' | 'ielts' | 'toefl' | 'jam'
+const DEFAULT_EXAM: Record<LangId, Tab> = { jp: 'jlpt', cn: 'hsk', kr: 'topik', en: 'ielts' }
 
 export default function Exams() {
-  const [tab, setTab] = useState<Tab>('jlpt')
+  const activeLang = useProgress((s) => s.activeLang)
+  const [tab, setTab] = useState<Tab>(() => DEFAULT_EXAM[activeLang])
+  useEffect(() => setTab(DEFAULT_EXAM[activeLang]), [activeLang])
+  const tabs = activeLang === 'en'
+    ? [
+        { id: 'ielts' as const, label: 'IELTS' },
+        { id: 'toefl' as const, label: 'TOEFL' },
+        { id: 'jam' as const, label: 'Jam belajar' },
+      ]
+    : [
+        { id: DEFAULT_EXAM[activeLang], label: DEFAULT_EXAM[activeLang].toUpperCase() },
+        { id: 'jam' as const, label: 'Jam belajar' },
+      ]
   return (
     <div className="space-y-5">
       <SectionTitle
@@ -22,14 +37,7 @@ export default function Exams() {
         sub="Hitung skor dengan aturan resmi masing-masing ujian — termasuk jebakan yang paling sering membuat kandidat gagal."
       />
       <Tabs
-        tabs={[
-          { id: 'jlpt' as const, label: '🇯🇵 JLPT' },
-          { id: 'hsk' as const, label: '🇨🇳 HSK' },
-          { id: 'topik' as const, label: '🇰🇷 TOPIK' },
-          { id: 'ielts' as const, label: '🇬🇧 IELTS' },
-          { id: 'toefl' as const, label: '🇺🇸 TOEFL' },
-          { id: 'jam' as const, label: '⏱ Jam belajar' },
-        ]}
+        tabs={tabs}
         value={tab}
         onChange={setTab}
       />
@@ -218,7 +226,7 @@ function HskCalc() {
                 <div className="font-display text-lg font-extrabold text-ink">{row.cefr}</div>
               </div>
             </div>
-            <div className="rounded-2xl border-2 border-sand bg-white px-3.5 py-2.5 text-[13px] text-ink-soft">
+            <div className="rounded-2xl border-2 border-sand bg-paper px-3.5 py-2.5 text-[13px] text-ink-soft">
               <strong className="text-ink">Struktur:</strong> {row.structure} · {row.time}
             </div>
           </div>
@@ -293,7 +301,7 @@ function TopikCalc() {
                     key={t.level}
                     className={cx(
                       'flex items-center justify-between rounded-xl border-2 px-3.5 py-2 text-[13px]',
-                      active ? 'border-kr bg-sky-50' : 'border-sand bg-white',
+                      active ? 'border-kr bg-sky-50' : 'border-sand bg-paper',
                     )}
                     style={active ? { borderColor: '#4a7fe0' } : undefined}
                   >
@@ -376,7 +384,7 @@ function IeltsCalc() {
                         onClick={() => set(b)}
                         className={cx(
                           'w-[42px] rounded-lg border-2 py-1 text-[11.5px] font-extrabold',
-                          val === b ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-white text-ink-faint hover:bg-cream',
+                          val === b ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-paper text-ink-faint hover:bg-cream',
                         )}
                       >
                         {b.toFixed(1)}
@@ -394,7 +402,7 @@ function IeltsCalc() {
               <div className="font-display text-[64px] font-extrabold leading-none text-ink">{overall.toFixed(1)}</div>
               <div className="mt-1 font-display text-[15px] font-extrabold text-ink-soft">{ieltsBandName(overall)}</div>
             </div>
-            <div className="mt-3 space-y-1.5 rounded-2xl border-2 border-sand bg-white p-4 text-[13px] text-ink-soft">
+            <div className="mt-3 space-y-1.5 rounded-2xl border-2 border-sand bg-paper p-4 text-[13px] text-ink-soft">
               <div>Jumlah: <strong className="text-ink">{exp.sum.toFixed(1)}</strong></div>
               <div>Rata-rata: <strong className="text-ink">{exp.mean}</strong></div>
               <div>Aturan: <strong className="text-ink">{exp.rule}</strong></div>
@@ -432,7 +440,7 @@ function IeltsCalc() {
                   onClick={() => setRType(t)}
                   className={cx(
                     'flex-1 rounded-lg border-2 py-1.5 text-[11.5px] font-extrabold',
-                    rType === t ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-white text-ink-faint',
+                    rType === t ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-paper text-ink-faint',
                   )}
                 >
                   {t === 'reading-academic' ? 'Academic' : 'General Training'}
@@ -508,7 +516,7 @@ function ToeflCalc() {
                         onClick={() => set(b)}
                         className={cx(
                           'w-[42px] rounded-lg border-2 py-1 text-[11.5px] font-extrabold',
-                          val === b ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-white text-ink-faint hover:bg-cream',
+                          val === b ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-paper text-ink-faint hover:bg-cream',
                         )}
                       >
                         {b.toFixed(1)}
@@ -529,7 +537,7 @@ function ToeflCalc() {
                 <strong className="text-ink">{toeflCefr(overall)}</strong>
               </div>
             </div>
-            <div className="mt-3 rounded-2xl border-2 border-sand bg-white p-4 font-mono text-[12.5px] leading-relaxed text-ink-soft">
+            <div className="mt-3 rounded-2xl border-2 border-sand bg-paper p-4 font-mono text-[12.5px] leading-relaxed text-ink-soft">
               ({r.toFixed(1)} + {l.toFixed(1)} + {s.toFixed(1)} + {w.toFixed(1)}) ÷ 4 ={' '}
               {((r + l + s + w) / 4).toFixed(2)}
               <br />
@@ -591,7 +599,7 @@ function HoursCalc() {
               onClick={() => setPerDay(h)}
               className={cx(
                 'rounded-xl border-2 px-4 py-2 font-display text-[15px] font-extrabold',
-                perDay === h ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-white text-ink-faint',
+                perDay === h ? 'border-teal-500 bg-teal-500 text-white' : 'border-sand bg-paper text-ink-faint',
               )}
             >
               {h} jam

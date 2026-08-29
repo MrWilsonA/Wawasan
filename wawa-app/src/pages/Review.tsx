@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Wawa } from '@/brand/Wawa'
-import { Button, Card, Chip, DataTable, EmptyState, ProgressBar, SectionTitle, Stat, cx } from '@/components/ui'
+import { Button, Card, Chip, DataTable, EmptyState, Icon, FlagIcon, ProgressBar, SectionTitle, Stat, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
 import { useProgress, useDueCards } from '@/store/useProgress'
 import { INTERVALS, stageLabel, forecast, todayISO } from '@/lib/srs'
@@ -49,7 +49,7 @@ export default function Review() {
       <div className="space-y-5">
         <div className="py-8 text-center">
           <Wawa expression="celebrate" size={200} accent={l.color} className="mx-auto anim-pop" />
-          <h1 className="mt-4 text-3xl">Semua kartu selesai! 🎉</h1>
+          <h1 className="mt-4 text-3xl">Semua kartu selesai!</h1>
           <p className="mx-auto mt-2 max-w-md text-[15px] text-ink-soft">
             {done > 0
               ? `${done} kartu diulang hari ini. Kartu berikutnya akan muncul sesuai jadwalnya.`
@@ -57,7 +57,7 @@ export default function Review() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2.5">
             <Link to={`/belajar/${activeLang}`}><Button size="lg">Lanjut belajar</Button></Link>
-            <Link to="/menulis"><Button size="lg" variant="secondary">✍️ Latihan menulis</Button></Link>
+            <Link to="/menulis"><Button size="lg" variant="secondary" icon="writing">Latihan menulis</Button></Link>
           </div>
         </div>
         <DeckStats />
@@ -74,9 +74,9 @@ export default function Review() {
         <Link
           to="/"
           aria-label="Keluar"
-          className="rounded-xl border-2 border-sand bg-white px-3 py-2 text-lg leading-none text-ink-faint shadow-[0_3px_0_0_#e8e1d0]"
+          className="rounded-xl border-2 border-sand bg-paper px-3 py-2 text-lg leading-none text-ink-faint shadow-[0_3px_0_0_var(--color-drop)]"
         >
-          ✕
+          <Icon name="close" size={20} />
         </Link>
         <div className="flex-1"><ProgressBar value={progress} height={16} color="grape" /></div>
         <Chip color="grape">{due.length} tersisa</Chip>
@@ -85,11 +85,11 @@ export default function Review() {
       <Card className="!p-0 overflow-hidden">
         <div className="flex items-center justify-between border-b-2 border-sand bg-cream px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <span aria-hidden>{LANGUAGES[item.card.lang].flag}</span>
+            <FlagIcon lang={item.card.lang} size={20} />
             <Chip size="sm" color="ink">{item.card.tag}</Chip>
           </div>
           <div className="flex items-center gap-2">
-            {item.state.flagged ? <Chip size="sm" color="coral">⚠ bermasalah</Chip> : null}
+            {item.state.flagged ? <Chip size="sm" color="coral" icon="warning">bermasalah</Chip> : null}
             <Chip size="sm" color="grape">{stageLabel(item.state.stage)}</Chip>
           </div>
         </div>
@@ -159,10 +159,10 @@ function DeckStats() {
     <Card>
       <SectionTitle eyebrow="Dek" title="Statistik" />
       <div className="mb-5 grid gap-3 sm:grid-cols-4">
-        <Stat icon="🃏" value={cards.length} label="total kartu" color="grape" />
-        <Stat icon="🌱" value={fresh} label="baru" color="teal" />
-        <Stat icon="🌿" value={young} label="muda (H+1–16)" color="amber" />
-        <Stat icon="🌳" value={mature} label="matang (H+35+)" color="leaf" />
+        <Stat icon="layers" value={cards.length} label="total kartu" color="grape" />
+        <Stat icon="seedling" value={fresh} label="baru" color="teal" />
+        <Stat icon="leaf" value={young} label="muda (H+1–16)" color="amber" />
+        <Stat icon="tree" value={mature} label="matang (H+35+)" color="leaf" />
       </div>
 
       <div className="flex h-32 items-end gap-1.5">

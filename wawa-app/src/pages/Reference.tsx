@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Callout, Card, Chip, DataTable, SectionTitle, Tabs } from '@/components/ui'
 import {
   CEFR_MASTER, CEFR_CAVEAT, JLPT_LEVELS, HSK_20, HSK_30, HSK_DELTA, HSK_TIMELINE,
@@ -6,11 +6,17 @@ import {
   IELTS_VS_TOEFL, CHOOSE_EXAM, MULTILANG_PATH, MULTILANG_RULE, ENTRY_POINTS,
   OFFICIAL_SOURCES, ACCURACY_NOTES, DOC_VERSION,
 } from '@/data/reference'
+import { useProgress } from '@/store/useProgress'
+import type { LangId } from '@/data/types'
 
 type Tab = 'induk' | 'jlpt' | 'hsk' | 'topik' | 'inggris' | 'jalur'
+const DEFAULT_REFERENCE: Record<LangId, Tab> = { jp: 'jlpt', cn: 'hsk', kr: 'topik', en: 'inggris' }
 
 export default function Reference() {
-  const [tab, setTab] = useState<Tab>('induk')
+  const activeLang = useProgress((s) => s.activeLang)
+  const [tab, setTab] = useState<Tab>(() => DEFAULT_REFERENCE[activeLang])
+  useEffect(() => setTab(DEFAULT_REFERENCE[activeLang]), [activeLang])
+  const current = DEFAULT_REFERENCE[activeLang]
   return (
     <div className="space-y-5">
       <SectionTitle
@@ -20,12 +26,8 @@ export default function Reference() {
       />
       <Tabs
         tabs={[
-          { id: 'induk' as const, label: '🌐 Tabel induk' },
-          { id: 'jlpt' as const, label: '🇯🇵 JLPT' },
-          { id: 'hsk' as const, label: '🇨🇳 HSK' },
-          { id: 'topik' as const, label: '🇰🇷 TOPIK' },
-          { id: 'inggris' as const, label: '🇬🇧 IELTS & TOEFL' },
-          { id: 'jalur' as const, label: '🧭 Jalur' },
+          { id: current, label: current === 'inggris' ? 'IELTS & TOEFL' : current.toUpperCase() },
+          { id: 'jalur' as const, label: 'Jalur & sumber' },
         ]}
         value={tab}
         onChange={setTab}
@@ -56,7 +58,7 @@ export default function Reference() {
               href={s.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="rounded-full border-2 border-sand bg-white px-3 py-1 text-[12px] font-extrabold text-teal-600 underline-offset-2 hover:underline"
+              className="rounded-full border-2 border-sand bg-paper px-3 py-1 text-[12px] font-extrabold text-teal-600 underline-offset-2 hover:underline"
             >
               {s.name} ↗
             </a>
@@ -267,7 +269,7 @@ function Inggris() {
         <SectionTitle eyebrow="0–9" title="Deskripsi resmi setiap band IELTS" />
         <div className="space-y-2">
           {IELTS_BANDS.map((b) => (
-            <div key={b.band} className="flex gap-3 rounded-2xl border-2 border-sand bg-white p-3.5">
+            <div key={b.band} className="flex gap-3 rounded-2xl border-2 border-sand bg-paper p-3.5">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-teal-200 bg-teal-50 font-display text-xl font-extrabold text-teal-700">
                 {b.band}
               </span>

@@ -1,43 +1,28 @@
 /**
- * WAWA — the mascot of WAWAさん.
- *
- * Species: Tarsius (tarsier) — a tiny primate endemic to Sulawesi, Indonesia.
- * Chosen because: (1) enormous eyes = the platform's core act, *observing* a
- * character before memorising it; (2) unmistakably Indonesian, so the mascot
- * carries the "diajarkan dari Bahasa Indonesia" promise; (3) visually distinct
- * from every owl-shaped language mascot out there.
- *
- * Drawing rules — the whole art system depends on these:
- *   · flat fills only, never a gradient
- *   · one ink colour for every outline (#17313c)
- *   · shapes stay closed and rounded; nothing thin enough to break at 24px
+ * Wawa is an original Sulawesi tarsier drawn as a compact desktop-pet mascot.
+ * The artwork uses only closed, flat shapes: no outlines, gradients, filters,
+ * textures, or hair details. It stays readable at small avatar sizes.
  */
-import { useId } from 'react'
-
 export type WawaExpression =
   | 'happy' | 'excited' | 'thinking' | 'sad' | 'celebrate'
   | 'sleep' | 'wave' | 'teach' | 'wow' | 'love'
 
 export type WawaProps = {
   expression?: WawaExpression
-  /** rendered pixel size (square) */
   size?: number
-  /** accent colour of the scarf — usually the active language colour */
   accent?: string
   className?: string
-  /** hide the tail, e.g. inside tight avatar frames */
   cropped?: boolean
   title?: string
 }
 
-const INK = '#17313c'
-const FUR = '#f6d9a8'
-const FUR_DARK = '#e9bf83'
-const BELLY = '#fff6e2'
-const EAR = '#ffb3a3'
-const EYE = '#ffcd3c'
-const EYE_RING = '#f5b81d'
-const NOSE = '#e08a76'
+const FUR = '#c98246'
+const FUR_DARK = '#9b5d32'
+const CREAM = '#fff0c9'
+const EAR = '#f5a27e'
+const AMBER = '#f7b928'
+const PUPIL = '#39251f'
+const NOSE = '#a9563c'
 
 export function Wawa({
   expression = 'happy',
@@ -47,13 +32,12 @@ export function Wawa({
   cropped = false,
   title,
 }: WawaProps) {
-  const uid = useId().replace(/:/g, '')
-  const armsUp = expression === 'celebrate' || expression === 'excited'
-  const oneArmUp = expression === 'wave' || expression === 'teach'
+  const celebrating = expression === 'celebrate' || expression === 'excited'
+  const waving = expression === 'wave' || expression === 'teach'
 
   return (
     <svg
-      viewBox="0 0 220 210"
+      viewBox="0 0 200 200"
       width={size}
       height={size}
       className={className}
@@ -62,233 +46,131 @@ export function Wawa({
       aria-hidden={title ? undefined : true}
     >
       {title ? <title>{title}</title> : null}
-      <defs>
-        {/* Clip keeps the belly patch inside the body silhouette */}
-        <clipPath id={'body-' + uid}>
-          <path d="M64 128 C56 178 76 200 110 200 C144 200 164 178 156 128 Z" />
-        </clipPath>
-      </defs>
 
-      {/* ---------- TAIL ---------- */}
       {!cropped ? (
-        <g>
-          <path
-            d="M148 172 C186 178 202 148 196 118"
-            fill="none" stroke={INK} strokeWidth="13" strokeLinecap="round"
-          />
-          <path
-            d="M148 172 C186 178 202 148 196 118"
-            fill="none" stroke={FUR_DARK} strokeWidth="7" strokeLinecap="round"
-          />
-          <circle cx="196" cy="114" r="15" fill={FUR} stroke={INK} strokeWidth="5.5" />
-        </g>
+        <path d="M57 158C25 170 15 144 25 124c8-15 27-13 31-1 4 13-12 21-20 12 4 16 23 10 28-2l8 16c-4 4-9 7-15 9z" fill={FUR_DARK} />
       ) : null}
+      <ellipse cx="101" cy="151" rx="47" ry="43" fill={FUR} />
+      <ellipse cx="101" cy="158" rx="27" ry="29" fill={CREAM} />
+      <ellipse cx="76" cy="184" rx="17" ry="8" fill={FUR_DARK} />
+      <ellipse cx="126" cy="184" rx="17" ry="8" fill={FUR_DARK} />
 
-      {/* ---------- EARS (behind head) ---------- */}
-      <g>
-        <ellipse cx="48" cy="56" rx="27" ry="30" fill={FUR} stroke={INK} strokeWidth="5.5" transform="rotate(-16 48 56)" />
-        <ellipse cx="48" cy="58" rx="14" ry="17" fill={EAR} transform="rotate(-16 48 58)" />
-        <ellipse cx="172" cy="56" rx="27" ry="30" fill={FUR} stroke={INK} strokeWidth="5.5" transform="rotate(16 172 56)" />
-        <ellipse cx="172" cy="58" rx="14" ry="17" fill={EAR} transform="rotate(16 172 58)" />
-      </g>
-
-      {/* ---------- BODY ---------- */}
-      <g>
-        <path
-          d="M64 128 C56 178 76 200 110 200 C144 200 164 178 156 128 Z"
-          fill={FUR} stroke={INK} strokeWidth="5.5" strokeLinejoin="round"
-        />
-        <g clipPath={'url(#body-' + uid + ')'}>
-          <ellipse cx="110" cy="182" rx="34" ry="34" fill={BELLY} />
-        </g>
-        <ellipse cx="88" cy="197" rx="17" ry="9" fill={FUR_DARK} stroke={INK} strokeWidth="5" />
-        <ellipse cx="132" cy="197" rx="17" ry="9" fill={FUR_DARK} stroke={INK} strokeWidth="5" />
-      </g>
-
-      {/* ---------- ARMS ---------- */}
-      {armsUp ? (
-        <g>
-          <g transform="rotate(-38 68 148)">
-            <rect x="46" y="136" width="30" height="21" rx="10.5" fill={FUR} stroke={INK} strokeWidth="5" />
-          </g>
-          <g transform="rotate(38 152 148)">
-            <rect x="144" y="136" width="30" height="21" rx="10.5" fill={FUR} stroke={INK} strokeWidth="5" />
-          </g>
-        </g>
-      ) : oneArmUp ? (
-        <g>
-          <ellipse cx="62" cy="158" rx="14" ry="16" fill={FUR} stroke={INK} strokeWidth="5" />
-          <g transform="rotate(34 158 150)">
-            <rect x="148" y="138" width="30" height="21" rx="10.5" fill={FUR} stroke={INK} strokeWidth="5" />
-          </g>
-        </g>
+      {celebrating ? (
+        <>
+          <path d="M66 144c-12 2-23-7-26-19l10-5c5 9 12 13 22 12z" fill={FUR} />
+          <path d="M136 144c12 2 23-7 26-19l-10-5c-5 9-12 13-22 12z" fill={FUR} />
+        </>
+      ) : waving ? (
+        <>
+          <ellipse cx="66" cy="153" rx="11" ry="14" fill={FUR} />
+          <path d="M136 151c12-5 19-16 18-29l-11-1c-2 9-7 16-15 20z" fill={FUR} />
+          <circle cx="155" cy="118" r="7" fill={EAR} />
+        </>
       ) : (
-        <g>
-          <ellipse cx="62" cy="158" rx="14" ry="16" fill={FUR} stroke={INK} strokeWidth="5" />
-          <ellipse cx="158" cy="158" rx="14" ry="16" fill={FUR} stroke={INK} strokeWidth="5" />
-        </g>
+        <>
+          <ellipse cx="66" cy="153" rx="11" ry="14" fill={FUR_DARK} />
+          <ellipse cx="136" cy="153" rx="11" ry="14" fill={FUR_DARK} />
+        </>
       )}
 
-      {/* ---------- SCARF (carries the active language colour) ----------
-          Sits below the head silhouette (head bottom ≈ y151) so the accent
-          colour actually reads instead of hiding behind the muzzle. */}
-      <path
-        d="M76 146 C90 160 130 160 144 146 L149 160 C130 176 90 176 71 160 Z"
-        fill={accent} stroke={INK} strokeWidth="5" strokeLinejoin="round"
-      />
+      <ellipse cx="48" cy="67" rx="30" ry="34" fill={FUR} />
+      <ellipse cx="154" cy="67" rx="30" ry="34" fill={FUR} />
+      <ellipse cx="48" cy="68" rx="18" ry="22" fill={EAR} />
+      <ellipse cx="154" cy="68" rx="18" ry="22" fill={EAR} />
 
-      {/* ---------- HEAD ---------- */}
-      <g>
-        <path d="M92 34 L110 12 L128 34 Z" fill={FUR} stroke={INK} strokeWidth="5.5" strokeLinejoin="round" />
-        <ellipse cx="110" cy="88" rx="68" ry="63" fill={FUR} stroke={INK} strokeWidth="5.5" />
-        <ellipse cx="110" cy="118" rx="30" ry="22" fill={BELLY} />
-        <circle cx="54" cy="112" r="10" fill={EAR} opacity="0.75" />
-        <circle cx="166" cy="112" r="10" fill={EAR} opacity="0.75" />
-        <Eyes expression={expression} />
-        <path d="M110 108 L117 117 Q110 123 103 117 Z" fill={NOSE} stroke={INK} strokeWidth="3.5" strokeLinejoin="round" />
-        <Mouth expression={expression} />
-      </g>
+      <ellipse cx="101" cy="91" rx="63" ry="58" fill={FUR} />
+      <path d="M101 123c-16 0-33-10-40-27-8-20 0-42 18-47 10-3 18 1 22 10 4-9 12-13 22-10 18 5 26 27 18 47-7 17-24 27-40 27z" fill={CREAM} />
+      <Eyes expression={expression} />
+      <ellipse cx="101" cy="101" rx="6" ry="5" fill={NOSE} />
+      <Mouth expression={expression} />
 
+      <path d="M70 125c17 9 45 9 62 0l-5 19-26 14-26-14z" fill={accent} />
+      <circle cx="101" cy="137" r="7" fill={FUR_DARK} />
       <Decor expression={expression} accent={accent} />
     </svg>
   )
 }
 
-/* ------------------------------------------------------------------ */
-
-type EyeCfg = { r: number; pr: number; dx: number; dy: number; squintL?: boolean }
-
-const EYE_CFG: Record<WawaExpression, EyeCfg> = {
-  happy: { r: 30, pr: 16, dx: 0, dy: 0 },
-  excited: { r: 32, pr: 19, dx: 0, dy: -2 },
-  celebrate: { r: 32, pr: 19, dx: 0, dy: -2 },
-  wow: { r: 33, pr: 21, dx: 0, dy: 0 },
-  wave: { r: 30, pr: 16, dx: 2, dy: 0 },
-  teach: { r: 30, pr: 16, dx: -3, dy: 1 },
-  thinking: { r: 30, pr: 15, dx: 5, dy: -4, squintL: true },
-  sad: { r: 29, pr: 14, dx: 0, dy: 4 },
-  love: { r: 30, pr: 16, dx: 0, dy: 0 },
-  sleep: { r: 30, pr: 16, dx: 0, dy: 0 },
-}
-
 function Eyes({ expression }: { expression: WawaExpression }) {
   if (expression === 'sleep') {
     return (
-      <g fill="none" stroke={INK} strokeWidth="6" strokeLinecap="round">
-        <path d="M56 86 Q78 104 100 86" />
-        <path d="M120 86 Q142 104 164 86" />
-      </g>
+      <>
+        <path d="M63 82c7 8 16 8 23 0-3 13-20 13-23 0z" fill={PUPIL} />
+        <path d="M116 82c7 8 16 8 23 0-3 13-20 13-23 0z" fill={PUPIL} />
+      </>
     )
   }
 
   if (expression === 'love') {
     return (
-      <g>
-        {[78, 142].map((cx) => (
-          <g key={cx}>
-            <circle cx={cx} cy="86" r="30" fill={EYE} stroke={INK} strokeWidth="5.5" />
-            <path
-              d={`M${cx} 98 C${cx - 18} 82 ${cx - 10} 68 ${cx} 78 C${cx + 10} 68 ${cx + 18} 82 ${cx} 98 Z`}
-              fill="#e04227"
-            />
-          </g>
-        ))}
-      </g>
+      <>
+        <path d="M75 96C55 81 63 66 75 76c12-10 20 5 0 20z" fill="#e8564f" />
+        <path d="M127 96c-20-15-12-30 0-20 12-10 20 5 0 20z" fill="#e8564f" />
+      </>
     )
   }
 
-  const c = EYE_CFG[expression]
+  const wide = expression === 'wow' || expression === 'excited' || expression === 'celebrate'
+  const sad = expression === 'sad'
+  const look = expression === 'thinking' ? 4 : expression === 'teach' ? -3 : 0
+  const r = wide ? 25 : 23
+  const pr = wide ? 13 : 12
 
   return (
-    <g>
-      {[78, 142].map((cx, i) => {
-        const squint = c.squintL && i === 0
-        return (
-          <g key={cx}>
-            <circle cx={cx} cy="86" r={c.r} fill={EYE} stroke={INK} strokeWidth="5.5" />
-            <circle cx={cx} cy="86" r={c.r - 6} fill={EYE_RING} opacity="0.45" />
-            {squint ? (
-              <path d={`M${cx - 22} 86 Q${cx} 70 ${cx + 22} 86`} fill="none" stroke={INK} strokeWidth="6" strokeLinecap="round" />
-            ) : (
-              <g>
-                <circle cx={cx + c.dx} cy={86 + c.dy} r={c.pr} fill={INK} />
-                <circle cx={cx + c.dx - 6} cy={86 + c.dy - 7} r={c.pr / 2.6} fill="#fff" />
-                <circle cx={cx + c.dx + 7} cy={86 + c.dy + 6} r={c.pr / 5} fill="#fff" opacity="0.85" />
-              </g>
-            )}
-          </g>
-        )
-      })}
-      {expression === 'sad' ? (
-        <g fill="none" stroke={INK} strokeWidth="5.5" strokeLinecap="round">
-          <path d="M54 52 L92 62" />
-          <path d="M166 52 L128 62" />
+    <>
+      {[75, 127].map((cx) => (
+        <g key={cx}>
+          <circle cx={cx} cy={82} r={r} fill={AMBER} />
+          <circle cx={cx + look} cy={82 + (sad ? 3 : 0)} r={pr} fill={PUPIL} />
+          <circle cx={cx + look - 4} cy={77 + (sad ? 3 : 0)} r="3.5" fill="#fff" />
         </g>
+      ))}
+      {sad ? (
+        <>
+          <path d="M57 63c9-6 19-7 29-3l-2 5c-9-2-17-1-25 3z" fill={FUR_DARK} />
+          <path d="M145 63c-9-6-19-7-29-3l2 5c9-2 17-1 25 3z" fill={FUR_DARK} />
+        </>
       ) : null}
-    </g>
+    </>
   )
 }
 
 function Mouth({ expression }: { expression: WawaExpression }) {
-  switch (expression) {
-    case 'excited':
-    case 'celebrate':
-      return <ellipse cx="110" cy="132" rx="15" ry="12" fill="#b6301a" stroke={INK} strokeWidth="4.5" />
-    case 'wow':
-      return <ellipse cx="110" cy="133" rx="10" ry="13" fill="#b6301a" stroke={INK} strokeWidth="4.5" />
-    case 'sad':
-      return <path d="M96 136 Q110 126 124 136" fill="none" stroke={INK} strokeWidth="5" strokeLinecap="round" />
-    case 'thinking':
-      return <path d="M98 132 L122 129" fill="none" stroke={INK} strokeWidth="5" strokeLinecap="round" />
-    case 'sleep':
-      return <ellipse cx="110" cy="132" rx="8" ry="9" fill="#b6301a" stroke={INK} strokeWidth="4" />
-    default:
-      return (
-        <g fill="none" stroke={INK} strokeWidth="5" strokeLinecap="round">
-          <path d="M110 124 Q101 135 92 128" />
-          <path d="M110 124 Q119 135 128 128" />
-        </g>
-      )
+  if (expression === 'wow') return <ellipse cx="101" cy="112" rx="7" ry="9" fill={PUPIL} />
+  if (expression === 'sad') return <path d="M90 118c6-8 16-8 22 0-7-4-15-4-22 0z" fill={PUPIL} />
+  if (expression === 'thinking') return <rect x="91" y="111" width="20" height="4" rx="2" fill={PUPIL} />
+  if (expression === 'sleep') return <ellipse cx="101" cy="112" rx="4" ry="5" fill={PUPIL} />
+  if (expression === 'excited' || expression === 'celebrate') {
+    return <path d="M88 109c8 4 18 4 26 0-1 13-25 13-26 0z" fill={PUPIL} />
   }
+  return <path d="M88 109c7 8 19 8 26 0-2 13-24 13-26 0z" fill={PUPIL} />
 }
 
-const SPARKS: Array<[number, number, number]> = [
-  [26, 30, 9], [196, 44, 7], [40, 148, 6], [186, 168, 8],
-]
-
-/** Floating extras: sparkles, zzz, a thought bubble. */
 function Decor({ expression, accent }: { expression: WawaExpression; accent: string }) {
   if (expression === 'celebrate') {
     return (
-      <g>
-        {SPARKS.map(([x, y, r], i) => (
-          <path
-            key={i}
-            d={`M${x} ${y - r} L${x + r / 2.6} ${y - r / 2.6} L${x + r} ${y} L${x + r / 2.6} ${y + r / 2.6} L${x} ${y + r} L${x - r / 2.6} ${y + r / 2.6} L${x - r} ${y} L${x - r / 2.6} ${y - r / 2.6} Z`}
-            fill={i % 2 ? '#ffcd3c' : accent}
-            stroke={INK}
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
-        ))}
-      </g>
+      <>
+        <circle cx="25" cy="43" r="5" fill={accent} />
+        <circle cx="177" cy="50" r="4" fill="#f7b928" />
+        <rect x="29" y="27" width="7" height="7" rx="2" fill="#e8564f" />
+        <rect x="165" y="30" width="7" height="7" rx="2" fill={accent} />
+      </>
     )
   }
   if (expression === 'sleep') {
     return (
-      <g fill={INK} fontWeight="800">
-        <text x="176" y="40" fontSize="20">z</text>
-        <text x="192" y="24" fontSize="15">z</text>
-        <text x="204" y="12" fontSize="11">z</text>
+      <g fill={PUPIL} fontFamily="sans-serif" fontWeight="800">
+        <text x="163" y="62" fontSize="17">z</text>
+        <text x="177" y="45" fontSize="12">z</text>
       </g>
     )
   }
   if (expression === 'thinking') {
     return (
-      <g>
-        <circle cx="184" cy="46" r="7" fill="#fff" stroke={INK} strokeWidth="3.5" />
-        <circle cx="198" cy="30" r="10" fill="#fff" stroke={INK} strokeWidth="3.5" />
-      </g>
+      <>
+        <circle cx="166" cy="55" r="5" fill="#fff" />
+        <circle cx="180" cy="40" r="8" fill="#fff" />
+      </>
     )
   }
   return null

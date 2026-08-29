@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/ui/icons'
+
 /** Every comparison / scoring table from the curriculum, as structured data. */
 
 export const DOC_VERSION = { version: '1.0', verified: '28 Agustus 2026' }
@@ -268,12 +270,14 @@ export const GRADE_RUBRIC = [
 ]
 
 /* ==================== RUTINITAS ==================== */
-export const DAILY_TEMPLATE = [
-  { range: '0–10', minutes: 10, activity: 'Review SRS', detail: 'Kartu jatuh tempo hari ini', goal: 'Konsolidasi memori', icon: '🔁' },
-  { range: '10–20', minutes: 10, activity: 'Latihan menulis', detail: '5 aksara baru × 8 repetisi', goal: 'Motor encoding', icon: '✍️' },
-  { range: '20–40', minutes: 20, activity: 'Materi baru', detail: '1 unit, 1 struktur tata bahasa', goal: 'Input terstruktur', icon: '📖' },
-  { range: '40–50', minutes: 10, activity: 'Menyimak', detail: 'Audio unit 3× (buta → dengan teks → shadowing)', goal: 'Persepsi bunyi', icon: '🎧' },
-  { range: '50–60', minutes: 10, activity: 'Output', detail: '5 kalimat sendiri memakai struktur hari ini', goal: 'Produksi aktif', icon: '🗣️' },
+export const DAILY_TEMPLATE: Array<{
+  range: string; minutes: number; activity: string; detail: string; goal: string; icon: IconName
+}> = [
+  { range: '0–10', minutes: 10, activity: 'Review SRS', detail: 'Kartu jatuh tempo hari ini', goal: 'Konsolidasi memori', icon: 'review' },
+  { range: '10–20', minutes: 10, activity: 'Latihan menulis', detail: '5 aksara baru × 8 repetisi', goal: 'Motor encoding', icon: 'writing' },
+  { range: '20–40', minutes: 20, activity: 'Materi baru', detail: '1 unit, 1 struktur tata bahasa', goal: 'Input terstruktur', icon: 'words' },
+  { range: '40–50', minutes: 10, activity: 'Menyimak', detail: 'Audio unit 3× (buta → dengan teks → shadowing)', goal: 'Persepsi bunyi', icon: 'listen' },
+  { range: '50–60', minutes: 10, activity: 'Output', detail: '5 kalimat sendiri memakai struktur hari ini', goal: 'Produksi aktif', icon: 'production' },
 ]
 
 export const WEEKLY_RHYTHM = [
@@ -290,14 +294,16 @@ export const WEEKLY_NOTE =
   'Jumat tanpa materi baru bukan kemalasan — itu KONSOLIDASI. Pelajar yang menambah materi 7 hari seminggu justru lupa lebih cepat.'
 
 /* ==================== FILOSOFI ==================== */
-export const PRINCIPLES = [
+export const PRINCIPLES: Array<{
+  n: number; title: string; subtitle: string; body: string; flow: string[]; icon: IconName; color: string
+}> = [
   {
     n: 1,
     title: 'Bunyi Sebelum Bentuk',
     subtitle: 'Sound before Script',
     body: 'Otak tidak bisa menghafal simbol yang belum punya bunyi. Karena itu setiap bahasa selalu dimulai dari sistem bunyi, bukan dari kosakata. Melompati tahap ini adalah penyebab nomor satu kegagalan pelajar Indonesia di bahasa bernada (Mandarin) dan bahasa berbatchim (Korea).',
     flow: ['BUNYI', 'AKSARA', 'KATA', 'POLA KALIMAT', 'WACANA'],
-    icon: '🔊',
+    icon: 'sound',
     color: 'sky',
   },
   {
@@ -306,7 +312,7 @@ export const PRINCIPLES = [
     subtitle: 'Bukan hafalan buta',
     body: 'Karakter 日 tidak dihafal sebagai "coretan kotak dengan garis". Ia diajarkan sebagai gambar matahari yang berevolusi selama 3.000 tahun. Karakter yang punya cerita bertahan di memori 5–10× lebih lama daripada karakter yang dihafal mentah.',
     flow: ['☉', '⊙', '⊖', '日'],
-    icon: '📜',
+    icon: 'story',
     color: 'amber',
   },
   {
@@ -315,7 +321,7 @@ export const PRINCIPLES = [
     subtitle: 'Motor Encoding',
     body: 'Menulis dengan tangan mengaktifkan jalur motorik yang memperkuat ingatan visual. Setiap modul aksara punya lembar latihan dengan kotak panduan, urutan guratan bernomor, dan target repetisi realistis — bukan "tulis 100×".',
     flow: ['3× pelan', '7× normal', 'Dikte', 'Koreksi'],
-    icon: '✍️',
+    icon: 'writing',
     color: 'coral',
   },
   {
@@ -324,7 +330,7 @@ export const PRINCIPLES = [
     subtitle: 'Cognitive Load Management',
     body: 'Setiap unit hanya memperkenalkan SATU struktur tata bahasa baru, ditemani kosakata yang sudah dikenal. Bukan "pelajari partikel は、が、を、に、で sekaligus", melainkan: Unit 4 hanya は, Unit 5 hanya を, Unit 6 が dikontraskan dengan は yang sudah dikuasai.',
     flow: ['は', 'を', 'が', 'に', 'で'],
-    icon: '🎯',
+    icon: 'strategy',
     color: 'grape',
   },
   {
@@ -333,7 +339,7 @@ export const PRINCIPLES = [
     subtitle: '1 – 3 – 7 – 16 – 35 – 90 hari',
     body: 'Kosakata diulang pada interval yang makin melebar. Setiap unit menutup dengan daftar "Kartu Hari Ini" yang siap dimasukkan ke sistem SRS.',
     flow: ['H+1', 'H+3', 'H+7', 'H+16', 'H+35', 'H+90'],
-    icon: '🔁',
+    icon: 'review',
     color: 'leaf',
   },
 ]

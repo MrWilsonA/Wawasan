@@ -11,7 +11,7 @@ export const CN_GATES: Gate[] = [
     title: 'Pinyin & Nada',
     subtitle: 'Gerbang yang tidak boleh dipercepat',
     duration: '3 minggu',
-    icon: '🎵',
+    icon: 'sound',
     units: [
       {
         id: 'cn-g0-u1',
@@ -263,7 +263,7 @@ export const CN_GATES: Gate[] = [
     title: 'Guratan & Hanzi',
     subtitle: '8 guratan → radikal → 300 hanzi dasar',
     duration: '8 minggu',
-    icon: '🖌️',
+    icon: 'writing',
     units: [
       {
         id: 'cn-g1-u1',
@@ -632,8 +632,8 @@ export const CN_GATES: Gate[] = [
           },
         ],
         cards: [
-          { id: 'cn-c-bei', front: '贝 sebagai radikal', back: 'UANG (dari kerang cowrie) → 买 卖 贵 财 费 贷', lang: 'cn', tag: 'Radikal' },
-          { id: 'cn-c-yi', front: '衤 vs 礻', back: '衤 (ada titik) = pakaian · 礻 (tanpa titik) = ritual/dewa', lang: 'cn', tag: 'Radikal' },
+          { id: 'cn-c-radikal-bei', front: '贝 sebagai radikal', back: 'UANG (dari kerang cowrie) → 买 卖 贵 财 费 贷', lang: 'cn', tag: 'Radikal' },
+          { id: 'cn-c-yi-shi', front: '衤 vs 礻', back: '衤 (ada titik) = pakaian · 礻 (tanpa titik) = ritual/dewa', lang: 'cn', tag: 'Radikal' },
           { id: 'cn-c-jia', front: '家', back: 'rumah = 宀 atap + 豕 babi — jejak revolusi neolitik', reading: 'jiā', lang: 'cn', tag: 'Hanzi' },
         ],
       },
@@ -646,7 +646,7 @@ export const CN_GATES: Gate[] = [
     title: 'Kata Inti',
     subtitle: '600 kata frekuensi tertinggi',
     duration: '14 minggu',
-    icon: '📚',
+    icon: 'words',
     units: [
       {
         id: 'cn-g2-u1',
@@ -769,7 +769,7 @@ export const CN_GATES: Gate[] = [
     title: 'Tulang Kalimat',
     subtitle: 'Urutan kata + partikel aspek 了着过',
     duration: '18 minggu',
-    icon: '🦴',
+    icon: 'grammar',
     units: [
       {
         id: 'cn-g3-u1',
@@ -1055,7 +1055,7 @@ export const CN_GATES: Gate[] = [
     title: 'Produksi',
     subtitle: 'Karangan & bicara',
     duration: 'berkelanjutan',
-    icon: '🗣️',
+    icon: 'production',
     units: [
       {
         id: 'cn-g4-u1',
@@ -1117,7 +1117,7 @@ export const CN_GATES: Gate[] = [
     title: 'Strategi Ujian',
     subtitle: 'HSK 2.0 vs 3.0 & taktik per bagian',
     duration: '6 minggu',
-    icon: '🎯',
+    icon: 'strategy',
     units: [
       {
         id: 'cn-g5-u1',
