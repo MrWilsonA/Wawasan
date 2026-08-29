@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* ============================================================
+   WAWAさん — Design tokens
+   Flat cartoon-vector system. NO GRADIENTS ANYWHERE.
+   Depth comes from: thick ink outlines + hard bottom shadows.
+   ============================================================ */
+
+@theme {
+  /* Brand core */
+  --color-ink: #17313c;
+  --color-ink-soft: #4a6572;
+  --color-ink-faint: #8ba3ae;
+
+  --color-teal-50: #e6f7f5;
+  --color-teal-100: #c2ebe6;
+  --color-teal-200: #8ddbd2;
+  --color-teal-300: #4ec7ba;
+  --color-teal-400: #16b3a3;
+  --color-teal-500: #00a191;
+  --color-teal-600: #008476;
+  --color-teal-700: #006459;
+
+  --color-amber-50: #fff8e3;
+  --color-amber-100: #ffeeb8;
+  --color-amber-200: #ffdf7a;
+  --color-amber-300: #ffcd3c;
+  --color-amber-400: #f5b81d;
+  --color-amber-500: #dc9c07;
+  --color-amber-600: #ad7a05;
+
+  --color-coral-50: #ffeeeb;
+  --color-coral-100: #ffd5cd;
+  --color-coral-200: #ffab9c;
+  --color-coral-300: #ff7f68;
+  --color-coral-400: #f75f45;
+  --color-coral-500: #e04227;
+  --color-coral-600: #b6301a;
+
+  --color-leaf-50: #eefaea;
+  --color-leaf-100: #d3f2c9;
+  --color-leaf-200: #a8e396;
+  --color-leaf-300: #79d162;
+  --color-leaf-400: #56bd3d;
+  --color-leaf-500: #3ba026;
+  --color-leaf-600: #2c7a1c;
+
+  --color-grape-50: #f2effc;
+  --color-grape-100: #ded6f7;
+  --color-grape-200: #bfb0ef;
+  --color-grape-300: #9d87e4;
+  --color-grape-400: #8168d6;
+  --color-grape-500: #6a51bd;
+  --color-grape-600: #513c94;
+
+  --color-sky-50: #e8f5ff;
+  --color-sky-100: #c6e6fd;
+  --color-sky-200: #93d0fa;
+  --color-sky-300: #58b4f2;
+  --color-sky-400: #2f9be4;
+  --color-sky-500: #1580c9;
+  --color-sky-600: #0d629d;
+
+  /* Surfaces */
+  --color-cream: #fffcf3;
+  --color-paper: #ffffff;
+  --color-sand: #f4efe2;
+  --color-shell: #f7f4ec;
+
+  /* Language accents */
+  --color-jp: #e8564f;
+  --color-jp-soft: #ffe7e5;
+  --color-cn: #f5a623;
+  --color-cn-soft: #fff2dc;
+  --color-kr: #4a7fe0;
+  --color-kr-soft: #e6efff;
+  --color-en: #56bd3d;
+  --color-en-soft: #e9f8e4;
+
+  --font-display: "Baloo 2", "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --font-cjk: "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", "Meiryo",
+              "Microsoft YaHei", "Malgun Gothic", "Noto Sans SC", "Noto Sans KR", sans-serif;
+
+  --radius-blob: 1.75rem;
+}
+
+@layer base {
+  * { -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--color-shell);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
+
+  ::selection { background: var(--color-amber-200); color: var(--color-ink); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-teal-200);
+    border-radius: 999px;
+    border: 3px solid var(--color-shell);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-teal-300); }
+
+  :focus-visible {
+    outline: 3px solid var(--color-teal-400);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  /* Hard "sticker" shadow — the core of the cartoon look. No blur, no gradient. */
+  .shadow-hard      { box-shadow: 0 4px 0 0 var(--tw-shadow-color, #d9d2c2); }
+  .shadow-hard-lg   { box-shadow: 0 6px 0 0 var(--tw-shadow-color, #d9d2c2); }
+  .shadow-hard-xl   { box-shadow: 0 8px 0 0 var(--tw-shadow-color, #d9d2c2); }
+  .shadow-hard-none { box-shadow: none; }
+
+  .font-cjk { font-family: var(--font-cjk); }
+
+  /* Paper grid used behind path / worksheet views */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(23,49,60,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(23,49,60,0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(circle, rgba(23,49,60,0.09) 1.6px, transparent 1.6px);
+    background-size: 22px 22px;
+  }
+}
+
+/* ---------- Animations (subtle, cartoon-friendly) ---------- */
+@keyframes wawa-bob   { 0%,100% { transform: translateY(0) }  50% { transform: translateY(-7px) } }
+@keyframes wawa-pop   { 0% { transform: scale(0.7); opacity: 0 } 70% { transform: scale(1.06) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes wawa-shake { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-8px) } 40% { transform: translateX(7px) } 60% { transform: translateX(-5px) } 80% { transform: translateX(3px) } }
+@keyframes wawa-blink { 0%,92%,100% { transform: scaleY(1) } 96% { transform: scaleY(0.08) } }
+@keyframes wawa-rise  { from { transform: translateY(14px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+@keyframes wawa-spin  { to { transform: rotate(360deg) } }
+@keyframes wawa-tail  { 0%,100% { transform: rotate(-3deg) } 50% { transform: rotate(5deg) } }
+@keyframes wawa-sheen { 0%,100% { transform: scale(1) } 50% { transform: scale(1.12) } }
+@keyframes stroke-draw { to { stroke-dashoffset: 0 } }
+
+.anim-bob   { animation: wawa-bob 3.2s ease-in-out infinite; }
+.anim-pop   { animation: wawa-pop .3s cubic-bezier(.34,1.56,.64,1) both; }
+.anim-shake { animation: wawa-shake .42s ease-in-out; }
+.anim-rise  { animation: wawa-rise .35s ease-out both; }
+.anim-spin  { animation: wawa-spin 1s linear infinite; }
+.anim-sheen { animation: wawa-sheen 2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
