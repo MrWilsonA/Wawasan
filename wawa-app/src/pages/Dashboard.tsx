@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Wawa, type WawaExpression } from '@/brand/Wawa'
 import { Button, Card, Chip, Icon, ProgressBar, Ring, SectionTitle, Stat, cx } from '@/components/ui'
@@ -8,12 +9,18 @@ import { gateStatus, nextLesson, progressPct } from '@/data/curriculum'
 import { useProgress, useDueCards, useXpToday } from '@/store/useProgress'
 import { gateScore } from '@/lib/scoring'
 import { forecast, todayISO } from '@/lib/srs'
+import { startBgm } from '@/lib/sound'
 
 export default function Dashboard() {
   const { activeLang, completed, name, dailyGoalMin, streak, xp, skillScores, deck } = useProgress()
   const lang = LANGUAGES[activeLang]
   const due = useDueCards()
   const xpToday = useXpToday()
+
+  // Ensure BGM starts playing when arriving at Dashboard
+  useEffect(() => {
+    startBgm()
+  }, [])
 
   const next = nextLesson(activeLang, completed)
   const gates = gateStatus(activeLang, completed)
@@ -126,15 +133,25 @@ export default function Dashboard() {
             <div className="text-[13px] text-ink-soft">
               {gates.filter((g) => g.unlocked).length} dari {gates.length} level terbuka
             </div>
+            <div className="mt-1 text-[11px] font-bold uppercase tracking-wide text-ink-faint">
+              {lang.exam}
+            </div>
           </div>
         </Card>
 
-        <div className="grid grid-cols-2 gap-3 sm:col-span-2 sm:grid-cols-2 lg:col-span-2">
-          <Stat icon="streak" value={streak} label="hari beruntun" color="amber" />
-          <Stat icon="xp" value={xp} label="total XP" color="teal" />
-          <Stat icon="review" value={due.length} label="kartu hari ini" color="grape" />
-          <Stat icon="exam" value={gs.score || '—'} label="nilai gerbang" color="leaf" />
-        </div>
+        <Stat
+          label="Rentetan belajar"
+          value={`${streak} hari`}
+          color="coral"
+          icon="streak"
+        />
+
+        <Stat
+          label="Total XP"
+          value={xp.toLocaleString('id-ID')}
+          color="amber"
+          icon="xp"
+        />
       </div>
 
       {/* ---------------- Gates + skills ---------------- */}

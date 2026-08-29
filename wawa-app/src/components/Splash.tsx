@@ -7,7 +7,7 @@ import { useProgress } from '@/store/useProgress'
 import type { LangId } from '@/data/types'
 import { tint } from '@/lib/tint'
 import { useNavigate } from 'react-router-dom'
-import { playSound } from '@/lib/sound'
+import { playSound, startBgm } from '@/lib/sound'
 
 /**
  * Boot splash. Shown once per session (sessionStorage) so a page refresh
@@ -50,7 +50,10 @@ export function Splash({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && onboarded) onClose()
+      if (event.key === 'Escape' && onboarded) {
+        startBgm()
+        onClose()
+      }
     }
     window.addEventListener('keydown', closeOnEscape)
     return () => window.removeEventListener('keydown', closeOnEscape)
@@ -58,9 +61,16 @@ export function Splash({ onClose }: { onClose: () => void }) {
 
   const enter = () => {
     playSound('tap')
+    startBgm()
     setActiveLang(selected)
     onClose()
     if (onboarded) navigate(`/belajar/${selected}`)
+  }
+
+  const handleClose = () => {
+    playSound('tap')
+    startBgm()
+    onClose()
   }
 
   return (
@@ -81,9 +91,9 @@ export function Splash({ onClose }: { onClose: () => void }) {
       {onboarded ? (
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Tutup menu bahasa"
-          className="absolute right-4 top-4 z-10 rounded-2xl border-2 border-sand bg-paper p-2.5 text-ink-soft shadow-[0_3px_0_0_var(--color-drop)] hover:text-ink active:translate-y-[2px] active:shadow-none"
+          className="absolute right-4 top-4 z-10 rounded-2xl border-2 border-sand bg-paper p-2.5 text-ink-soft shadow-[0_3px_0_0_var(--color-drop)] hover:text-ink active:translate-y-[2px] active:shadow-none cursor-pointer"
         >
           <Icon name="close" size={20} />
         </button>

@@ -161,9 +161,21 @@ class BgmEngine {
       })
     }
   }
+
+  forcePlay() {
+    this.play()
+  }
 }
 
 export const bgmEngine = new BgmEngine()
+
+/** Starts background music immediately and unlocks audio context */
+export function startBgm() {
+  const state = useAudio.getState()
+  state.setBgmEnabled(true)
+  state.setIsPlaying(true)
+  bgmEngine.forcePlay()
+}
 
 /** Initialize audio subsystem and subscribe to audio state */
 export function initAudioSystem() {

@@ -8,6 +8,7 @@ import { tint } from '@/lib/tint'
 import type { LangId } from '@/data/types'
 import { useProgress } from '@/store/useProgress'
 import { PRINCIPLES } from '@/data/reference'
+import { playSound, startBgm } from '@/lib/sound'
 
 export default function Onboarding() {
   const [step, setStep] = useState(0)
@@ -18,6 +19,8 @@ export default function Onboarding() {
   const navigate = useNavigate()
 
   const finish = () => {
+    playSound('tap')
+    startBgm()
     init(name.trim() || 'Pelajar', lang ?? 'jp', goal)
     navigate('/')
   }
