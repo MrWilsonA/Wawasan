@@ -9,6 +9,7 @@ import type { ScriptChar } from '@/data/types'
 import type { LangId } from '@/data/types'
 import { useProgress } from '@/store/useProgress'
 import { LANGUAGES } from '@/data/languages'
+import { playSound } from '@/lib/sound'
 
 type TabId = 'hiragana' | 'katakana' | 'kanji' | 'radikal' | 'hangeul' | 'alphabet' | 'sejarah'
 
@@ -368,63 +369,231 @@ function HistoryView({ lang }: { lang: LangId }) {
   }
   return (
     <div className="space-y-5">
-      <Card>
-        <SectionTitle
-          eyebrow="六書 / 六书"
-          title="Enam cara karakter dibentuk"
-          sub="Angka 82% adalah informasi paling berharga di seluruh modul aksara."
-        />
-        <div className="space-y-2.5">
-          {RIKUSHO.map((r) => (
-            <div key={r.name} className="rounded-2xl border-2 border-sand bg-paper p-3.5">
-              <div className="flex flex-wrap items-baseline gap-2">
-                <span className="font-cjk text-[22px] font-bold text-ink">{r.name}</span>
-                <span className="text-[12px] font-bold text-ink-faint">{r.roman}</span>
-                <Chip size="sm" color={r.share >= 80 ? 'amber' : 'ink'}>
-                  {r.share > 0 ? `±${r.share}%` : 'langka'}
-                </Chip>
-                <span className="ml-auto font-display text-[14px] font-extrabold text-ink">{r.label}</span>
-              </div>
-              <p className="mt-1.5 text-[13.5px] text-ink-soft">{r.desc}</p>
-              <div className="mt-1.5 font-cjk text-[17px] text-ink-soft">{r.examples}</div>
-              {r.share > 0 ? (
-                <div className="mt-2 h-2.5 overflow-hidden rounded-full border-2 border-sand bg-shell">
-                  <div
-                    className={cx('h-full rounded-full', r.share >= 80 ? 'bg-amber-300' : 'bg-teal-300')}
-                    style={{ width: `${r.share}%` }}
-                  />
+      <RikushoSection />
+
+      {lang === 'cn' ? (
+        <Card>
+          <SectionTitle eyebrow="3.300 tahun" title="Evolusi Hanzi — lima tahap" />
+          <DataTable
+            head={['Tahap', 'Periode', 'Media', 'Ciri']}
+            rows={HANZI_EVOLUTION.map((e) => [
+              <span key="s">
+                <span className="font-cjk text-[17px] font-bold text-ink">{e.stage}</span>
+                <br />
+                <span className="text-[11px] text-ink-faint">{e.name.split('—')[1]}</span>
+              </span>,
+              e.period,
+              e.medium,
+              e.trait,
+            ])}
+            dense
+          />
+          <Callout kind="warning" title="隶变 lìbiàn — kenapa banyak hanzi tidak mirip apa pun">
+            Di tahap 隶书 (±200 SM), karakter berhenti menjadi gambar dan menjadi simbol. Bentuk diluruskan
+            demi kecepatan tulis dengan kuas di bambu. Kalau sebagian karakter terasa “tidak mirip apa pun”,
+            itu <strong className="text-ink">bukan karena Anda kurang imajinatif</strong> — kemiripannya
+            memang hilang 2.200 tahun lalu, secara sengaja.
+          </Callout>
+        </Card>
+      ) : null}
+
+      {lang === 'jp' ? (
+        <Card>
+          <SectionTitle eyebrow="Jepang" title="Bagaimana aksara tiba di Jepang" />
+          <Timeline items={JP_SCRIPT_TIMELINE} accent="#e8564f" />
+        </Card>
+      ) : null}
+    </div>
+  )
+}
+
+function RikushoSection() {
+  const [expanded, setExpanded] = useState<string | null>('形声')
+
+  const toggle = (name: string) => {
+    playSound('tap')
+    setExpanded((prev) => (prev === name ? null : name))
+  }
+
+  return (
+    <Card>
+      <SectionTitle
+        eyebrow="六書 / 六书 · Enam Metode Pembentukan"
+        title="Bagaimana Karakter Hanzi & Kanji Dibentuk"
+        sub="Bilah persentase di bawah adalah proporsi sebaran populasi seluruh karakter di dunia nyata — 82% adalah rumus Makna + Bunyi."
+      />
+
+      {/* Visual Population Distribution Stack */}
+      <div className="mb-4 rounded-2xl border-2 border-sand bg-cream p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="font-display text-[14px] font-extrabold text-ink">
+            📊 Komposisi Sebaran Populasi Karakter
+          </span>
+          <span className="text-[12px] font-extrabold text-teal-700">
+            Klik kartu di bawah untuk bedah rumus
+          </span>
+        </div>
+
+        <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+          Bilah persentase pada setiap kartu menunjukkan <strong>proporsi jumlah karakter</strong> yang dibentuk dengan metode tersebut di seluruh bahasa Mandarin/Jepang (bukan tingkat kemajuan akun belajar Anda).
+        </p>
+
+        <div className="mt-3 flex h-4 w-full overflow-hidden rounded-full border-2 border-sand bg-shell">
+          <div style={{ width: '82%' }} className="bg-amber-400" title="形声 Fonosemantik (82%)" />
+          <div style={{ width: '13%' }} className="bg-teal-400" title="会意 Ideogram Gabungan (13%)" />
+          <div style={{ width: '4%' }} className="bg-sky-400" title="象形 Piktogram (4%)" />
+          <div style={{ width: '1%' }} className="bg-leaf-400" title="指事 Ideogram Penunjuk (1%)" />
+        </div>
+
+        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4 text-[12px] font-bold text-ink-soft">
+          <div className="flex items-center gap-1.5">
+            <span className="h-3 w-3 shrink-0 rounded-full bg-amber-400" />
+            <span>形声 Fonosemantik (<strong>82%</strong>)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-3 w-3 shrink-0 rounded-full bg-teal-400" />
+            <span>会意 Gabungan (<strong>13%</strong>)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-3 w-3 shrink-0 rounded-full bg-sky-400" />
+            <span>象形 Piktogram (<strong>4%</strong>)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-3 w-3 shrink-0 rounded-full bg-leaf-400" />
+            <span>指事 Penunjuk (<strong>1%</strong>)</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Rikusho Cards List */}
+      <div className="space-y-3">
+        {RIKUSHO.map((r) => {
+          const isSelected = expanded === r.name
+          return (
+            <div
+              key={r.name}
+              className={cx(
+                'rounded-2xl border-2 transition-all duration-200 overflow-hidden',
+                isSelected
+                  ? 'border-teal-500 bg-paper shadow-[0_4px_0_0_var(--color-teal-700)]'
+                  : 'border-sand bg-paper hover:border-teal-300 hover:bg-cream/50 shadow-[0_2px_0_0_var(--color-drop)]',
+              )}
+            >
+              {/* Clickable Header */}
+              <button
+                type="button"
+                onClick={() => toggle(r.name)}
+                className="w-full p-4 text-left select-none cursor-pointer"
+                aria-expanded={isSelected}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-cjk text-[24px] font-bold text-ink">{r.name}</span>
+                  <span className="text-[12.5px] font-bold text-ink-faint">{r.roman}</span>
+                  <Chip size="sm" color={r.share >= 80 ? 'amber' : r.share > 0 ? 'teal' : 'ink'}>
+                    {r.share > 0 ? `Porsi Populasi ±${r.share}%` : 'Sangat Langka'}
+                  </Chip>
+
+                  <div className="ml-auto flex items-center gap-2">
+                    <span className="font-display text-[14px] font-extrabold text-ink hidden sm:inline">
+                      {r.label}
+                    </span>
+                    <span
+                      className={cx(
+                        'flex h-7 w-7 items-center justify-center rounded-xl border-2 transition-transform duration-200',
+                        isSelected ? 'border-teal-300 bg-teal-50 text-teal-700 rotate-180' : 'border-sand bg-shell text-ink-faint',
+                      )}
+                    >
+                      <Icon name="down" size={15} />
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-1 font-display text-[13.5px] font-extrabold text-teal-700 sm:hidden">
+                  {r.label}
+                </div>
+
+                <p className="mt-1 text-[13.5px] text-ink-soft">{r.desc}</p>
+
+                {/* Progress bar per card with explicit label */}
+                {r.share > 0 ? (
+                  <div className="mt-2.5">
+                    <div className="mb-1 flex items-center justify-between text-[11px] font-bold text-ink-faint">
+                      <span>Porsi dalam total karakter:</span>
+                      <span className="font-mono font-extrabold text-ink-soft">{r.share}% dari seluruh aksara</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full border border-sand bg-shell">
+                      <div
+                        className={cx('h-full rounded-full transition-[width] duration-500', r.share >= 80 ? 'bg-amber-400' : 'bg-teal-400')}
+                        style={{ width: `${r.share}%` }}
+                      />
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="mt-2.5 flex items-center justify-between text-[12.5px]">
+                  <div className="font-cjk text-[16px] text-ink font-bold tracking-wider">{r.examples}</div>
+                  <span className="font-extrabold text-teal-600 hover:underline">
+                    {isSelected ? 'Tutup Detail ▲' : 'Buka Penjelasan & Rumus ▼'}
+                  </span>
+                </div>
+              </button>
+
+              {/* Expanded Detail Panel */}
+              {isSelected ? (
+                <div className="border-t-2 border-sand bg-shell/60 p-4 space-y-4 text-[13.5px] animate-[wawa-rise_0.25s_ease-out]">
+                  {/* Detailed Explanation */}
+                  <div className="rounded-xl border-2 border-sand bg-paper p-3.5 leading-relaxed text-ink-soft">
+                    <div className="mb-1.5 flex items-center gap-1.5 font-display text-[14px] font-extrabold text-ink">
+                      <Icon name="info" size={16} className="text-teal-600" />
+                      <span>Konsep & Cara Kerja:</span>
+                    </div>
+                    <p>{r.explanation}</p>
+                    <div className="mt-2.5 rounded-lg border border-amber-200 bg-amber-50/80 p-2.5 text-[12.5px] font-semibold text-amber-950 leading-relaxed">
+                      💡 <strong>Insight Pembelajaran:</strong> {r.keyInsight}
+                    </div>
+                  </div>
+
+                  {/* Character Formula Breakdowns */}
+                  <div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="font-display text-[13.5px] font-extrabold text-ink">
+                        🔍 Bedah Anatomi Contoh Karakter:
+                      </span>
+                      <span className="text-[11.5px] font-bold text-ink-faint">
+                        {r.breakdowns.length} contoh dibedah
+                      </span>
+                    </div>
+
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {r.breakdowns.map((b) => (
+                        <div key={b.char} className="rounded-xl border-2 border-sand bg-paper p-3 shadow-[0_2px_0_0_var(--color-drop)]">
+                          <div className="flex items-center gap-2.5">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-teal-200 bg-teal-50 font-cjk text-[22px] font-bold text-ink">
+                              {b.char}
+                            </span>
+                            <div className="min-w-0">
+                              <div className="font-display text-[13.5px] font-extrabold text-teal-700 truncate">
+                                {b.meaning}
+                              </div>
+                              <div className="text-[11px] font-bold text-ink-faint truncate">
+                                {b.formula}
+                              </div>
+                            </div>
+                          </div>
+                          <p className="mt-2 text-[12px] leading-relaxed text-ink-soft">
+                            {b.note}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </div>
-          ))}
-        </div>
-      </Card>
-
-      {lang === 'cn' ? <Card>
-        <SectionTitle eyebrow="3.300 tahun" title="Evolusi Hanzi — lima tahap" />
-        <DataTable
-          head={['Tahap', 'Periode', 'Media', 'Ciri']}
-          rows={HANZI_EVOLUTION.map((e) => [
-            <span key="s"><span className="font-cjk text-[17px] font-bold text-ink">{e.stage}</span><br /><span className="text-[11px] text-ink-faint">{e.name.split('—')[1]}</span></span>,
-            e.period,
-            e.medium,
-            e.trait,
-          ])}
-          dense
-        />
-        <Callout kind="warning" title="隶变 lìbiàn — kenapa banyak hanzi tidak mirip apa pun">
-          Di tahap 隶书 (±200 SM), karakter berhenti menjadi gambar dan menjadi simbol. Bentuk diluruskan
-          demi kecepatan tulis dengan kuas di bambu. Kalau sebagian karakter terasa “tidak mirip apa pun”,
-          itu <strong className="text-ink">bukan karena Anda kurang imajinatif</strong> — kemiripannya
-          memang hilang 2.200 tahun lalu, secara sengaja.
-        </Callout>
-      </Card> : null}
-
-      {lang === 'jp' ? <Card>
-        <SectionTitle eyebrow="Jepang" title="Bagaimana aksara tiba di Jepang" />
-        <Timeline items={JP_SCRIPT_TIMELINE} accent="#e8564f" />
-      </Card> : null}
-    </div>
+          )
+        })}
+      </div>
+    </Card>
   )
 }
 
@@ -445,6 +614,7 @@ function Timeline({ items, accent }: { items: { period: string; event: string }[
     </ol>
   )
 }
+
 
 /* ------------------------------ Detail ------------------------------ */
 function CharDetail({ char, onClose }: { char: ScriptChar; onClose: () => void }) {

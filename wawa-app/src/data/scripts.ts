@@ -386,11 +386,125 @@ export const SEJONG_QUOTE = {
 }
 
 /* ====================== 六書 / 六书 ====================== */
-export const RIKUSHO = [
-  { name: '象形', roman: 'shōkei / xiàngxíng', label: 'Piktogram', desc: 'Meniru bentuk benda', share: 4, examples: '日 月 山 木 水 人' },
-  { name: '指事', roman: 'shiji / zhǐshì', label: 'Ideogram penunjuk', desc: 'Menunjuk konsep abstrak dengan penanda posisi', share: 1, examples: '一 二 上 下 本 末' },
-  { name: '会意', roman: 'kaii / huìyì', label: 'Ideogram gabungan', desc: 'Dua gambar dijumlahkan menghasilkan makna ketiga', share: 13, examples: '明 林 休 好 家' },
-  { name: '形声', roman: 'keisei / xíngshēng', label: 'Fonosemantik', desc: 'Rumus dua bagian: makna + bunyi', share: 82, examples: '語 清 銅 妈 河 请' },
-  { name: '転注', roman: 'tenchū / zhuǎnzhù', label: 'Perluasan makna', desc: 'Makna diperluas dari karakter yang sudah ada', share: 0, examples: '楽 · 考/老' },
-  { name: '仮借', roman: 'kashaku / jiǎjiè', label: 'Pinjam bunyi', desc: 'Karakter dipinjam untuk bunyinya saja', share: 0, examples: '来 我 其' },
+export type RikushoCategory = {
+  name: string
+  roman: string
+  label: string
+  desc: string
+  share: number
+  examples: string
+  explanation: string
+  keyInsight: string
+  breakdowns: {
+    char: string
+    formula: string
+    meaning: string
+    note: string
+  }[]
+}
+
+export const RIKUSHO: RikushoCategory[] = [
+  {
+    name: '象形',
+    roman: 'shōkei / xiàngxíng',
+    label: 'Piktogram (Tiruan Gambar Fisik)',
+    desc: 'Meniru bentuk fisik benda nyata di alam secara langsung',
+    share: 4,
+    examples: '日 月 山 木 水 人',
+    explanation: 'Hanya sekitar ±4% dari seluruh karakter yang murni merupakan gambar tiruan benda nyata. Karakter-karakter ini adalah balok pembangun paling dasar yang kelak menjadi radikal.',
+    keyInsight: 'Kesalahan paling sering pemula adalah mengira semua 2.000+ karakter harus terlihat seperti gambar benda nyata. Padahal 96% karakter lainnya dibentuk dengan prinsip berbeda!',
+    breakdowns: [
+      { char: '日', formula: 'Gambar piringan matahari bulat', meaning: 'Matahari / Hari', note: 'Awalnya lingkaran dengan titik di tengah (☉), lalu disederhanakan menjadi kotak bersudut untuk kemudahan kuas.' },
+      { char: '月', formula: 'Gambar sabit bulan', meaning: 'Bulan / Masa', note: 'Meniru lengkungan sabit bulan dengan garis di tengah untuk mewakili pantulan cahaya.' },
+      { char: '山', formula: 'Tiga puncak gunung berjejer', meaning: 'Gunung', note: 'Puncak tengah paling tinggi diapit dua lereng samping.' },
+      { char: '木', formula: 'Pohon berakar dan berdahan', meaning: 'Pohon / Kayu', note: 'Garis horizontal adalah dahan, garis vertikal adalah batang, garis miring ke bawah adalah akar.' },
+      { char: '水', formula: 'Aliran sungai dengan tetesan air', meaning: 'Air', note: 'Garis berliku di tengah meniru aliran deras dengan percikan air di sampingnya.' },
+      { char: '人', formula: 'Siluet orang dari tampak samping', meaning: 'Orang / Manusia', note: 'Meniru dua kaki orang yang sedang melangkah maju.' },
+    ],
+  },
+  {
+    name: '指事',
+    roman: 'shiji / zhǐshì',
+    label: 'Ideogram Penunjuk (Simbol Abstrak)',
+    desc: 'Menunjuk konsep abstrak dengan penanda posisi atau garis bantuan',
+    share: 1,
+    examples: '一 二 上 下 本 末 刃',
+    explanation: 'Digunakan untuk konsep abstrak yang tidak memiliki wujud fisik (seperti angka, arah atas/bawah, atau akar pohon). Dibuat dengan menambahkan tanda fokus pada simbol dasar.',
+    keyInsight: 'Melatih kita melihat "titik fokus penanda" pada suatu karakter dasar.',
+    breakdowns: [
+      { char: '上', formula: 'Garis dasar + garis penunjuk di ATAS', meaning: 'Atas / Naik', note: 'Awalnya satu garis horizontal dengan tanda di atasnya.' },
+      { char: '下', formula: 'Garis dasar + garis penunjuk di BAWAH', meaning: 'Bawah / Turun', note: 'Satu garis horizontal dengan tanda penunjuk di bawahnya.' },
+      { char: '本', formula: '木 (pohon) + garis di dasar akar (一)', meaning: 'Akar / Dasar / Asal / Buku', note: 'Garis di bagian bawah pohon menunjuk ke pangkal akar (dasar segalanya).' },
+      { char: '末', formula: '木 (pohon) + garis panjang di ujung atas', meaning: 'Ujung dahan / Akhir', note: 'Garis di puncak dahan pohon menunjuk ke bagian paling ujung/terakhir.' },
+      { char: '刃', formula: '刀 (pisau) + titik di sisi tajam', meaning: 'Mata pisau tajam', note: 'Titik kecil di sisi pisau menunjuk ke bagian bilah yang paling tajam.' },
+      { char: '一 / 二 / 三', formula: 'Batang hitungan horizontal', meaning: 'Satu / Dua / Tiga', note: 'Meniru batang kayu yang dijejerkan untuk berhitung.' },
+    ],
+  },
+  {
+    name: '会意',
+    roman: 'kaii / huìyì',
+    label: 'Ideogram Gabungan (Logika Gambar)',
+    desc: 'Dua atau lebih gambar dijumlahkan untuk menghasilkan makna konsep baru',
+    share: 13,
+    examples: '明 林 休 好 家 森',
+    explanation: 'Dua elemen piktogram digabungkan agar akal kita menyimpulkan makna baru dari interaksi keduanya.',
+    keyInsight: 'Karakter jenis ini sangat mudah diingat dengan membayangkan cerita visual yang terjadi di antara kedua unsurnya.',
+    breakdowns: [
+      { char: '明', formula: '日 (matahari) + 月 (bulan)', meaning: 'Terang / Jelas', note: 'Dua benda paling terang di langit digabung menghasilkan makna cahaya terang benderang.' },
+      { char: '休', formula: '人 (orang) + 木 (pohon)', meaning: 'Istirahat / Libur', note: 'Sosok orang bersandar santai di batang pohon rindang = beristirahat.' },
+      { char: '林', formula: '木 (pohon) + 木 (pohon)', meaning: 'Hutan kecil / Rimbun', note: 'Dua pohon berdampingan membentuk pepohonan rimbun.' },
+      { char: '森', formula: '木 + 木 + 木 (tiga pohon lebat)', meaning: 'Hutan rimba / Belantara', note: 'Tiga pohon bertumpuk mewakili rimba lebat.' },
+      { char: '好', formula: '女 (perempuan) + 子 (anak)', meaning: 'Baik / Suka / Indah', note: 'Kasih sayang ibu merawat anaknya melambangkan kebaikan dan cinta.' },
+      { char: '家', formula: '宀 (atap rumah) + 豕 (babi ternak)', meaning: 'Rumah / Keluarga', note: 'Di zaman kuno, memiliki ternak babi di bawah naungan atap adalah simbol kesejahteraan rumah tangga.' },
+    ],
+  },
+  {
+    name: '形声',
+    roman: 'keisei / xíngshēng',
+    label: 'Fonosemantik (Makna + Bunyi) — 82% Populasi!',
+    desc: 'Rumus dua bagian: Radikal Makna (Semantik) + Bagian Bunyi (Fonetik)',
+    share: 82,
+    examples: '語 清 晴 情 媽 銅 河 請',
+    explanation: 'INILAH KUNCI UTAMA MENGUASAI RIBUAN KARAKTER! Sebanyak 82% dari seluruh karakter Hanzi & Kanji diciptakan dengan rumus ini. Satu sisi memberi petunjuk MAKNA (kategori arti), dan sisi lainnya memberi petunjuk CARA BACA (bunyi).',
+    keyInsight: 'Anda tidak perlu menghafal 2.000 karakter satu per satu! Begitu Anda tahu bahwa komponen 青 memberi bunyi "qīng" (Jepang: "SEI"), Anda otomatis bisa menebak cara baca 清 (jernih), 晴 (cerah), 情 (perasaan), 請 (meminta), 蜻 (capung)!',
+    breakdowns: [
+      { char: '清', formula: '氵 (air/makna) + 青 (qīng/bunyi)', meaning: 'Jernih / Bening / Bersih', note: 'Radikal air (氵) memberi makna air bersih; bagian 青 memberi pelafalan "qīng" (Jepang: SEI/SHŌ).' },
+      { char: '晴', formula: '日 (matahari/makna) + 青 (qīng/bunyi)', meaning: 'Cuaca cerah / Terang', note: 'Radikal matahari (日) memberi makna sinar cerah; bagian 青 memberi bunyi "qíng" (Jepang: SEI).' },
+      { char: '情', formula: '忄 (hati/makna) + 青 (qīng/bunyi)', meaning: 'Perasaan / Emosi', note: 'Radikal hati (忄) memberi makna emosi batin; bagian 青 memberi bunyi "qíng" (Jepang: JŌ/SEI).' },
+      { char: '媽 / 妈', formula: '女 (wanita/makna) + 馬/马 (mǎ/bunyi)', meaning: 'Ibu / Mama', note: 'Radikal wanita (女) memberi makna perempuan; bagian 馬 (kuda/mǎ) dipinjam murni untuk bunyinya "mā".' },
+      { char: '河', formula: '氵 (air/makna) + 可 (kě/hé/bunyi)', meaning: 'Sungai', note: 'Radikal air (氵) memberi makna perairan; bagian 可 memberi petunjuk bunyi kuno "hé" (Jepang: KA).' },
+      { char: '銅 / 铜', formula: '金 (logam/makna) + 同 (tóng/bunyi)', meaning: 'Tembaga / Perunggu', note: 'Radikal logam (金) memberi makna material; bagian 同 (tóng) memberi cara baca yang persis sama.' },
+      { char: '語 / 语', formula: '言 (kata/makna) + 吾 (wú/bunyi)', meaning: 'Bahasa / Kata', note: 'Radikal ucapan (言) memberi makna percakapan; bagian 吾 memberi bunyi (Jepang: GO, Mandarin: yǔ).' },
+    ],
+  },
+  {
+    name: '転注',
+    roman: 'tenchū / zhuǎnzhù',
+    label: 'Perluasan Makna (Metafora & Polisemi)',
+    desc: 'Makna karakter diperluas ke konsep turunan baru melalui kiasan / analogi',
+    share: 0,
+    examples: '楽 · 考 · 老',
+    explanation: 'Karakter yang sudah ada dipakai untuk konsep turunan yang berakar sama. Merupakan cara bahasa mengembangkan konsep fisik konkret menjadi konsep mental/abstrak.',
+    keyInsight: 'Menunjukkan kekayaan filosofis bahwa kata-kata dalam bahasa Asia Timur berkembang secara organik dari makna fisik ke makna kiasan.',
+    breakdowns: [
+      { char: '楽 / 乐', formula: 'Musik (alat musik drum) → Kesenangan / Santai', meaning: 'Musik / Senang / Nyaman', note: 'Awalnya gambar instrumen musik, lalu diperluas maknanya menjadi perasaan gembira dan nyaman yang ditimbulkan oleh musik.' },
+      { char: '考', formula: 'Orang tua bijak → Menyelidiki / Berpikir matang', meaning: 'Berpikir / Ujian / Meneliti', note: 'Memiliki akar yang sama dengan 老 (tua), diperluas maknanya menjadi perenungan panjang orang yang berilmu/berumur.' },
+    ],
+  },
+  {
+    name: '仮借',
+    roman: 'kashaku / jiǎjiè',
+    label: 'Pinjam Bunyi (Fonetik Murni)',
+    desc: 'Karakter bergambar dipinjam murni untuk mewakili bunyi kata abstrak',
+    share: 0,
+    examples: '我 来 其 豆',
+    explanation: 'Ketika orang Tiongkok kuno ingin menuliskan kata abstrak (seperti "aku", "datang", atau kata tunjuk) yang mustahil digambar, mereka meminjam karakter benda fisik lain yang bunyinya kebetulan sama persis.',
+    keyInsight: 'Mirip seperti orang zaman sekarang mengetik angka "2" untuk mewakili kata "to/too" dalam pesan singkat — murni mewakili bunyi tanpa membawa arti gambar aslinya.',
+    breakdowns: [
+      { char: '我', formula: 'Aslinya gambar senjata tombak bergigi kuno', meaning: 'Saya / Aku', note: 'Karena kata untuk "saya" (wǒ/nga) berbunyi mirip nama tombak ini, karakternya dipinjam selamanya untuk kata ganti "aku".' },
+      { char: '来 / 來', formula: 'Aslinya gambar tanaman gandum berbiji', meaning: 'Datang', note: 'Kata untuk "gandum" dan "datang" di zaman kuno berbunyi sama (lái), sehingga gambarnya dipinjam untuk arti datang.' },
+      { char: '其', formula: 'Aslinya gambar keranjang tapis bambu (箕)', meaning: 'Dia / Itu / Miliknya', note: 'Dipinjam bunyinya untuk kata ganti / partikel penunjuk tata bahasa abstrak.' },
+    ],
+  },
 ]
+
