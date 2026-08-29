@@ -437,7 +437,7 @@ export const RIKUSHO: RikushoCategory[] = [
       { char: '本', formula: '木 (pohon) + garis di dasar akar (一)', meaning: 'Akar / Dasar / Asal / Buku', note: 'Garis di bagian bawah pohon menunjuk ke pangkal akar (dasar segalanya).' },
       { char: '末', formula: '木 (pohon) + garis panjang di ujung atas', meaning: 'Ujung dahan / Akhir', note: 'Garis di puncak dahan pohon menunjuk ke bagian paling ujung/terakhir.' },
       { char: '刃', formula: '刀 (pisau) + titik di sisi tajam', meaning: 'Mata pisau tajam', note: 'Titik kecil di sisi pisau menunjuk ke bagian bilah yang paling tajam.' },
-      { char: '一 / 二 / 三', formula: 'Batang hitungan horizontal', meaning: 'Satu / Dua / Tiga', note: 'Meniru batang kayu yang dijejerkan untuk berhitung.' },
+      { char: '一・二・三', formula: 'Batang hitungan horizontal', meaning: 'Satu / Dua / Tiga', note: 'Meniru batang kayu yang dijejerkan untuk berhitung.' },
     ],
   },
   {

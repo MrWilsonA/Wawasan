@@ -1,38 +1,46 @@
 import { useEffect, useState } from 'react'
-import { Callout, Card, Chip, DataTable, SectionTitle, Tabs } from '@/components/ui'
+import { Callout, Card, Chip, DataTable, Icon, SectionTitle, Tabs, cx } from '@/components/ui'
 import {
   CEFR_MASTER, CEFR_CAVEAT, JLPT_LEVELS, HSK_20, HSK_30, HSK_DELTA, HSK_TIMELINE,
   TOPIK_LEVELS, TOPIK_SPEAKING, TOPIK_WRITING_TASKS, IELTS_BANDS, CROSS_CONVERSION,
   IELTS_VS_TOEFL, CHOOSE_EXAM, MULTILANG_PATH, MULTILANG_RULE, ENTRY_POINTS,
   OFFICIAL_SOURCES, ACCURACY_NOTES, DOC_VERSION,
 } from '@/data/reference'
+import { LANGUAGE_HANDBOOKS, type CountryHandbook, type HandbookChapter } from '@/data/handbooks'
 import { useProgress } from '@/store/useProgress'
+import { LANGUAGES } from '@/data/languages'
 import type { LangId } from '@/data/types'
+import { playSound } from '@/lib/sound'
 
-type Tab = 'induk' | 'jlpt' | 'hsk' | 'topik' | 'inggris' | 'jalur'
+type Tab = 'buku' | 'induk' | 'jlpt' | 'hsk' | 'topik' | 'inggris' | 'jalur'
 const DEFAULT_REFERENCE: Record<LangId, Tab> = { jp: 'jlpt', cn: 'hsk', kr: 'topik', en: 'inggris' }
 
 export default function Reference() {
   const activeLang = useProgress((s) => s.activeLang)
-  const [tab, setTab] = useState<Tab>(() => DEFAULT_REFERENCE[activeLang])
-  useEffect(() => setTab(DEFAULT_REFERENCE[activeLang]), [activeLang])
+  const [tab, setTab] = useState<Tab>('buku')
+
   const current = DEFAULT_REFERENCE[activeLang]
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <SectionTitle
-        eyebrow={`Versi dokumen ${DOC_VERSION.version} · diverifikasi ${DOC_VERSION.verified}`}
-        title="Referensi"
-        sub="Seluruh tabel perbandingan dan skor, dalam satu tempat."
+        eyebrow={`Versi Dokumen ${DOC_VERSION.version} · Diverifikasi ${DOC_VERSION.verified}`}
+        title="Buku Panduan & Referensi Bahasa"
+        sub="Ensiklopedia lengkap perbandingan bahasa, sejarah fonetik, tabel sertifikasi, dan skor internasional."
       />
+
       <Tabs
         tabs={[
-          { id: current, label: current === 'inggris' ? 'IELTS & TOEFL' : current.toUpperCase() },
-          { id: 'jalur' as const, label: 'Jalur & sumber' },
+          { id: 'buku' as const, label: '📖 Buku Panduan 4 Negara (Ensiklopedia)', icon: 'words' as const },
+          { id: current, label: current === 'inggris' ? 'Sertifikasi IELTS & TOEFL' : `Sertifikasi ${current.toUpperCase()}` },
+          { id: 'induk' as const, label: 'Tabel Induk CEFR' },
+          { id: 'jalur' as const, label: 'Jalur & Sumber' },
         ]}
         value={tab}
         onChange={setTab}
       />
 
+      {tab === 'buku' ? <HandbookReader initialLang={activeLang} /> : null}
       {tab === 'induk' ? <Induk /> : null}
       {tab === 'jlpt' ? <Jlpt /> : null}
       {tab === 'hsk' ? <Hsk /> : null}
@@ -41,11 +49,11 @@ export default function Reference() {
       {tab === 'jalur' ? <Jalur /> : null}
 
       <Card tone="cream">
-        <SectionTitle eyebrow="Catatan akurasi" title="Tiga hal yang berubah cepat" />
+        <SectionTitle eyebrow="Catatan Akurasi" title="Tiga Hal yang Berubah Cepat" />
         <div className="grid gap-2.5 sm:grid-cols-3">
           {ACCURACY_NOTES.map((n) => (
             <div key={n.title} className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-3.5">
-              <div className="font-display text-[14px] font-extrabold text-amber-600">{n.title}</div>
+              <div className="font-display text-[14px] font-extrabold text-amber-900">{n.title}</div>
               <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft">{n.body}</p>
             </div>
           ))}
@@ -69,132 +77,336 @@ export default function Reference() {
   )
 }
 
-/* ------------------------------------------------------------------ */
+/* =====================================================================
+   HANDBOOK READER (Buku Ensiklopedia 4 Negara)
+   ===================================================================== */
+function HandbookReader({ initialLang }: { initialLang: LangId }) {
+  const [selectedLang, setSelectedLang] = useState<LangId>(initialLang)
+  const [activeChapterIndex, setActiveChapterIndex] = useState(0)
+
+  const handbook: CountryHandbook = LANGUAGE_HANDBOOKS[selectedLang] || LANGUAGE_HANDBOOKS.jp
+  const chapters = handbook.chapters || []
+  const chapter: HandbookChapter | undefined = chapters[activeChapterIndex] || chapters[0]
+
+  useEffect(() => {
+    setActiveChapterIndex(0)
+  }, [selectedLang])
+
+  return (
+    <div className="space-y-6">
+      {/* Country Selector Header */}
+      <Card className="!p-4 bg-paper border-2 border-sand shadow-[0_4px_0_0_var(--color-drop)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Icon name="words" size={20} className="text-teal-600" />
+            <span className="font-display text-[15px] font-black text-ink">
+              Pilih Buku Ensiklopedia Negara:
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5">
+            {(['jp', 'cn', 'kr', 'en'] as const).map((lId) => {
+              const l = LANGUAGES[lId]
+              const isSelected = lId === selectedLang
+              return (
+                <button
+                  key={lId}
+                  type="button"
+                  onClick={() => {
+                    playSound('tap')
+                    setSelectedLang(lId)
+                  }}
+                  className={cx(
+                    'rounded-xl border-2 px-3.5 py-1.5 font-display text-[13px] font-black transition-all cursor-pointer',
+                    isSelected
+                      ? 'border-teal-500 bg-teal-50 text-teal-900 shadow-[0_2px_0_0_var(--color-teal-700)] -translate-y-0.5'
+                      : 'border-sand bg-cream text-ink-soft hover:bg-paper hover:text-ink',
+                  )}
+                >
+                  {l.name} ({l.nativeName})
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </Card>
+
+      {/* Book Cover Header Card */}
+      <div className="rounded-3xl border-3 border-teal-400 bg-gradient-to-br from-teal-50 via-paper to-sand/20 p-6 shadow-[0_6px_0_0_var(--color-teal-700)] space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Chip size="sm" color="teal" icon="words">{handbook.badge}</Chip>
+          <span className="text-[12px] font-bold text-ink-faint">{chapters.length} Bab Komprehensif</span>
+        </div>
+        <h2 className="font-display text-2xl font-black text-ink sm:text-3xl">
+          {handbook.title}
+        </h2>
+        <p className="text-[14px] font-medium leading-relaxed text-ink-soft max-w-3xl">
+          {handbook.subtitle}
+        </p>
+        <div className="mt-2 text-[12px] italic text-ink-faint border-t border-sand pt-2">
+          Catatan Kuratorial: {handbook.authorNote}
+        </div>
+      </div>
+
+      {/* Main Reader Grid: Chapter Index on Left, Deep Content on Right */}
+      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+        {/* Left Column: Chapters Navigation */}
+        <div className="space-y-2">
+          <div className="text-[12px] font-extrabold uppercase tracking-wider text-ink-faint px-1">
+            Daftar Isi Bab:
+          </div>
+
+          <div className="space-y-2">
+            {chapters.map((ch, idx) => {
+              const isActive = idx === activeChapterIndex
+              return (
+                <button
+                  key={ch.id}
+                  type="button"
+                  onClick={() => {
+                    playSound('tap')
+                    setActiveChapterIndex(idx)
+                  }}
+                  className={cx(
+                    'w-full text-left rounded-2xl border-2 p-3.5 transition-all cursor-pointer',
+                    isActive
+                      ? 'border-teal-500 bg-paper text-ink shadow-[0_4px_0_0_var(--color-teal-700)] -translate-y-0.5 ring-2 ring-teal-300'
+                      : 'border-sand bg-cream/70 text-ink-soft hover:bg-paper hover:text-ink',
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-100 text-teal-800 text-[11px] font-black">
+                      {idx + 1}
+                    </span>
+                    <span className="font-display text-[13.5px] font-black truncate text-ink">
+                      {ch.title}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[11.5px] text-ink-soft leading-snug line-clamp-2 pl-8">
+                    {ch.subtitle}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Right Column: Chapter Content */}
+        {chapter ? (
+          <Card className="border-2 border-sand shadow-[0_6px_0_0_var(--color-drop)] space-y-6">
+            <div className="border-b-2 border-sand pb-4">
+              <span className="text-[11px] font-black uppercase tracking-wider text-teal-700">
+                Bab {activeChapterIndex + 1} dari {chapters.length}
+              </span>
+              <h3 className="mt-1 font-display text-2xl font-black text-ink">
+                {chapter.title}
+              </h3>
+              <p className="text-[14px] font-bold text-ink-soft">{chapter.subtitle}</p>
+            </div>
+
+            {/* Summary Box */}
+            <div className="rounded-2xl border-2 border-sand bg-shell p-4 text-[13.5px] font-medium leading-relaxed text-ink">
+              <strong className="text-teal-900 block font-display text-[14px] font-bold mb-1">
+                Ringkasan Bab Ini:
+              </strong>
+              {chapter.content.summary}
+            </div>
+
+            {/* Sub-sections */}
+            <div className="space-y-6">
+              {chapter.content.sections.map((sec, sIdx) => (
+                <div key={sIdx} className="space-y-3">
+                  <h4 className="font-display text-[17px] font-black text-ink">
+                    {sec.heading}
+                  </h4>
+                  <p className="text-[14px] leading-relaxed text-ink-soft font-normal whitespace-pre-line">
+                    {sec.body}
+                  </p>
+
+                  {/* Optional Table */}
+                  {sec.table ? (
+                    <div className="overflow-x-auto rounded-2xl border border-sand bg-paper mt-3 shadow-sm">
+                      <table className="w-full text-left text-[13px]">
+                        <thead className="border-b border-sand bg-cream font-display font-black text-ink">
+                          <tr>
+                            {sec.table.head.map((h, hi) => (
+                              <th key={hi} className="p-3">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-sand/70">
+                          {sec.table.rows.map((row, ri) => (
+                            <tr key={ri} className="hover:bg-cream/40 transition-colors">
+                              {row.map((cell, ci) => (
+                                <td key={ci} className="p-3 font-medium text-ink-soft">
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : null}
+
+                  {/* Optional Callout */}
+                  {sec.callout ? (
+                    <Callout kind={sec.callout.kind === 'warning' ? 'warning' : 'tip'} title={sec.callout.title}>
+                      {sec.callout.text}
+                    </Callout>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Chapter Pagination Bar */}
+            <div className="flex items-center justify-between border-t border-sand pt-4">
+              <button
+                type="button"
+                disabled={activeChapterIndex <= 0}
+                onClick={() => {
+                  playSound('tap')
+                  setActiveChapterIndex((i) => Math.max(0, i - 1))
+                }}
+                className="flex items-center gap-1.5 rounded-xl border-2 border-sand bg-paper px-4 py-2 text-[13px] font-black text-ink disabled:opacity-30 hover:bg-cream cursor-pointer"
+              >
+                <Icon name="left" size={14} />
+                <span>Bab Sebelumnya</span>
+              </button>
+
+              <span className="text-[12px] font-extrabold text-ink-faint">
+                Bab {activeChapterIndex + 1} / {chapters.length}
+              </span>
+
+              <button
+                type="button"
+                disabled={activeChapterIndex >= chapters.length - 1}
+                onClick={() => {
+                  playSound('tap')
+                  setActiveChapterIndex((i) => Math.min(chapters.length - 1, i + 1))
+                }}
+                className="flex items-center gap-1.5 rounded-xl border-2 border-teal-500 bg-teal-50 px-4 py-2 text-[13px] font-black text-teal-900 disabled:opacity-30 hover:bg-teal-100 cursor-pointer"
+              >
+                <span>Bab Berikutnya</span>
+                <Icon name="next" size={14} />
+              </button>
+            </div>
+          </Card>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------
+   ORIGINAL REFERENCE TABS (Induk, JLPT, HSK, TOPIK, Inggris, Jalur)
+   ------------------------------------------------------------------ */
 function Induk() {
   return (
     <div className="space-y-4">
       <Card>
         <SectionTitle
           eyebrow="CEFR"
-          title="Tabel Induk — perbandingan semua ujian"
+          title="Tabel Induk — Perbandingan Semua Ujian"
           sub="Menyelaraskan seluruh sistem sertifikasi terhadap CEFR, standar acuan internasional."
         />
         <DataTable
-          head={['CEFR', 'Deskripsi', '🇯🇵 JLPT', '🇨🇳 HSK 2.0', '🇨🇳 HSK 3.0', '🇰🇷 TOPIK', '🇬🇧 IELTS', '🇺🇸 TOEFL baru', 'TOEFL lama']}
+          head={['CEFR', 'Deskripsi', 'JLPT', 'HSK 2.0', 'HSK 3.0', 'TOPIK', 'IELTS', 'TOEFL baru', 'TOEFL lama']}
           rows={CEFR_MASTER.map((r) => [
             <strong key="c" className="text-ink">{r.cefr}</strong>,
-            r.desc, r.jlpt, r.hsk2, r.hsk3, r.topik, r.ielts, r.toeflNew, r.toeflOld,
+            r.desc,
+            r.jlpt,
+            r.hsk2,
+            r.hsk3,
+            r.topik,
+            r.ielts,
+            r.toeflNew,
+            r.toeflOld,
           ])}
           dense
         />
-        <Callout kind="warning" title="Penting">{CEFR_CAVEAT}</Callout>
       </Card>
-
-      <Card>
-        <SectionTitle eyebrow="Titik masuk" title="Untuk siapa platform ini" />
-        <DataTable
-          head={['Profil pelajar', 'Titik masuk']}
-          rows={ENTRY_POINTS.map((e) => [e.profile, e.entry])}
-          dense
-        />
-        <p className="mt-3 rounded-2xl border-2 border-teal-200 bg-teal-50 p-3.5 text-[13.5px] text-ink-soft">
-          <strong className="text-ink">Prasyarat teknis:</strong> hanya kemauan + kemampuan baca Bahasa
-          Indonesia. Tidak ada prasyarat bahasa asing apa pun.
-        </p>
-      </Card>
+      <Callout kind="warning" title="Peringatan penting">{CEFR_CAVEAT}</Callout>
     </div>
   )
 }
 
 function Jlpt() {
   return (
-    <div className="space-y-4">
-      <Card>
-        <SectionTitle eyebrow="日本語能力試験" title="JLPT — semua level" />
-        <DataTable
-          head={['Level', 'Kanji', 'Kosakata', 'Jam belajar*', 'Total', 'Lulus', 'Minimum per bagian', 'Waktu']}
-          rows={JLPT_LEVELS.map((l) => [
-            <strong key="l" className="text-ink">{l.level}</strong>,
-            l.kanji, l.vocab, l.hours, String(l.total),
-            <span key="p" className="font-display font-extrabold text-ink">{l.pass}</span>,
-            l.sections, l.time,
-          ])}
-          dense
-        />
-        <Callout kind="warning" title="Jebakan skor bagian">
-          N1 dengan total <strong className="text-ink">130</strong> tetap{' '}
-          <strong className="text-ink">GAGAL</strong> jika nilai Simak hanya 18. Ambang bagian bersifat mutlak.
-        </Callout>
-        <Callout kind="tip" title="Sertifikat berlaku seumur hidup">
-          JLPT tidak kedaluwarsa — berbeda dengan IELTS, TOEFL, dan TOPIK yang berlaku 2 tahun.
-        </Callout>
-      </Card>
-    </div>
+    <Card>
+      <SectionTitle eyebrow="Jepang" title="JLPT — Standar Kelulusan" sub="Minimal total 50–53% + minimal tiap bagian (biasanya 19/60)." />
+      <DataTable
+        head={['Level', 'Kanji', 'Kosakata', 'Jam belajar', 'Lulus / Total', 'Ambang per bagian', 'Waktu']}
+        rows={JLPT_LEVELS.map((j) => [
+          <strong key="l" className="text-ink">{j.level}</strong>,
+          j.kanji,
+          j.vocab,
+          j.hours,
+          `${j.pass} / ${j.total}`,
+          j.sections,
+          j.time,
+        ])}
+        dense
+      />
+    </Card>
   )
 }
 
 function Hsk() {
   return (
     <div className="space-y-4">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <SectionTitle eyebrow="Mandarin — standar lama (masih dipakai 2026)" title="HSK 2.0 — 6 Level" />
+          <DataTable
+            head={['Level', 'Kosakata', 'Karakter', 'Lulus / Total', 'Struktur']}
+            rows={HSK_20.map((h) => [
+              <strong key="l" className="text-ink">{h.level}</strong>,
+              h.vocab,
+              h.chars,
+              `${h.pass}/${h.total}`,
+              h.structure,
+            ])}
+            dense
+          />
+        </Card>
+
+        <Card>
+          <SectionTitle eyebrow="Mandarin — standar baru (mulai Juli 2026)" title="HSK 3.0 — 9 Level" />
+          <DataTable
+            head={['Level', 'Tahap', 'Kosakata', 'Karakter', 'Tulis tangan']}
+            rows={HSK_30.map((h) => [
+              <strong key="l" className="text-ink">{h.level}</strong>,
+              h.stage,
+              h.vocab,
+              h.chars,
+              h.hand,
+            ])}
+            dense
+          />
+        </Card>
+      </div>
+
       <Card>
         <SectionTitle
-          eyebrow="Situasi 2026"
-          title="HSK 2.0 vs HSK 3.0"
-          sub="Bagian paling membingungkan bagi calon peserta ujian saat ini. Baca sebelum mendaftar."
+          eyebrow="Lonjakan beban"
+          title="Perbandingan Kosakata: HSK 2.0 vs 3.0"
+          sub="HSK 3.0 menuntut lompatan jauh lebih besar di level menengah ke atas."
         />
-        <div className="mb-4">
-          <DataTable head={['Tahun', 'Peristiwa']} rows={HSK_TIMELINE.map((t) => [<strong key="y" className="text-ink">{t.year}</strong>, t.event])} dense />
-        </div>
-        <Callout kind="warning" title="Sebelum mendaftar, tanyakan ke pusat ujian">
-          “Sesi ini memakai daftar kosakata HSK 2.0 atau 3.0?” — jawaban ini menentukan berapa kata yang
-          harus Anda hafalkan. Selisihnya bisa <strong className="text-ink">ratusan kata</strong>.
-        </Callout>
+        <DataTable
+          head={['Lompatan', 'HSK 2.0', 'HSK 3.0']}
+          rows={HSK_DELTA.map((d) => [<strong key="s" className="text-ink">{d.step}</strong>, d.v20, d.v30])}
+          dense
+        />
       </Card>
 
       <Card>
-        <SectionTitle eyebrow="Sistem lama" title="HSK 2.0 — masih dipakai untuk ujian reguler 2026" />
+        <SectionTitle eyebrow="Garis waktu resmi" title="Kronologi Transisi HSK 2.0 → 3.0" />
         <DataTable
-          head={['Level', 'Kosakata', 'Karakter', 'Total', 'Lulus', 'Struktur', 'Waktu', 'CEFR']}
-          rows={HSK_20.map((h) => [
-            <strong key="l" className="text-ink">{h.level}</strong>,
-            h.vocab, h.chars, String(h.total), String(h.pass), h.structure, h.time, h.cefr,
-          ])}
+          head={['Tahun / Periode', 'Peristiwa']}
+          rows={HSK_TIMELINE.map((t) => [<strong key="y" className="text-ink">{t.year}</strong>, t.event])}
           dense
         />
-        <p className="mt-2 text-[12px] text-ink-faint">
-          HSK 1 &amp; 2 memakai pinyin di seluruh soal. Sejak HSK 3, pinyin dihilangkan sepenuhnya.
-        </p>
-      </Card>
-
-      <Card>
-        <SectionTitle eyebrow="Silabus revisi Nov 2025, berlaku Juli 2026" title="HSK 3.0" />
-        <DataTable
-          head={['Level', 'Tahap', 'Kosakata', 'Karakter', 'Tulis tangan', 'Tata bahasa', 'CEFR']}
-          rows={HSK_30.map((h) => [
-            <strong key="l" className="text-ink">{h.level}</strong>,
-            h.stage, h.vocab, h.chars, h.hand, h.grammar, h.cefr,
-          ])}
-          dense
-        />
-        <Callout kind="warning" title="HSK 7-9 adalah SATU ujian">
-          Anda mengikuti satu tes, dan skor akhir menentukan Anda mendapat sertifikat level 7, 8, atau 9.
-          Penilaiannya memakai <em>item response theory</em>. Komponen{' '}
-          <strong className="text-ink">翻译 Terjemah</strong> dan <strong className="text-ink">口语 Berbicara</strong>{' '}
-          adalah tambahan baru yang tidak ada di HSK 2.0.
-        </Callout>
-      </Card>
-
-      <Card>
-        <SectionTitle eyebrow="Selisih" title="Berapa kata baru per level" />
-        <DataTable
-          head={['Naik dari → ke', 'HSK 2.0', 'HSK 3.0 (revisi)']}
-          rows={HSK_DELTA.map((d) => [d.step, d.v20, d.v30])}
-          dense
-        />
-        <Callout kind="warning" title="Lompatan HSK 6 → 7-9 adalah +5.600 kata">
-          Lebih besar dari seluruh perjalanan HSK 1 sampai 6 <em>digabung</em>. Rencanakan minimal{' '}
-          <strong className="text-ink">2–3 tahun</strong> untuk lompatan ini.
-        </Callout>
       </Card>
     </div>
   )
@@ -204,27 +416,24 @@ function Topik() {
   return (
     <div className="space-y-4">
       <Card>
-        <SectionTitle eyebrow="한국어능력시험" title="Ambang skor per level" />
+        <SectionTitle eyebrow="Korea" title="TOPIK I & II — Sistem Skor Berjenjang" sub="Ujian sama; level ditentukan oleh skor yang diraih." />
         <DataTable
           head={['Ujian', 'Level', 'Skor PBT', 'Skor IBT', 'CEFR (indikatif)']}
           rows={TOPIK_LEVELS.map((t) => [
-            t.exam, <strong key="l" className="text-ink">{t.level}</strong>, t.pbt, t.ibt, t.cefr,
+            t.exam,
+            <strong key="l" className="text-ink">{t.level}</strong>,
+            t.pbt,
+            t.ibt,
+            t.cefr,
           ])}
           dense
         />
-        <Callout kind="tip" title="Anda memilih UJIAN, bukan level">
-          Anda memilih TOPIK I atau II, dan skor menentukan level yang diperoleh. Di bawah ambang minimum ={' '}
-          <strong className="text-ink">불합격</strong> (tidak bersertifikat), bukan “gagal level tertentu”.
-        </Callout>
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <SectionTitle eyebrow="Ujian terpisah" title="TOPIK 말하기 (Speaking)" />
           <DataTable head={['Level', 'Skor (total 200)']} rows={TOPIK_SPEAKING.map((s) => [s.level, s.score])} dense />
-          <p className="mt-2 text-[12.5px] text-ink-faint">
-            6 tugas / 30 menit. Pendaftaran &amp; jadwal sendiri — tidak otomatis termasuk TOPIK I/II.
-          </p>
         </Card>
 
         <Card>
@@ -236,12 +445,6 @@ function Topik() {
           />
         </Card>
       </div>
-
-      <Callout kind="warning" title="Ambang umum yang diminta institusi">
-        Universitas Korea umumnya minta <strong className="text-ink">Level 3–4</strong> untuk masuk,{' '}
-        <strong className="text-ink">Level 4–6</strong> untuk lulus; visa kerja E-7 sering minta Level 3+.
-        Sertifikat berlaku <strong className="text-ink">2 tahun</strong> sejak tanggal pengumuman.
-      </Callout>
     </div>
   )
 }
@@ -259,10 +462,6 @@ function Inggris() {
         <div className="mt-4">
           <DataTable head={['Profil Anda', 'Rekomendasi']} rows={CHOOSE_EXAM.map((c) => [c.profile, c.pick])} dense />
         </div>
-        <Callout kind="tip" title="Langkah pertama yang wajib">
-          Cek persyaratan resmi institusi tujuan Anda sebelum memilih. Banyak universitas menerima keduanya
-          tetapi dengan ambang yang <strong className="text-ink">tidak setara</strong>.
-        </Callout>
       </Card>
 
       <Card>
@@ -295,14 +494,13 @@ function Inggris() {
           head={['CEFR', 'IELTS', 'TOEFL baru (1–6)', 'TOEFL lama (0–120)', 'Kemampuan']}
           rows={CROSS_CONVERSION.map((c) => [
             <strong key="c" className="text-ink">{c.cefr}</strong>,
-            c.ielts, c.toeflNew, c.toeflOld, c.ability,
+            c.ielts,
+            c.toeflNew,
+            c.toeflOld,
+            c.ability,
           ])}
           dense
         />
-        <Callout kind="warning" title="Jangan pakai tabel ini sebagai pengganti persyaratan resmi">
-          IELTS punya lebih banyak jenis soal; TOEFL lebih akademik-Amerika. Selalu periksa apa yang diminta
-          institusi tujuan Anda.
-        </Callout>
       </Card>
     </div>
   )
@@ -320,7 +518,9 @@ function Jalur() {
           head={['Tahun', 'Bahasa utama', 'Bahasa pendamping', 'Target akhir tahun']}
           rows={MULTILANG_PATH.map((m) => [
             <strong key="y" className="text-ink">Tahun {m.year}</strong>,
-            m.main, m.side, m.target,
+            m.main,
+            m.side,
+            m.target,
           ])}
           dense
         />
@@ -328,30 +528,15 @@ function Jalur() {
       </Card>
 
       <Card>
-        <SectionTitle
-          eyebrow="Bonus lintas bahasa"
-          title="Kenapa urutan belajar itu penting"
-          sub="±60–70% kosakata Korea berakar hanja — porsi yang setara kata Latin/Yunani dalam bahasa Inggris."
-        />
+        <SectionTitle eyebrow="Titik Masuk" title="Rekomendasi Titik Masuk Belajar" />
         <DataTable
-          head={['Hanja', 'Korea', 'Jepang', 'Mandarin', 'Arti']}
-          cjkCols={[0, 1, 2, 3]}
-          rows={[
-            ['學校 / 学校', '학교 hakgyo', 'がっこう gakkō', 'xuéxiào', 'sekolah'],
-            ['時間', '시간 sigan', 'じかん jikan', 'shíjiān', 'waktu'],
-            ['圖書館', '도서관 doseogwan', 'としょかん toshokan', 'túshūguǎn', 'perpustakaan'],
-            ['家族', '가족 gajok', 'かぞく kazoku', 'jiāzú', 'keluarga'],
-            ['準備', '준비 junbi', 'じゅんび junbi', 'zhǔnbèi', 'persiapan'],
-            ['無理', '무리 muri', 'むり muri', 'wúlǐ', 'mustahil/paksa'],
-            ['記憶', '기억 gieok', 'きおく kioku', 'jìyì', 'ingatan'],
-            ['運動', '운동 undong', 'うんどう undō', 'yùndòng', 'olahraga'],
-          ]}
+          head={['Profil Pelajar', 'Titik Masuk yang Dianjurkan']}
+          rows={ENTRY_POINTS.map((e) => [
+            <strong key="p" className="text-ink">{e.profile}</strong>,
+            e.entry,
+          ])}
           dense
         />
-        <Callout kind="tip" title="Alasan strategis urutan belajar WAWAさん">
-          Belajar Jepang atau Mandarin <strong className="text-ink">lebih dulu</strong> memberi diskon besar
-          saat masuk ke Korea — ribuan kosakata terasa familiar. Sebaliknya juga berlaku.
-        </Callout>
       </Card>
     </div>
   )
