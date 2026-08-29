@@ -8,8 +8,10 @@ import { gatesFor } from '@/data/curriculum'
 import { useProgress } from '@/store/useProgress'
 
 const TONE: Record<string, string> = {
-  sky: 'border-sky-200 bg-sky-50', amber: 'border-amber-200 bg-amber-50',
-  coral: 'border-coral-200 bg-coral-50', grape: 'border-grape-200 bg-grape-50',
+  sky: 'border-sky-200 bg-sky-50',
+  amber: 'border-amber-200 bg-amber-50',
+  coral: 'border-coral-200 bg-coral-50',
+  grape: 'border-grape-200 bg-grape-50',
   leaf: 'border-leaf-200 bg-leaf-50',
 }
 
@@ -71,17 +73,21 @@ export default function Method() {
         <SectionTitle eyebrow="Prinsip 4 dalam praktik" title="Satu konsep baru per sesi" />
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border-2 border-coral-200 bg-coral-50 p-4">
-            <div className="mb-1.5 flex items-center gap-1.5 font-display text-[14px] font-extrabold text-coral-600"><Icon name="wrong" size={15} />Cara yang membingungkan</div>
+            <div className="mb-1.5 flex items-center gap-1.5 font-display text-[14px] font-extrabold text-coral-600">
+              <Icon name="wrong" size={15} />Cara yang membingungkan
+            </div>
             <p className="font-cjk text-[15px] text-ink-soft">
               “Pelajari partikel は、が、を、に、で sekaligus”
             </p>
           </div>
           <div className="rounded-2xl border-2 border-leaf-200 bg-leaf-50 p-4">
-            <div className="mb-1.5 flex items-center gap-1.5 font-display text-[14px] font-extrabold text-leaf-600"><Icon name="judge" size={15} />Cara WAWAさん</div>
+            <div className="mb-1.5 flex items-center gap-1.5 font-display text-[14px] font-extrabold text-leaf-600">
+              <Icon name="judge" size={15} />Cara WAWAさん
+            </div>
             <p className="text-[13.5px] leading-relaxed text-ink-soft">
-              Unit 4: hanya <span className="font-cjk">は</span>. Unit 5: hanya <span className="font-cjk">を</span>{' '}
-              (memakai kosakata Unit 4). Unit 6: <span className="font-cjk">が</span> dikontraskan dengan{' '}
-              <span className="font-cjk">は</span> yang sudah dikuasai.
+              Unit 4: hanya <span className="font-cjk font-bold text-ink">は</span>. Unit 5: hanya <span className="font-cjk font-bold text-ink">を</span>{' '}
+              (memakai kosakata Unit 4). Unit 6: <span className="font-cjk font-bold text-ink">が</span> dikontraskan dengan{' '}
+              <span className="font-cjk font-bold text-ink">は</span> yang sudah dikuasai.
             </p>
           </div>
         </div>
@@ -103,8 +109,16 @@ export default function Method() {
           {gates.map((g, i) => (
             <div key={g.index} className="relative">
               <div className="flex items-start gap-3 rounded-2xl border-2 border-sand bg-paper p-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-sand bg-cream text-xl">
-                  {g.icon}
+                <span
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 text-xl shadow-[0_2px_0_0_var(--color-drop)]"
+                  style={{
+                    backgroundColor: tint(LANGUAGES[activeLang].color),
+                    borderColor: LANGUAGES[activeLang].color,
+                    color: LANGUAGES[activeLang].color,
+                  }}
+                  aria-hidden
+                >
+                  <Icon name={g.icon} size={22} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

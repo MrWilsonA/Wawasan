@@ -21,6 +21,7 @@ const CharacterBank = lazy(() => import('@/pages/CharacterBank'))
 const Dictionary = lazy(() => import('@/pages/Dictionary'))
 const Tutor = lazy(() => import('@/pages/Tutor'))
 const Listening = lazy(() => import('@/pages/Listening'))
+const Speaking = lazy(() => import('@/pages/Speaking'))
 const Writing = lazy(() => import('@/pages/Writing'))
 const Exams = lazy(() => import('@/pages/Exams'))
 const Reference = lazy(() => import('@/pages/Reference'))
@@ -92,6 +93,7 @@ export default function App() {
               <Route path="/kamus" element={<Dictionary />} />
               <Route path="/tanya" element={<Tutor />} />
               <Route path="/menyimak" element={<Listening />} />
+              <Route path="/berbicara" element={<Speaking />} />
               <Route path="/menulis" element={<Writing />} />
               <Route path="/ujian" element={<Exams />} />
               <Route path="/referensi" element={<Reference />} />

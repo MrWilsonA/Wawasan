@@ -31,6 +31,7 @@ export function Shell({ children, onOpenSplash }: { children: React.ReactNode; o
     { to: `/belajar/${activeLang}`, label: 'Jalur Belajar', icon: 'path' },
     { to: '/ulang', label: 'Kartu Ulang', icon: 'review', badge: due.length },
     { to: '/menyimak', label: `Menyimak ${lang.name}`, icon: 'listen' },
+    { to: '/berbicara', label: `Berbicara ${lang.name}`, icon: 'production' },
     { to: '/aksara', label: activeLang === 'en' ? 'Bunyi & Ejaan' : `Aksara ${lang.name}`, icon: 'script' },
     ...(activeLang === 'jp' || activeLang === 'cn'
       ? [{ to: '/karakter', label: activeLang === 'jp' ? 'Bank Kanji' : 'Bank Hanzi', icon: 'characters' as const }]
