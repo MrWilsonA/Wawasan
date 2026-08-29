@@ -2,6 +2,77 @@ import type { Unit } from '../types'
 
 /** Additional Korean units, merged into the existing gates by index. */
 export const KR_EXTRA: Record<number, Unit[]> = {
+  /* ==================== GERBANG 0 — FONDASI HANGEUL & BATCHIM ==================== */
+  0: [
+    {
+      id: 'kr-g0-u1',
+      title: '7 Bunyi Pokok Batchim & Hukum Yeoneum (연음)',
+      subtitle: 'Mengapa 27 kemungkinan konsonan akhir hanya menghasilkan 7 bunyi di telinga',
+      level: 'Level 1',
+      badge: '7 받침 · 연음',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Prinsip 7 Bunyi Tertutup Batchim',
+          body: 'Meskipun konsonan akhir bisa ditulis dengan 27 variasi (termasuk huruf ganda), saat berada di akhir suku kata tanpa vokal pengikut, mereka SEMUA menciut menjadi 7 bunyi letup tak lepas: [ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅇ].',
+        },
+        {
+          kind: 'table',
+          title: 'Tabel Penciutan 7 Bunyi Batchim',
+          head: ['Bunyi Akustik', 'Huruf Tertulis yang Menghasilkannya', 'Contoh Kata', 'Pelafalan'],
+          rows: [
+            ['[ㄱ] (k tak lepas)', 'ㄱ, ㅋ, ㄲ, ㄳ, ㄺ', '책, 부엌, 밖', '[책], [부억], [박]'],
+            ['[ㄴ] (n)', 'ㄴ, ㄵ, ㄶ', '눈, 안다', '[눈], [안따]'],
+            ['[ㄷ] (t tak lepas)', 'ㄷ, ㅌ, ㅅ, ㅆ, ㅈ, ㅊ, ㅎ', '옷, 꽃, 있다', '[옫], [꼳], [읻따]'],
+            ['[ㄹ] (l)', 'ㄹ, ㄼ, ㄽ, ㄾ, ㅀ', '달, 길, 물', '[달], [길], [물]'],
+            ['[ㅁ] (m)', 'ㅁ, ㄻ', '몸, 삶', '[몸], [삼]'],
+            ['[ㅂ] (p tak lepas)', 'ㅂ, ㅍ, ㅄ, ㄿ', '밥, 잎, 없다', '[밥], [입], [업따]'],
+            ['[ㅇ] (ng)', 'ㅇ', '강, 방, 빵', '[강], [방], [빵]'],
+          ],
+        },
+        {
+          kind: 'formula',
+          title: 'Hukum Yeoneum (연음 — Penghubungan Vokal)',
+          pre: 'Jika suku kata berikutnya berawalan VOKAL (huruf ㅇ tak bersuara),\nbatchim PINDAH menduduki posisi vokal tersebut:\n\n한국어  →  [한구거]  (han-gu-geo)\n음악    →  [으막]    (eu-mak)\n옷이    →  [오시]    (o-si, bukan ot-i)',
+        },
+      ],
+      lessons: [
+        {
+          id: 'kr-g0-u1-l1',
+          title: 'Mengenali Bunyi Batchim & Yeoneum',
+          kind: 'drill',
+          xp: 15,
+          exercises: [
+            {
+              id: 'ke-b1',
+              type: 'choice',
+              skill: 'menyimak',
+              display: '한국어',
+              prompt: 'Bagaimana kata 한국어 diucapkan oleh penutur asli?',
+              options: ['[한구거] han-gu-geo', '[한국어] han-guk-eo', '[한국커] han-guk-kheo', '[한국어이] han-guk-eo-i'],
+              answer: 0,
+              explain: 'Hukum Yeoneum: Batchim ㄱ berpindah mengisi vokal 어 sehingga dibaca [한구거].',
+            },
+            {
+              id: 'ke-b2',
+              type: 'choice',
+              skill: 'membaca',
+              display: '옷',
+              prompt: 'Huruf ㅅ pada kata 옷 (baju) dibaca sebagai bunyi apa?',
+              options: ['[ㄷ] (t tak lepas)', '[ㅅ] (s)', '[ㅈ] (j)', '[ㄱ] (k)'],
+              answer: 0,
+              explain: 'Huruf ㅅ, ㅆ, ㅈ, ㅊ, ㄷ, ㅌ, ㅎ di posisi batchim semuanya menciut menjadi bunyi [ㄷ] (t tak lepas).',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'kr-xc-hangugeo', front: '한국어 [한구거]', back: 'Bahasa Korea (Hukum Yeoneum)', reading: 'han-gu-geo', lang: 'kr', tag: 'Batchim' },
+        { id: 'kr-xc-ot', front: '옷 [옫]', back: 'Baju (Batchim ㅅ dibaca t)', reading: 'ot', lang: 'kr', tag: 'Batchim' },
+      ],
+    },
+  ],
+
   /* ==================== GERBANG 1 — HANGEUL ==================== */
   1: [
     {

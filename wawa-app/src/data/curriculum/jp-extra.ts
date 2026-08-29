@@ -1,18 +1,18 @@
 import type { Unit } from '../types'
 
 /**
- * JP_EXTRA: Massive expansion of Japanese curriculum from beginner zero to advanced N1.
- * Provides encyclopedia-grade pedagogical depth for Indonesian learners.
+ * JP_EXTRA: Comprehensive, book-grade Japanese curriculum from zero to JLPT N1.
+ * Covers full vocabulary, listening, reading, speaking, and writing competencies.
  */
 export const JP_EXTRA: Record<number, Unit[]> = {
   // -------------------------------------------------------------
-  // GERBANG 0 (Sistem Bunyi & Pondasi Aksara)
+  // GERBANG 0 (Sistem Bunyi, Huruf & Angka)
   // -------------------------------------------------------------
   0: [
     {
       id: 'jp-g0-extra-u1',
       title: 'Dakuon, Handakuon & Youon (Bunyi Gabungan)',
-      subtitle: 'Membedakan bunyi keruh (tenten), setengah keruh (maru), dan vokal kecil (ya, yu, yo)',
+      subtitle: 'Membedakan bunyi keruh (tenten ゛), setengah keruh (maru ゜), dan vokal kecil (ゃ ゅ ょ)',
       level: 'N5',
       badge: 'が ざ だ ば ぱ / きゃ きゅ きょ',
       notes: [
@@ -28,7 +28,7 @@ export const JP_EXTRA: Record<number, Unit[]> = {
           rows: [
             ['Ka (か/き/く/け/こ)', 'Ga (が/ぎ/ぐ/げ/ご)', '—', 'ぎんこう (Bank)'],
             ['Sa (さ/し/す/せ/そ)', 'Za/Ji/Zu/Ze/Zo (ざ/じ/ず/ぜ/ぞ)', '—', 'ざっし (Majalah)'],
-            ['Ta (た/ち/つ/て/と)', 'Da/Ji/Zu/De/Do (だ/ぢ/づ/de/do)', '—', 'でんしゃ (Kereta)'],
+            ['Ta (た/ち/つ/て/と)', 'Da/Ji/Zu/De/Do (だ/ぢ/づ/で/ど)', '—', 'でんしゃ (Kereta)'],
             ['Ha (は/ひ/ふ/へ/ほ)', 'Ba (ば/び/ぶ/べ/ぼ)', 'Pa (ぱ/ぴ/ぷ/ぺ/ぽ)', 'ぱん (Roti), ほんば (Asli)'],
           ],
         },
@@ -41,7 +41,7 @@ export const JP_EXTRA: Record<number, Unit[]> = {
       lessons: [
         {
           id: 'jp-g0-xu1-l1',
-          title: 'Latihan Dakuon & Handakuon',
+          title: 'Latihan Dakuon, Handakuon & Youon',
           kind: 'drill',
           xp: 15,
           exercises: [
@@ -151,10 +151,69 @@ export const JP_EXTRA: Record<number, Unit[]> = {
         { id: 'jp-xc-manshon', front: 'マンション', back: 'Apartemen gedung bertingkat', reading: 'manshon', lang: 'jp', tag: 'Katakana' },
       ],
     },
+    {
+      id: 'jp-g0-extra-u3',
+      title: 'Kata Bantu Satuan Bilangan (助数詞 Josuushi)',
+      subtitle: 'Menghitung benda tipis (枚), silinder panjang (本), hewan kecil (匹), dan buku (冊)',
+      level: 'N5',
+      badge: '〜本 · 〜枚 · 〜匹',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Logika Menghitung Objek dalam Bahasa Jepang',
+          body: 'Bahasa Jepang tidak bisa menghitung objek hanya dengan angka murni (seperti "2 pensil"). Harus ada kata bantu hitung (counter) sesuai bentuk fisik benda: panjang silinder (本 hon), lembaran tipis (枚 mai), buku jilid (冊 satsu), mesin/kendaraan (台 dai).',
+        },
+        {
+          kind: 'table',
+          title: 'Tabel Satuan Hitungan Terpopuler N5',
+          head: ['Satuan Hitung', 'Kategori Objek', 'Contoh Benda', 'Contoh Hitungan'],
+          rows: [
+            ['本 (hon/pon/bon)', 'Benda panjang & silinder', 'Botol, payung, pena, pohon, jalan', 'いっぽん (1), にほん (2), さんぼん (3)'],
+            ['枚 (mai)', 'Benda tipis & datar', 'Kertas, baju, piring, tiket, perangko', 'いちまい (1), にまい (2), さんまい (3)'],
+            ['匹 (hiki/piki/biki)', 'Hewan kecil & ikan', 'Kucing, anjing, ikan, serangga', 'いっぴき (1), にひき (2), さんびき (3)'],
+            ['冊 (satsu)', 'Buku & majalah terjilid', 'Buku tulis, novel, kamus', 'いっさつ (1), にさつ (2), さんさつ (3)'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g0-xu3-l1',
+          title: 'Menghitung Objek di Sekitar Kita',
+          kind: 'drill',
+          xp: 15,
+          exercises: [
+            {
+              id: 'jx-cnt1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Untuk menghitung 3 lembar tiket kereta, satuan apa yang digunakan?',
+              options: ['さんまい (枚)', 'さんぼん (本)', 'さんびき (匹)', 'さんさつ (冊)'],
+              answer: 0,
+              explain: 'Tiket adalah benda tipis dan pipih sehingga wajib menggunakan satuan 枚 (mai): さんまい.',
+            },
+            {
+              id: 'jx-cnt2',
+              type: 'choice',
+              skill: 'menyimak',
+              display: 'ジュースを にほん かいました。',
+              reading: 'Jūsu o nihon kaimashita.',
+              prompt: 'Berapa banyak jus yang dibeli pada kalimat di atas?',
+              options: ['2 botol / kaleng', '2 lembar', '2 buku', '2 ekor'],
+              answer: 0,
+              explain: '本 (hon) digunakan untuk benda panjang/silinder seperti botol atau kaleng jus. にほん = 2 botol.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-mai', front: '〜枚 (まい)', back: 'Satuan lembar (kertas, baju, tiket)', reading: 'mai', lang: 'jp', tag: 'Hitungan' },
+        { id: 'jp-xc-hon', front: '〜本 (ほん)', back: 'Satuan batang/botol (benda silinder)', reading: 'hon', lang: 'jp', tag: 'Hitungan' },
+      ],
+    },
   ],
 
   // -------------------------------------------------------------
-  // GERBANG 1 (Tingkat N5 — Pola Kalimat & Partikel Inti)
+  // GERBANG 1 (Tingkat N5 — Pola Kalimat, Kata Sifat & Partikel)
   // -------------------------------------------------------------
   1: [
     {
@@ -215,10 +274,67 @@ export const JP_EXTRA: Record<number, Unit[]> = {
         { id: 'jp-xc-tabete', front: 'たべて', back: 'Makanlah / Makan dan... (Bentuk Te)', reading: 'tabete', lang: 'jp', tag: 'BentukTe' },
       ],
     },
+    {
+      id: 'jp-g1-extra-u2',
+      title: 'Kata Sifat i (い形容詞) vs Kata Sifat na (な形容詞)',
+      subtitle: 'Konjugasi negatif, lampau, dan menyambungkan dua kata sifat',
+      level: 'N5',
+      badge: '〜くない · 〜でした · 〜くて',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Dua Ras Kata Sifat dalam Bahasa Jepang',
+          body: '1. I-Keiyoushi: Berakhiran vokal い murni (takai, oishii, samui). Mengubah bentuknya sendiri secara internal (takakunai, takakatta).\n2. Na-Keiyoushi: Berakhiran selain i atau kata serapan (shizuka, kirei, benri). Membutuhkan kata bantu desu/da (shizuka janai, shizuka deshita).',
+        },
+        {
+          kind: 'table',
+          title: 'Matriks Konjugasi Kata Sifat',
+          head: ['Bentuk', 'I-Keiyoushi (Tinggi: たかい)', 'Na-Keiyoushi (Sunyi: しずか)', 'Pengecualian: Bagus (いい)'],
+          rows: [
+            ['Positif Sekarang', 'たかいです', 'しずかです', 'いいです'],
+            ['Negatif Sekarang', 'たかくないです', 'しずかじゃないです', 'よくないです'],
+            ['Positif Lampau', 'たかかったです', 'しずかでした', 'よかったです'],
+            ['Negatif Lampau', 'たかくなかったです', 'しずかじゃなかったです', 'よくなかったです'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g1-xu2-l1',
+          title: 'Konjugasi Kata Sifat Praktis',
+          kind: 'drill',
+          xp: 15,
+          exercises: [
+            {
+              id: 'jx-adj1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Bentuk lampau dari kata sifat さむい (samui = dingin) adalah…',
+              options: ['さむかったです', 'さむいでした', 'さむくなかったです', 'さむくないでした'],
+              answer: 0,
+              explain: 'I-keiyoushi mengubah akhiran -i menjadi -katta: さむい → さむかったです.',
+            },
+            {
+              id: 'jx-adj2',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Bagaimana mengatakan "Kemarin cuacanya bagus"? (Bagus = いい / よい)',
+              options: ['きのうは てんきが よかったです', 'きのうは てんきが いいでした', 'きのうは てんきが いかったです', 'きのうは てんきが よいでした'],
+              answer: 0,
+              explain: 'Kata いい (ii) saat dikonjugasikan berubah menjadi basis よ- : よかったです.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-takai', front: '高い (たかい)', back: 'Tinggi / Mahal (I-keiyoushi)', reading: 'takai', lang: 'jp', tag: 'KataSifat' },
+        { id: 'jp-xc-shizuka', front: '静か (しずか)', back: 'Sunyi / Tenang (Na-keiyoushi)', reading: 'shizuka', lang: 'jp', tag: 'KataSifat' },
+      ],
+    },
   ],
 
   // -------------------------------------------------------------
-  // GERBANG 2 (Tingkat N4 — Konjugasi Bentuk Te, Nai, & Syarat)
+  // GERBANG 2 (Tingkat N4 — Kemampuan, Izin & Pasif Kausatif)
   // -------------------------------------------------------------
   2: [
     {
@@ -267,10 +383,47 @@ export const JP_EXTRA: Record<number, Unit[]> = {
         { id: 'jp-xc-furareta', front: 'あめにふられた', back: 'Kehujanan (Pasif penderitaan)', reading: 'ame ni furareta', lang: 'jp', tag: 'N4' },
       ],
     },
+    {
+      id: 'jp-g2-extra-u2',
+      title: 'Memberi & Menerima Bantuan: あげる vs くれる vs もらう',
+      subtitle: 'Arah perpindahan kebaikan dan sudut pandang psikologis penutur',
+      level: 'N4',
+      badge: '〜てあげる · 〜てくれる · 〜てもらう',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Arah Aliran Kebaikan (Benefactive)',
+          body: '1. 〜てあげる (-te ageru): Penutur memberi kebaikan kepada orang lain (arah keluar).\n2. 〜てくれる (-te kureru): Orang lain memberi kebaikan kepada penutur / pihak penutur (arah masuk).\n3. 〜てもらう (-te morau): Penutur menerima kebaikan setelah meminta / berterima kasih atas bantuan pihak lain.',
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g2-xu2-l1',
+          title: 'Menentukan Kata Bantu Memberi-Menerima',
+          kind: 'drill',
+          xp: 20,
+          exercises: [
+            {
+              id: 'jx-give1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'ともだちが にほんごを おしえて___。 (Teman saya berbaik hati mengajari saya bahasa Jepang)',
+              options: ['くれました', 'あげました', 'もらいました', 'やりました'],
+              answer: 0,
+              explain: 'Ketika orang lain melakukan sesuatu demi kebaikan penutur, kita menggunakan くれました (kureru).',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-kureru', front: '〜てくれる', back: 'Berbaik hati melakukan sesuatu untukku', reading: 'te kureru', lang: 'jp', tag: 'N4' },
+        { id: 'jp-xc-morau', front: '〜てもらう', back: 'Menerima bantuan dari seseorang', reading: 'te morau', lang: 'jp', tag: 'N4' },
+      ],
+    },
   ],
 
   // -------------------------------------------------------------
-  // GERBANG 3 (Tingkat N3 — Pola Menengah, Pendapat & Fakta)
+  // GERBANG 3 (Tingkat N3 — Transitif/Intransitif, Dugaan & Waktu)
   // -------------------------------------------------------------
   3: [
     {
@@ -322,6 +475,43 @@ export const JP_EXTRA: Record<number, Unit[]> = {
         { id: 'jp-xc-akeru', front: '開ける (あける)', back: 'Membuka (Transitif 〜を)', reading: 'akeru', lang: 'jp', tag: 'Tadoushi' },
       ],
     },
+    {
+      id: 'jp-g3-extra-u2',
+      title: 'Modalitas Dugaan & Panca Indra: 〜そうだ vs 〜ようだ vs 〜らしい',
+      subtitle: 'Membedakan dugaan visual sekilas, kesimpulan analogi, dan kabar burung dari orang lain',
+      level: 'N3',
+      badge: 'そうだ · ようだ · らしい',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Peta Mental Tiga Jenis Dugaan',
+          body: '1. 〜そうだ (sou da): Dugaan visual sekilas ("kelihatannya akan hujan", "kuenya tampak lezat").\n2. 〜ようだ (you da): Kesimpulan berbasis bukti panca indra menyeluruh ("sepertinya ada orang di dalam rumah karena lampunya menyala").\n3. 〜らしい (rashii): Kabar burung / rumor dari pihak ketiga ("katanya besok ada diskon besar").',
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g3-xu2-l1',
+          title: 'Membedakan Nuansa Dugaan N3',
+          kind: 'drill',
+          xp: 20,
+          exercises: [
+            {
+              id: 'jx-mod1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'あめが ふり___です。 (Melihat awan gelap tebal, tampaknya sebentar lagi akan turun hujan)',
+              options: ['そう (dugaan visual sekilas)', 'よう (kesimpulan analogi)', 'らしい (kabar burung)', 'はず (kepastian logis)'],
+              answer: 0,
+              explain: 'Melihat tanda fisik langsung yang akan terjadi seketika menggunakan 〜そう: ふりそうです.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-souda', front: '〜そうだ', back: 'Tampaknya / kelihatannya (visual sekilas)', reading: 'sō da', lang: 'jp', tag: 'N3' },
+        { id: 'jp-xc-rashii', front: '〜らしい', back: 'Kabarnya / katanya (berdasarkan kabar orang)', reading: 'rashii', lang: 'jp', tag: 'N3' },
+      ],
+    },
   ],
 
   // -------------------------------------------------------------
@@ -364,15 +554,93 @@ export const JP_EXTRA: Record<number, Unit[]> = {
         { id: 'jp-xc-dokoro', front: '〜どころではない', back: 'Jangankan... situasi sama sekali tidak memungkinkan', reading: 'dokoro dewa nai', lang: 'jp', tag: 'N2' },
       ],
     },
+    {
+      id: 'jp-g4-extra-u2',
+      title: 'Bahasa Berita & Jurnalistik NHK: 〜つつある vs 〜おそれがある',
+      subtitle: 'Menyatakan tren perubahan bertahap dan potensi ancaman bahaya dalam wacana publik',
+      level: 'N2',
+      badge: 'つつある · おそれがある',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Pola Baku Berita & Artikel Ilmiah',
+          body: '1. 〜つつある (-tsutsu aru): "Sedang dalam proses berubah secara bertahap" (contoh: 景気は回復しつつある = Perekonomian sedang berangsur pulih).\n2. 〜おそれがある (-osore ga aru): "Dikhawatirkan / ada bahaya bahwa..." (contoh: 台風が上陸するおそれがある = Dikhawatirkan badai topan akan menerjang daratan).',
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g4-xu2-l1',
+          title: 'Membaca Tajuk Berita Televisi & Koran',
+          kind: 'drill',
+          xp: 25,
+          exercises: [
+            {
+              id: 'jx-news1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'おおあめの ため、かわが はんらんする___。 (Akibat hujan lebat, dikhawatirkan sungai akan meluap)',
+              options: ['おそれがある (kekhawatiran bahaya)', 'つつある (proses bertahap)', 'にすぎない (hanya sebatas)', 'どころではない (jangankan)'],
+              answer: 0,
+              explain: 'おそれがある digunakan untuk bahaya atau bencana yang dikhawatirkan akan terjadi.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-tsutsu', front: '〜つつある', back: 'Sedang berangsur berubah (tren formal)', reading: 'tsutsu aru', lang: 'jp', tag: 'N2' },
+        { id: 'jp-xc-osore', front: '〜おそれがある', back: 'Dikhawatirkan / berpotensi bahaya', reading: 'osore ga aru', lang: 'jp', tag: 'N2' },
+      ],
+    },
   ],
 
   // -------------------------------------------------------------
-  // GERBANG 5 (Tingkat N1 — Keigo Tingkat Tinggi & Esai Akademik)
+  // GERBANG 5 (Tingkat N1 — Keigo Korporat & Retorika Klasik)
   // -------------------------------------------------------------
   5: [
     {
       id: 'jp-g5-extra-u1',
-      title: 'Ungkapan Klasik & Tata Bahasa Tingkat N1: 〜極まりない vs 〜を禁じ得ない',
+      title: 'Sonkeigo vs Kenjougo Bisnis Tingkat Tertinggi',
+      subtitle: 'Seni meninggikan mitra bisnis dan merendahkan pihak sendiri secara natural',
+      level: 'N1',
+      badge: '敬語 · 尊敬 vs 謙譲',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Prinsip Uchi (Dalam) vs Soto (Luar) dalam Keigo',
+          body: 'Ketika berbicara dengan pihak luar (klien/mitra), bos Anda sendiri di kantor dianggap "Uchi" sehingga harus direndahkan dengan Kenjougo, bukan ditinggikan! Contoh: "Shachou no Tanaka wa orimasen" (bukan "irasshaimasen").',
+        },
+      ],
+      lessons: [
+        {
+          id: 'jp-g5-xu1-l1',
+          title: 'Simulasi Percakapan Telepon Bisnis Nyata',
+          kind: 'drill',
+          xp: 30,
+          exercises: [
+            {
+              id: 'jx11',
+              type: 'choice',
+              skill: 'berbicara',
+              prompt: 'Saat klien menelepon menanyakan keberadaan bos Anda, ucapan mana yang benar?',
+              options: [
+                'たなかしゃちょうは ただいま がいしゅつして おられます',
+                'たなかは ただいま がいしゅつして おります',
+                'たなかしゃちょうは ただいま いらっしゃいません',
+                'たなかさんは ただいま おでかけです',
+              ],
+              answer: 1,
+              explain: 'Di depan orang luar, kita merendahkan atasan sendiri dengan menyebut nama saja tanpa gelar dan menggunakan kata kerja kenjougo おります (orimasu).',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'jp-xc-orimasu', front: 'おります', back: 'Bentuk merendah (Kenjougo) dari います', reading: 'orimasu', lang: 'jp', tag: 'N1' },
+      ],
+    },
+    {
+      id: 'jp-g5-extra-u2',
+      title: 'Ungkapan Klasik & Retorika N1: 〜極まりない vs 〜を禁じ得ない',
       subtitle: 'Bahasa sastra dan ekspresi retorika tinggi dalam opini editorial Jepang',
       level: 'N1',
       badge: '極まりない · 禁じ得ない',
@@ -385,7 +653,7 @@ export const JP_EXTRA: Record<number, Unit[]> = {
       ],
       lessons: [
         {
-          id: 'jp-g5-xu1-l1',
+          id: 'jp-g5-xu1-l2',
           title: 'Membaca Tajuk Rencana & Editorial Tingkat N1',
           kind: 'drill',
           xp: 30,

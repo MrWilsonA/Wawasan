@@ -119,6 +119,117 @@ export const EN_EXTRA: Record<number, Unit[]> = {
     },
   ],
 
+  /* ==================== GERBANG 1 — PREPOSISI & TATA BAHASA DASAR ==================== */
+  1: [
+    {
+      id: 'en-g1-u1',
+      title: 'Preposisi Waktu & Tempat: In vs On vs At',
+      subtitle: 'Piramida segitiga terbalik dari umum/luas hingga spesifik/titik',
+      level: 'A1',
+      badge: 'in · on · at',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Segitiga Terbalik Preposisi (In → On → At)',
+          body: '1. IN (Paling Luas/Umum): Abad, dekade, tahun, bulan, musim (in 2026, in July, in summer) / Negara, kota, ruang tertutup (in Indonesia, in Jakarta, in the room).\n2. ON (Lebih Spesifik): Hari, tanggal, hari raya, permukaan (on Monday, on August 28th, on the table, on the bus).\n3. AT (Paling Sempit/Titik Presisi): Jam, titik lokasi presisi (at 7:00 PM, at the door, at home).',
+        },
+        {
+          kind: 'table',
+          title: 'Matriks In vs On vs At',
+          head: ['Preposisi', 'Waktu (Kapan?)', 'Tempat (Di mana?)', 'Contoh Kalimat'],
+          rows: [
+            ['IN', 'Bulan/Tahun/Musim', 'Kota/Negara/Ruang', 'I was born in August in Jakarta.'],
+            ['ON', 'Hari/Tanggal Pasti', 'Permukaan/Jalan/Transportasi Publik', 'The exam is on Friday on Elm Street.'],
+            ['AT', 'Jam Presisi', 'Titik Lokasi Tertentu', 'Meet me at 8:30 at the station.'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'en-g1-u1-l1',
+          title: 'Menentukan Preposisi In/On/At',
+          kind: 'drill',
+          xp: 15,
+          exercises: [
+            {
+              id: 'en-pr1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Lengkapilah kalimat: The meeting starts ___ 9:00 AM ___ Monday.',
+              options: ['at / on', 'in / on', 'on / at', 'at / in'],
+              answer: 0,
+              explain: 'Jam menggunakan "at" (at 9:00 AM), sedangkan hari menggunakan "on" (on Monday).',
+            },
+            {
+              id: 'en-pr2',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Lengkapilah kalimat: We arrived ___ Tokyo ___ 2024.',
+              options: ['in / in', 'at / on', 'on / in', 'in / at'],
+              answer: 0,
+              explain: 'Kota besar (Tokyo) dan tahun (2024) keduanya berada pada lingkup luas sehingga menggunakan "in".',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'en-xc-in-time', front: 'In 2026 / In July', back: 'Preposisi Waktu: Tahun, Bulan, Musim (Luas)', reading: 'Preposition', lang: 'en', tag: 'A1' },
+        { id: 'en-xc-on-date', front: 'On Monday / On Aug 28', back: 'Preposisi Waktu: Hari & Tanggal (Spesifik)', reading: 'Preposition', lang: 'en', tag: 'A1' },
+        { id: 'en-xc-at-time', front: 'At 7:00 PM / At noon', back: 'Preposisi Waktu: Jam Presisi & Titik Lokasi', reading: 'Preposition', lang: 'en', tag: 'A1' },
+      ],
+    },
+  ],
+
+  /* ==================== GERBANG 2 — MODAL VERBS & KEHARUSAN ==================== */
+  2: [
+    {
+      id: 'en-g2-u1',
+      title: 'Modal Verbs: Must vs Have to vs Should',
+      subtitle: 'Membedakan kewajiban mutlak internal, aturan eksternal hukum, dan saran halus',
+      level: 'A2',
+      badge: 'must · have to · should',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Tiga Tingkat Keharusan dalam Bahasa Inggris',
+          body: '1. MUST: Keharusan dari dalam diri sendiri / perasaan mendesak penutur ("I must study hard"). Bentuk negatif MUST NOT = Larangan keras (Dilarang!).\n2. HAVE TO: Keharusan karena aturan eksternal / hukum / SOP perusahaan ("You have to wear a seatbelt"). Bentuk negatif DON\'T HAVE TO = Tidak harus / tidak wajib (Boleh ya, boleh tidak).\n3. SHOULD: Saran / anjuran terbaik ("You should sleep early").',
+        },
+      ],
+      lessons: [
+        {
+          id: 'en-g2-u1-l1',
+          title: 'Memilih Modal Verb yang Tepat',
+          kind: 'drill',
+          xp: 15,
+          exercises: [
+            {
+              id: 'en-mod1',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'You ___ smoke here. It is strictly forbidden by law.',
+              options: ['must not (larangan mutlak)', 'don\'t have to (tidak wajib)', 'should (saran)', 'might not (mungkin tidak)'],
+              answer: 0,
+              explain: '"Must not" menyatakan larangan keras yang tidak boleh dilanggar.',
+            },
+            {
+              id: 'en-mod2',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Tomorrow is Sunday, so I ___ wake up early.',
+              options: ['don\'t have to', 'must not', 'should not', 'can\'t'],
+              answer: 0,
+              explain: '"Don\'t have to" menyatakan tidak ada keharusan (bebas).',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'en-xc-must-not', front: 'Must not', back: 'Dilarang keras (prohibition)', reading: 'Modal Verb', lang: 'en', tag: 'A2' },
+        { id: 'en-xc-dont-have-to', front: "Don't have to", back: 'Tidak perlu / tidak wajib (tidak ada keharusan)', reading: 'Modal Verb', lang: 'en', tag: 'A2' },
+      ],
+    },
+  ],
+
   /* ==================== GERBANG 3 — TATA BAHASA ==================== */
   3: [
     {
