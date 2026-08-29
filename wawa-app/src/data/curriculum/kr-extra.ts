@@ -588,7 +588,7 @@ export const KR_EXTRA: Record<number, Unit[]> = {
               type: 'choice',
               skill: 'membaca',
               prompt: '읽기 punya 50 soal dalam 70 menit. Berapa waktu rata-rata per soal?',
-              options: ['±30 detik', '±80 detik — sangat ketat', '±2 menit', '±3 menit'],
+              options: ['±30 detik', '±80 detik', '±2 menit', '±3 menit'],
               answer: 1,
               explain: 'Karena itu soal iklan di awal harus dikerjakan cepat, menyisakan waktu untuk teks panjang di akhir.',
             },

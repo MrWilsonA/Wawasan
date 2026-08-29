@@ -1078,7 +1078,7 @@ export const KR_GATES: Gate[] = [
                 type: 'choice',
                 skill: 'membaca',
                 prompt: '읽기: 50 soal / 70 menit. Berapa waktu rata-rata per soal?',
-                options: ['±30 detik', '±80 detik — sangat ketat', '±2 menit', '±3 menit'],
+                options: ['±30 detik', '±80 detik', '±2 menit', '±3 menit'],
                 answer: 1,
                 explain: 'Kerjakan soal iklan/pengumuman di awal dengan cepat, sisakan waktu untuk teks panjang di akhir.',
               },
