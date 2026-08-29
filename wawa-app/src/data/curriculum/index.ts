@@ -3,6 +3,7 @@ import { JP_GATES } from './jp'
 import { CN_GATES } from './cn'
 import { KR_GATES } from './kr'
 import { EN_GATES } from './en'
+import { JP_EXTRA } from './jp-extra'
 import { CN_EXTRA } from './cn-extra'
 import { KR_EXTRA } from './kr-extra'
 import { EN_EXTRA } from './en-extra'
@@ -28,7 +29,7 @@ function withExtras(gates: Gate[], extras: Record<number, Unit[]>): Gate[] {
 }
 
 export const CURRICULUM: Record<LangId, Gate[]> = {
-  jp: JP_GATES,
+  jp: withExtras(JP_GATES, JP_EXTRA),
   cn: withExtras(CN_GATES, CN_EXTRA),
   kr: withExtras(KR_GATES, KR_EXTRA),
   en: withExtras(EN_GATES, EN_EXTRA),

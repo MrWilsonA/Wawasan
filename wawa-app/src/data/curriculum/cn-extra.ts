@@ -980,4 +980,68 @@ export const CN_EXTRA: Record<number, Unit[]> = {
       ],
     },
   ],
+
+  /* ==================== GERBANG 5 — HSK 5-6 & BAHASA TULIS FORMAL (书面语) ==================== */
+  5: [
+    {
+      id: 'cn-g5-extra-u1',
+      title: 'Perbedaan Bahasa Tulis Formal (书面语) vs Percakapan (口语)',
+      subtitle: 'Kosakata tingkat tinggi untuk membaca berita Xinhua, kontrak bisnis, dan ujian HSK 6',
+      level: 'HSK 6',
+      badge: '书面语 · 鉴于 / 予以',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Transformasi Kosakata Percakapan ke Bahasa Resmi',
+          body: 'Dalam koran, jurnalistik, dan korespondensi resmi, karakter tunggal klasik menggantikan kata sehari-hari. Contoh:\n• 给 (gěi) → 予以 (yǔyǐ - memberikan)\n• 因为 (yīnwèi) → 鉴于 (jiànyú - menimbang / mengingat)\n• 还有 (háiyǒu) → 以及 (yǐjí - serta / dan juga)\n• 别 (bié) → 勿 (wù - jangan / dilarang).',
+        },
+        {
+          kind: 'table',
+          title: 'Pasangan Ekuivalen Bahasa Tulis Formal',
+          head: ['Bahasa Percakapan (口语)', 'Bahasa Formal (书面语)', 'Arti'],
+          rows: [
+            ['因为 (yīnwèi)', '鉴于 (jiànyú)', 'Menimbang / berhubung'],
+            ['给 (gěi)', '予以 (yǔyǐ)', 'Memberikan (bantuan/dukungan)'],
+            ['不要 (búyào)', '切勿 (qièwù)', 'Sangat dilarang / jangan sekali-kali'],
+            ['然后 (ránhòu)', '进而 (jìn\'ér)', 'Lebih lanjut / kemudian'],
+            ['为了 (wèile)', '旨在 (zhǐzài)', 'Bertujuan untuk'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'cn-g5-xu1-l1',
+          title: 'Membaca Teks Berita & Pengumuman Resmi',
+          kind: 'drill',
+          xp: 25,
+          exercises: [
+            {
+              id: 'cx1',
+              type: 'choice',
+              skill: 'membaca',
+              display: '请勿吸烟',
+              reading: 'qǐng wù xīyān',
+              prompt: 'Apa arti dari tulisan peringatan resmi ini?',
+              options: ['Dilarang merokok', 'Silakan merokok di sini', 'Tempat khusus merokok', 'Wajib mematikan rokok'],
+              answer: 0,
+              explain: '勿 (wù) adalah bentuk tulisan formal dari 不要 (jangan/dilarang). 请勿吸烟 = Dilarang merokok.',
+            },
+            {
+              id: 'cx2',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Pilihlah kata sambung formal untuk: "Menimbang situasi saat ini..."',
+              options: ['鉴于当前形势 (jiànyú)', '因为当前形势 (yīnwèi)', '为了当前形势 (wèile)', '关于当前形势 (guānyú)'],
+              answer: 0,
+              explain: '鉴于 (jiànyú) adalah kosakata formal tingkat HSK 6 untuk menyatakan "menimbang/mengingat bahwa...".',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'cn-xc-jianyu', front: '鉴于', back: 'Menimbang / berhubung (formal)', reading: 'jiànyú', lang: 'cn', tag: 'HSK6' },
+        { id: 'cn-xc-yuyi', front: '予以', back: 'Memberikan (bantuan/sanksi) formal', reading: 'yǔyǐ', lang: 'cn', tag: 'HSK6' },
+      ],
+    },
+  ],
 }

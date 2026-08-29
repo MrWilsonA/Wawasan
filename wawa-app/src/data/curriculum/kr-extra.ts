@@ -607,5 +607,67 @@ export const KR_EXTRA: Record<number, Unit[]> = {
         { id: 'kr-c-urutan-kalimat', front: 'Menemukan kalimat pertama di soal urutan', back: 'Cari yang TIDAK punya kata penunjuk (이, 그, 저)', lang: 'kr', tag: 'Ujian' },
       ],
     },
+    {
+      id: 'kr-g5-extra-u1',
+      title: 'Peribahasa Korea (속담) & Idiom Tubuh (관용구)',
+      subtitle: 'Kunci menembus skor 85% di soal membaca & mendengar TOPIK II tingkat lanjut',
+      level: 'Level 6',
+      badge: '속담 · 관용구',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Struktur Peribahasa & Idiom Bagian Tubuh',
+          body: 'Di TOPIK II Level 5–6, sering muncul idiom bagian tubuh (눈 mata, 귀 telinga, 발 kaki, 손 tangan):\n• 발이 넓다 (Kaki lebar) = Memiliki pergaulan / koneksi sangat luas.\n• 귀가 얇다 (Telinga tipis) = Mudah terpengaruh omongan orang lain.\n• 눈이 높다 (Mata tinggi) = Selera/standar terlalu tinggi.\n• 손이 크다 (Tangan besar) = Sangat royal / suka memberi porsi besar.',
+        },
+        {
+          kind: 'table',
+          title: 'Peribahasa (속담) Terpopuler di Ujian TOPIK',
+          head: ['속담 (Peribahasa)', 'Arti Harfiah', 'Makna Filosofis'],
+          rows: [
+            ['가는 말이 고와야 오는 말이 곱다', 'Kata yang pergi harus indah agar kata yang datang indah', 'Jika ingin diperlakukan baik, bicaralah yang baik'],
+            ['소 잃고 외양간 고친다', 'Kehilangan sapi baru memperbaiki kandang', 'Sudah terlambat / nasi sudah jadi bubur'],
+            ['금강산도 식후경', 'Pemandangan Gunung Geumgang pun setelah makan', 'Seindah apa pun pemandangan, makan dulu nomor satu'],
+            ['티끌 모아 태산', 'Kumpulan debu jadi gunung besar', 'Sedikit demi sedikit lama-lama menjadi bukit'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'kr-g5-xu1-l1',
+          title: 'Memahami Idiom & 속담 di Soal TOPIK II',
+          kind: 'drill',
+          xp: 25,
+          exercises: [
+            {
+              id: 'kx1',
+              type: 'choice',
+              skill: 'membaca',
+              display: '발이 넓다',
+              prompt: 'Apa arti kiasan dari frasa "발이 넓다" (kaki lebar)?',
+              options: ['Punya banyak teman / koneksi luas', 'Suka jalan-jalan jauh', 'Ukuran sepatunya sangat besar', 'Cepat dalam berjalan'],
+              answer: 0,
+              explain: '발이 넓다 bermakna memiliki jaringan pergaulan atau koneksi relasi yang sangat luas.',
+            },
+            {
+              id: 'kx2',
+              type: 'match',
+              skill: 'membaca',
+              prompt: 'Pasangkan peribahasa Korea dengan maknanya.',
+              pairs: [
+                ['티끌 모아 태산', 'Sedikit demi sedikit lama-lama menjadi bukit'],
+                ['소 잃고 외양간 고친다', 'Sudah terlambat setelah musibah terjadi'],
+                ['금강산도 식후경', 'Makan dulu sebelum menikmati aktivitas'],
+                ['귀가 얇다', 'Mudah terpengaruh omongan orang lain'],
+              ],
+              explain: 'Menguasai 속담 dan 관용구 adalah kunci meraih Level 6 di TOPIK II.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'kr-xc-bari-neolda', front: '발이 넓다', back: 'Punya koneksi relasi luas', reading: 'bari neolda', lang: 'kr', tag: 'TOPIK6' },
+        { id: 'kr-xc-gwiga-yalbda', front: '귀가 얇다', back: 'Mudah dipengaruhi omongan orang', reading: 'gwiga yalbda', lang: 'kr', tag: 'TOPIK6' },
+      ],
+    },
   ],
 }

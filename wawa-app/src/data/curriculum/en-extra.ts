@@ -574,5 +574,71 @@ export const EN_EXTRA: Record<number, Unit[]> = {
         { id: 'en-c-waktu', front: 'Alokasi waktu IELTS Reading', back: '17 + 20 + 20 + 3 menit transfer. TIDAK ada waktu transfer tambahan', lang: 'en', tag: 'Reading' },
       ],
     },
+    {
+      id: 'en-g5-extra-u1',
+      title: 'Academic Writing Task 2: Cohesion, Lexical Resource & Inversion',
+      subtitle: 'Teknik penulisan esai argumen berbobot akademis tinggi untuk meraih Band 8.5–9.0',
+      level: 'C2',
+      badge: 'IELTS Band 9 · Inversion',
+      notes: [
+        {
+          kind: 'concept',
+          title: 'Negative Inversion untuk Penekanan Retorika C2',
+          body: 'Dalam penulisan formal C2/IELTS, menaruh kata keterangan negatif di awal kalimat membalik susunan subjek dan kata kerja bantu (Auxiliary Inversion):\n• "Rarely have we witnessed such rapid technological shifts..." (Bukan "We have rarely witnessed...")\n• "Not only does education enhance individual prosperity, but it also fosters national resilience."\n• "Under no circumstances should governments neglect public health funding."',
+        },
+        {
+          kind: 'table',
+          title: 'Frasa Penghubung Esai Akademik Tingkat Tinggi',
+          head: ['Fungsi Wacana', 'Frasa Biasa (B1/B2)', 'Frasa Akademik Tingkat Tinggi (C1/C2)'],
+          rows: [
+            ['Menyajikan kontras', 'However / On the other hand', 'Conversely / Notwithstanding this fact'],
+            ['Memberi alasan', 'Because of this / So', 'Consequently / It follows that...'],
+            ['Menekankan dampak', 'It has a big effect on...', 'It exerts a profound influence on...'],
+            ['Menyimpulkan', 'In conclusion / I think', 'In the final analysis, it is compelling that...'],
+          ],
+        },
+      ],
+      lessons: [
+        {
+          id: 'en-g5-xu1-l1',
+          title: 'Menguasai Struktur Kalimat Inversi C2',
+          kind: 'drill',
+          xp: 30,
+          exercises: [
+            {
+              id: 'ex1',
+              type: 'choice',
+              skill: 'menulis',
+              prompt: 'Pilihlah bentuk kalimat inversi yang tepat untuk esai formal:',
+              options: [
+                'Seldom have researchers encountered such anomalies.',
+                'Seldom researchers have encountered such anomalies.',
+                'Seldom have encountered researchers such anomalies.',
+                'Seldom researchers encountered such anomalies.',
+              ],
+              answer: 0,
+              explain: 'Setelah adverbia negatif di awal kalimat (Seldom, Rarely, Scarcely), kata kerja bantu (have) mendahului subjek (researchers).',
+            },
+            {
+              id: 'ex2',
+              type: 'choice',
+              skill: 'membaca',
+              prompt: 'Padanan akademik formal dari "This affects the economy greatly" adalah…',
+              options: [
+                'This exerts a profound socioeconomic impact.',
+                'This makes the economy very different.',
+                'This changes the money in the country big time.',
+                'This has lots of results for economic things.',
+              ],
+              answer: 0,
+              explain: '"Exerts a profound socioeconomic impact" menunjukkan penguasaan Lexical Resource tingkat Band 8.5+ di IELTS Academic Writing.',
+            },
+          ],
+        },
+      ],
+      cards: [
+        { id: 'en-xc-inversion', front: 'Negative Inversion: Seldom / Rarely', back: 'Seldom + Aux + Subject + Verb ("Seldom have we seen...")', reading: 'Grammar C2', lang: 'en', tag: 'C2' },
+      ],
+    },
   ],
 }
