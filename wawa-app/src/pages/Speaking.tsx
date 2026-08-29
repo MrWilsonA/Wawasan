@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { Wawa } from '@/brand/Wawa'
-import { Button, Card, Chip, SectionTitle, cx } from '@/components/ui'
+import { Button, Card, Chip, Icon, SectionTitle, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
 import { useProgress } from '@/store/useProgress'
 import { SPEAKING_DATA, type SpeakingPhrase, type SpeakingDialogue, type SpeakingLevel } from '@/data/speakingData'
@@ -135,7 +135,6 @@ export default function Speaking() {
       setFeedbackMessage('Bagus! Dengarkan lagi audio acuan untuk menyempurnakan ritme & nada.')
     } else {
       playSound('wrong')
-      setFeedbackMessage('Masih kurang tepat. Perhatikan panduan fonetik dan coba rekam sekali lagi.')
     }
   }
 
@@ -203,13 +202,14 @@ export default function Speaking() {
                 setMode('shadowing')
               }}
               className={cx(
-                'rounded-xl px-4 py-2 text-[13px] font-extrabold transition-all cursor-pointer',
+                'flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-extrabold transition-all cursor-pointer',
                 mode === 'shadowing'
                   ? 'bg-paper text-teal-800 shadow-[0_2px_0_0_var(--color-drop)]'
                   : 'text-ink-soft hover:text-ink',
               )}
             >
-              🎙️ Shadowing & Pelafalan
+              <Icon name="production" size={15} />
+              <span>Shadowing & Pelafalan</span>
             </button>
 
             {dialogues.length > 0 ? (
@@ -220,13 +220,14 @@ export default function Speaking() {
                   setMode('dialogue')
                 }}
                 className={cx(
-                  'rounded-xl px-4 py-2 text-[13px] font-extrabold transition-all cursor-pointer',
+                  'flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-extrabold transition-all cursor-pointer',
                   mode === 'dialogue'
                     ? 'bg-paper text-teal-800 shadow-[0_2px_0_0_var(--color-drop)]'
                     : 'text-ink-soft hover:text-ink',
                 )}
               >
-                💬 Roleplay Dialog ({dialogues.length})
+                <Icon name="chat" size={15} />
+                <span>Roleplay Dialog ({dialogues.length})</span>
               </button>
             ) : null}
           </div>
@@ -312,12 +313,18 @@ export default function Speaking() {
                 <div className="mt-1 font-mono text-[14px] font-bold text-ink-soft">
                   {phrase.romanization}
                 </div>
-                <div className="mt-2 rounded-xl border border-sand bg-cream/70 p-2.5 text-[12.5px] font-medium text-ink-soft">
-                  🗣️ <strong>Panduan Fonetik:</strong> {phrase.phoneticGuide}
+                <div className="mt-2 flex items-start gap-2 rounded-xl border border-sand bg-cream/70 p-2.5 text-[12.5px] font-medium text-ink-soft">
+                  <Icon name="sound" size={16} className="text-teal-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-ink">Panduan Fonetik:</strong> {phrase.phoneticGuide}
+                  </div>
                 </div>
                 {phrase.toneGuide ? (
-                  <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50/80 p-2.5 text-[12px] font-semibold text-amber-900">
-                    🎵 <strong>Intonasi & Nada:</strong> {phrase.toneGuide}
+                  <div className="mt-2 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50/80 p-2.5 text-[12px] font-semibold text-amber-900">
+                    <Icon name="music" size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-amber-950">Intonasi & Nada:</strong> {phrase.toneGuide}
+                    </div>
                   </div>
                 ) : null}
                 <div className="mt-2 text-[13px] italic text-ink-faint">
@@ -333,7 +340,7 @@ export default function Speaking() {
                   onClick={() => playReferenceAudio()}
                   className={cx(isPlayingRef && 'ring-4 ring-coral-200 animate-pulse')}
                 >
-                  {isPlayingRef ? 'Memutar Audio...' : '🔊 Dengar Contoh Asli'}
+                  {isPlayingRef ? 'Memutar Audio...' : 'Dengar Contoh Asli'}
                 </Button>
 
                 <button
@@ -346,8 +353,8 @@ export default function Speaking() {
                       : 'border-sand bg-paper text-ink hover:border-coral-400 hover:bg-cream shadow-[0_3px_0_0_var(--color-drop)]',
                   )}
                 >
-                  <span className={cx('flex h-4 w-4 rounded-full', isRecording ? 'bg-white animate-ping' : 'bg-coral-500')} />
-                  <span>{isRecording ? '⏹ Selesai Bicara' : '🎙️ Rekam Suara Saya'}</span>
+                  <Icon name={isRecording ? 'pause' : 'production'} size={18} />
+                  <span>{isRecording ? 'Selesai Bicara' : 'Rekam Suara Saya'}</span>
                 </button>
               </div>
 
@@ -379,12 +386,15 @@ export default function Speaking() {
 
               {/* Tips & Next Button */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <div className="text-[12.5px] font-medium text-ink-soft max-w-md">
-                  💡 <strong>Tips Pelafalan:</strong> {phrase.tips}
+                <div className="flex items-start gap-1.5 text-[12.5px] font-medium text-ink-soft max-w-md">
+                  <Icon name="tip" size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-ink">Tips Pelafalan:</strong> {phrase.tips}
+                  </div>
                 </div>
 
-                <Button size="sm" onClick={handleNextPhrase}>
-                  {phraseIndex < phrases.length - 1 ? 'Frasa Berikutnya →' : 'Ulangi / Selesai Level 🏆'}
+                <Button size="sm" icon="next" onClick={handleNextPhrase}>
+                  {phraseIndex < phrases.length - 1 ? 'Frasa Berikutnya' : 'Ulangi / Selesai Level'}
                 </Button>
               </div>
             </div>
@@ -420,8 +430,8 @@ export default function Speaking() {
                     {isWawa ? (
                       <Wawa expression="teach" size={40} accent={lang.color} />
                     ) : (
-                      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-coral-300 bg-paper text-lg font-bold">
-                        👤
+                      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-coral-300 bg-paper text-coral-700">
+                        <Icon name="profile" size={20} />
                       </span>
                     )}
                   </div>
@@ -433,9 +443,10 @@ export default function Speaking() {
                       <button
                         type="button"
                         onClick={() => playReferenceAudio(turn.text)}
-                        className="text-[12px] font-bold text-teal-700 hover:underline cursor-pointer"
+                        className="flex items-center gap-1 text-[12px] font-bold text-teal-700 hover:underline cursor-pointer"
                       >
-                        🔊 Putar Suara
+                        <Icon name="sound" size={14} />
+                        <span>Putar Suara</span>
                       </button>
                     </div>
 
@@ -450,8 +461,9 @@ export default function Speaking() {
                     </div>
 
                     {turn.prompt ? (
-                      <div className="mt-2 text-[12px] font-bold text-coral-700">
-                        🎯 Instruksi: {turn.prompt}
+                      <div className="mt-2 flex items-center gap-1.5 text-[12px] font-bold text-coral-700">
+                        <Icon name="exam" size={14} />
+                        <span>Instruksi: {turn.prompt}</span>
                       </div>
                     ) : null}
                   </div>

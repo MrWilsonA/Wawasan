@@ -61,6 +61,7 @@ export type Note = {
 }
 
 export type Lesson = {
+  desc?: string
   id: string
   title: string
   /** 'drill' = normal lesson, 'gate' = the 85%-to-pass gate quiz */

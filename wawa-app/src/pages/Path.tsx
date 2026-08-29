@@ -108,7 +108,8 @@ export default function Path() {
                 : 'text-ink-soft hover:text-ink',
             )}
           >
-            <span>🏝️ Peta Pulau Landmark</span>
+            <Icon name="path" size={15} />
+            <span>Peta Pulau Landmark</span>
             <Chip size="sm" color="leaf">Visual 3D</Chip>
           </button>
 
@@ -125,7 +126,8 @@ export default function Path() {
                 : 'text-ink-soft hover:text-ink',
             )}
           >
-            <span>🛣️ Jalan Unit Berkelok</span>
+            <Icon name="method" size={15} />
+            <span>Jalan Unit Berkelok</span>
           </button>
 
           <button
@@ -141,7 +143,8 @@ export default function Path() {
                 : 'text-ink-soft hover:text-ink',
             )}
           >
-            <span>📋 Daftar Kurikulum</span>
+            <Icon name="doc" size={15} />
+            <span>Daftar Kurikulum</span>
           </button>
         </div>
 
@@ -244,7 +247,9 @@ function IslandWorldMapView({
           {/* Floating Quest / Bonus Pill (Image 2 top right) */}
           <div className="absolute right-4 top-4 z-20 max-w-[280px] rounded-2xl border-2 border-amber-300 bg-paper/95 p-3.5 text-[12px] shadow-[0_4px_0_0_var(--color-drop)] backdrop-blur-md hidden sm:block">
             <div className="flex items-center gap-2 font-display text-[13px] font-black text-amber-700">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-white shadow-sm">★</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-white shadow-sm">
+                <Icon name="star" size={13} />
+              </span>
               <span>Bonus Tantangan Siklus</span>
             </div>
             <p className="mt-1.5 font-medium text-ink-soft leading-snug">
@@ -324,7 +329,9 @@ function IslandWorldMapView({
                     {isFinished ? (
                       <div className="flex flex-col items-center leading-none">
                         <span className="font-display text-[13px] font-black">L{idx + 1}</span>
-                        <span className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black text-teal-700">✓</span>
+                        <span className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black text-teal-700">
+                          <Icon name="check" size={10} />
+                        </span>
                       </div>
                     ) : isLocked ? (
                       <Icon name="lock" size={18} />
@@ -377,9 +384,10 @@ function IslandWorldMapView({
                     <button
                       type="button"
                       onClick={() => onSelectGate(idx)}
-                      className="mt-2.5 w-full rounded-xl bg-teal-600 py-1.5 text-center font-display text-[12px] font-black text-white shadow-sm hover:bg-teal-700 cursor-pointer"
+                      className="mt-2.5 flex items-center justify-center gap-1.5 w-full rounded-xl bg-teal-600 py-1.5 text-center font-display text-[12px] font-black text-white shadow-sm hover:bg-teal-700 cursor-pointer"
                     >
-                      Buka Jalur Unit Ini →
+                      <span>Buka Jalur Unit Ini</span>
+                      <Icon name="next" size={13} />
                     </button>
                   </div>
                 )}
@@ -391,9 +399,12 @@ function IslandWorldMapView({
         {/* Level List Cards Below Map */}
         <div className="border-t-2 border-sand bg-paper p-5">
           <div className="mb-3 flex items-center justify-between">
-            <span className="font-display text-[15px] font-black text-ink">
-              🗺️ Tingkat Gerbang Pembelajaran:
-            </span>
+            <div className="flex items-center gap-2">
+              <Icon name="path" size={17} className="text-teal-600" />
+              <span className="font-display text-[15px] font-black text-ink">
+                Tingkat Gerbang Pembelajaran:
+              </span>
+            </div>
             <span className="text-[12px] font-bold text-ink-faint">
               Klik tingkat mana pun untuk masuk ke jalan unit materi
             </span>
@@ -440,7 +451,7 @@ function IslandWorldMapView({
                     </div>
                   </div>
 
-                  <span className="font-extrabold text-teal-600">➔</span>
+                  <Icon name="next" size={16} className="text-teal-600" />
                 </button>
               )
             })}
@@ -504,7 +515,8 @@ function UnitRoadMapView({
             onClick={onBackToIsland}
             className="flex items-center gap-2 rounded-xl border-2 border-teal-500 bg-teal-50 px-4 py-2 font-display text-[13px] font-black text-teal-900 transition-all hover:bg-teal-100 active:scale-95 shadow-sm cursor-pointer"
           >
-            <span>← Kembali ke Peta Pulau</span>
+            <Icon name="left" size={15} />
+            <span>Kembali ke Peta Pulau</span>
           </button>
 
           {/* Level Switcher (Image 3: < ENG-C1.1 >) */}
@@ -515,7 +527,7 @@ function UnitRoadMapView({
               onClick={() => onChangeGate(gateIndex - 1)}
               className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-sand bg-cream text-ink font-black disabled:opacity-30 hover:bg-paper cursor-pointer"
             >
-              ‹
+              <Icon name="prev" size={15} />
             </button>
             <span className="rounded-xl border-2 border-teal-300 bg-teal-50/80 px-3.5 py-1 font-display text-[13.5px] font-black text-teal-950">
               {lang.toUpperCase()} · Gerbang {gate.index} ({gateIndex + 1}/{gatesCount})
@@ -526,7 +538,7 @@ function UnitRoadMapView({
               onClick={() => onChangeGate(gateIndex + 1)}
               className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-sand bg-cream text-ink font-black disabled:opacity-30 hover:bg-paper cursor-pointer"
             >
-              ›
+              <Icon name="next" size={15} />
             </button>
           </div>
 
@@ -613,8 +625,8 @@ function UnitRoadMapView({
                 return (
                   <div className="rounded-3xl border-3 border-amber-400 bg-amber-400/20 dark:bg-amber-950/80 p-5 shadow-[0_6px_0_0_var(--color-amber-600)]">
                     <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-amber-500 bg-amber-300 text-3xl shadow-md animate-bounce">
-                        🏆
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-amber-500 bg-amber-300 text-amber-900 shadow-md animate-bounce">
+                        <Icon name="trophy" size={32} />
                       </div>
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
@@ -630,9 +642,10 @@ function UnitRoadMapView({
                       <Link to={targetQuizUrl}>
                         <button
                           type="button"
-                          className="rounded-2xl border-2 border-amber-600 bg-amber-400 hover:bg-amber-300 px-6 py-3 font-display text-[14px] font-black text-ink shadow-[0_4px_0_0_var(--color-amber-700)] transition-all active:translate-y-1 cursor-pointer"
+                          className="flex items-center gap-2 rounded-2xl border-2 border-amber-600 bg-amber-400 hover:bg-amber-300 px-6 py-3 font-display text-[14px] font-black text-ink shadow-[0_4px_0_0_var(--color-amber-700)] transition-all active:translate-y-1 cursor-pointer"
                         >
-                          Ikuti Ujian Akhir →
+                          <span>Ikuti Ujian Akhir</span>
+                          <Icon name="next" size={16} />
                         </button>
                       </Link>
                     </div>
@@ -790,7 +803,8 @@ function UnitRow({
                 onClick={onOpenModal}
                 className="inline-flex items-center gap-1 text-[12.5px] font-extrabold text-amber-700 hover:underline cursor-pointer"
               >
-                🔍 Detail Unit
+                <Icon name="search" size={14} />
+                <span>Detail Unit</span>
               </button>
             ) : null}
           </div>

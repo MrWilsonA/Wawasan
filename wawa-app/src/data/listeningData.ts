@@ -736,3 +736,66 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
     },
   ],
 }
+
+/**
+ * Generate randomized vocabulary listening questions from the curriculum's rich card bank.
+ * Allows infinite listening drills across all vocabulary in the system.
+ */
+export function generateVocabListeningQuestions(
+  lang: LangId,
+  cards: Array<{ id: string; front: string; back: string; reading?: string; hint?: string }>,
+  count = 30,
+): ListeningQuestion[] {
+  if (!cards || cards.length < 4) return []
+
+  const validCards = cards.filter((c) => c.front && c.back && c.front.length < 30)
+  if (validCards.length < 4) return []
+
+  // Shuffle and pick
+  const shuffled = [...validCards].sort(() => Math.random() - 0.5)
+  const selected = shuffled.slice(0, count)
+
+  const voiceMap: Record<LangId, string> = {
+    jp: 'ja-JP',
+    cn: 'zh-CN',
+    kr: 'ko-KR',
+    en: 'en-GB',
+  }
+
+  return selected.map((card, idx) => {
+    // Pick 3 distinct wrong options
+    const others = validCards
+      .filter((c) => c.id !== card.id && c.back !== card.back)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+
+    const rawOptions = [card.back, ...others.map((o) => o.back)]
+    // Deduplicate and pad if needed
+    const options = Array.from(new Set(rawOptions)).sort(() => Math.random() - 0.5)
+    while (options.length < 4) {
+      const extra = validCards[Math.floor(Math.random() * validCards.length)]?.back
+      if (extra && !options.includes(extra)) options.push(extra)
+      else break
+    }
+
+    const answerIndex = options.indexOf(card.back)
+
+    return {
+      id: `vocab-gen-${lang}-${card.id}-${idx}`,
+      title: `Kosakata: ${card.front}`,
+      scenario: `Dengarkan pengucapan kata "${card.front}" dan pilih terjemahan artinya yang tepat.`,
+      text: card.front,
+      reading: card.reading || card.front,
+      translation: card.back,
+      prompt: `Apa arti kosakata "${card.front}" yang diucapkan pada audio?`,
+      options,
+      answer: Math.max(0, answerIndex),
+      voice: voiceMap[lang] || 'en-GB',
+      explanation: `Kata "${card.front}" dilafalkan "${card.reading || card.front}" yang berarti "${card.back}". ${card.hint ? `Konteks: ${card.hint}` : ''}`,
+      keyVocab: [
+        { word: `${card.front} (${card.reading || card.front})`, meaning: card.back },
+      ],
+    }
+  })
+}
+

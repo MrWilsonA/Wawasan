@@ -426,9 +426,12 @@ function RikushoSection() {
       {/* Visual Population Distribution Stack */}
       <div className="mb-4 rounded-2xl border-2 border-sand bg-cream p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="font-display text-[14px] font-extrabold text-ink">
-            📊 Komposisi Sebaran Populasi Karakter
-          </span>
+          <div className="flex items-center gap-2">
+            <Icon name="reference" size={17} className="text-teal-600" />
+            <span className="font-display text-[14px] font-extrabold text-ink">
+              Komposisi Sebaran Populasi Karakter
+            </span>
+          </div>
           <span className="text-[12px] font-extrabold text-teal-700">
             Klik kartu di bawah untuk bedah rumus
           </span>
@@ -532,8 +535,9 @@ function RikushoSection() {
 
                 <div className="mt-2.5 flex items-center justify-between text-[12.5px]">
                   <div className="font-cjk text-[16px] text-ink font-bold tracking-wider">{r.examples}</div>
-                  <span className="font-extrabold text-teal-600 hover:underline">
-                    {isSelected ? 'Tutup Detail ▲' : 'Buka Penjelasan & Rumus ▼'}
+                  <span className="flex items-center gap-1 font-extrabold text-teal-600 hover:underline">
+                    <span>{isSelected ? 'Tutup Detail' : 'Buka Penjelasan & Rumus'}</span>
+                    <Icon name={isSelected ? 'next' : 'down'} size={14} className={cx(isSelected && '-rotate-90')} />
                   </span>
                 </div>
               </button>
@@ -548,17 +552,23 @@ function RikushoSection() {
                       <span>Konsep & Cara Kerja:</span>
                     </div>
                     <p>{r.explanation}</p>
-                    <div className="mt-2.5 rounded-lg border border-amber-200 bg-amber-50/80 p-2.5 text-[12.5px] font-semibold text-amber-950 leading-relaxed">
-                      💡 <strong>Insight Pembelajaran:</strong> {r.keyInsight}
+                    <div className="mt-2.5 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/80 p-2.5 text-[12.5px] font-semibold text-amber-950 leading-relaxed">
+                      <Icon name="tip" size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-amber-950">Insight Pembelajaran:</strong> {r.keyInsight}
+                      </div>
                     </div>
                   </div>
 
                   {/* Character Formula Breakdowns */}
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <span className="font-display text-[13.5px] font-extrabold text-ink">
-                        🔍 Bedah Anatomi Contoh Karakter:
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <Icon name="search" size={16} className="text-teal-600" />
+                        <span className="font-display text-[13.5px] font-extrabold text-ink">
+                          Bedah Anatomi Contoh Karakter:
+                        </span>
+                      </div>
                       <span className="text-[11.5px] font-bold text-ink-faint">
                         {r.breakdowns.length} contoh dibedah
                       </span>

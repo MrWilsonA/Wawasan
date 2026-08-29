@@ -3,21 +3,36 @@ import { Wawa } from '@/brand/Wawa'
 import { Button, Card, Chip, Icon, SectionTitle, cx } from '@/components/ui'
 import { LANGUAGES } from '@/data/languages'
 import { useProgress } from '@/store/useProgress'
-import { LISTENING_DATA, type ListeningQuestion, type ListeningLevel } from '@/data/listeningData'
+import { LISTENING_DATA, generateVocabListeningQuestions, type ListeningQuestion, type ListeningLevel } from '@/data/listeningData'
+import { allCards } from '@/data/curriculum'
 import { playSound } from '@/lib/sound'
+
+type ListeningMode = 'scenario' | 'random_vocab'
 
 export default function Listening() {
   const activeLang = useProgress((s) => s.activeLang)
   const lang = LANGUAGES[activeLang]
   const levels = useMemo(() => LISTENING_DATA[activeLang] || [], [activeLang])
 
+  const [mode, setMode] = useState<ListeningMode>('scenario')
   const [activeLevelId, setActiveLevelId] = useState<string>(() => levels[0]?.id || 'n5')
+  const [randomSeed, setRandomSeed] = useState(0)
   const [questionIndex, setQuestionIndex] = useState(0)
   const [picked, setPicked] = useState<number | null>(null)
   const [showText, setShowText] = useState(false)
   const [slow, setSlow] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [completedQuestions, setCompletedQuestions] = useState<Record<string, boolean>>({})
+
+  // Fetch all curriculum cards for infinite randomized vocab drills
+  const vocabCards = useMemo(() => allCards(activeLang), [activeLang])
+
+  // Generate randomized questions when in random_vocab mode or seed changes
+  const randomizedVocabQuestions = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    randomSeed
+    return generateVocabListeningQuestions(activeLang, vocabCards, 25)
+  }, [activeLang, vocabCards, randomSeed])
 
   // Update level when active language changes
   useEffect(() => {
@@ -34,7 +49,13 @@ export default function Listening() {
     return levels.find((l) => l.id === activeLevelId) || levels[0]
   }, [levels, activeLevelId])
 
-  const questions = currentLevel?.questions || []
+  const questions: ListeningQuestion[] = useMemo(() => {
+    if (mode === 'random_vocab') {
+      return randomizedVocabQuestions.length > 0 ? randomizedVocabQuestions : currentLevel?.questions || []
+    }
+    return currentLevel?.questions || []
+  }, [mode, randomizedVocabQuestions, currentLevel])
+
   const question: ListeningQuestion | undefined = questions[questionIndex] || questions[0]
 
   const supported = useMemo(() => typeof window !== 'undefined' && 'speechSynthesis' in window, [])
@@ -84,7 +105,6 @@ export default function Listening() {
       setPicked(null)
       setShowText(false)
     } else {
-      // Completed level or loop
       setQuestionIndex(0)
       setPicked(null)
       setShowText(false)
@@ -101,7 +121,16 @@ export default function Listening() {
     setShowText(false)
   }
 
-  if (!currentLevel || !question) {
+  const handleShuffleRandomVocab = () => {
+    playSound('tap')
+    window.speechSynthesis?.cancel()
+    setRandomSeed((s) => s + 1)
+    setQuestionIndex(0)
+    setPicked(null)
+    setShowText(false)
+  }
+
+  if (!question) {
     return (
       <div className="p-6 text-center text-ink-soft">
         Tidak ada data latihan menyimak untuk bahasa ini.
@@ -120,60 +149,123 @@ export default function Listening() {
         sub="Latihan menyimak terstruktur mulai dari level dasar pemula (anak TK/fondasi) hingga tingkat mahir fasih (HSK/JLPT/TOPIK/CEFR)."
         right={
           <Chip color="teal" icon="listen">
-            Level {currentLevel.badge}
+            {mode === 'scenario' ? `Level ${currentLevel?.badge}` : `Acak ${questions.length} Kosakata`}
           </Chip>
         }
       />
 
-      {/* Level Selector Tabs */}
-      <Card className="!p-4 bg-paper border-2 border-sand shadow-[0_4px_0_0_var(--color-drop)]">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-display text-[14px] font-extrabold text-ink">
-              🎯 Pilih Tingkat Kesulitan / Level:
-            </span>
-            <span className="text-[12px] font-bold text-ink-soft">
-              ({levels.length} Tingkat Tersedia)
-            </span>
-          </div>
-          <div className="text-[12px] font-extrabold text-teal-700">
-            Progres Level: {levelProgress} / {questions.length} Selesai
-          </div>
+      {/* Mode Switcher & Filter Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex rounded-2xl border-2 border-sand bg-shell p-1 shadow-[0_2px_0_0_var(--color-drop)]">
+          <button
+            type="button"
+            onClick={() => {
+              playSound('tap')
+              setMode('scenario')
+              setQuestionIndex(0)
+              setPicked(null)
+              setShowText(false)
+            }}
+            className={cx(
+              'flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-black transition-all cursor-pointer',
+              mode === 'scenario'
+                ? 'bg-paper text-teal-800 shadow-[0_2px_0_0_var(--color-drop)] -translate-y-0.5'
+                : 'text-ink-soft hover:text-ink',
+            )}
+          >
+            <Icon name="exam" size={15} />
+            <span>Skenario Bertingkat ({levels.length} Level)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              playSound('tap')
+              setMode('random_vocab')
+              setQuestionIndex(0)
+              setPicked(null)
+              setShowText(false)
+            }}
+            className={cx(
+              'flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-black transition-all cursor-pointer',
+              mode === 'random_vocab'
+                ? 'bg-paper text-teal-800 shadow-[0_2px_0_0_var(--color-drop)] -translate-y-0.5'
+                : 'text-ink-soft hover:text-ink',
+            )}
+          >
+            <Icon name="sort" size={15} />
+            <span>Acak Seluruh Kosakata ({vocabCards.length} Kata)</span>
+            <Chip size="sm" color="amber">Brutal</Chip>
+          </button>
         </div>
 
-        {/* Level Badges Row */}
-        <div className="flex flex-wrap gap-2">
-          {levels.map((lvl) => {
-            const isSelected = lvl.id === activeLevelId
-            return (
-              <button
-                key={lvl.id}
-                type="button"
-                onClick={() => handleSelectLevel(lvl.id)}
-                className={cx(
-                  'flex items-center gap-1.5 rounded-xl border-2 px-3 py-2 text-[13px] font-extrabold transition-all cursor-pointer select-none',
-                  isSelected
-                    ? 'border-teal-500 bg-teal-50 text-teal-900 shadow-[0_3px_0_0_var(--color-teal-700)] -translate-y-0.5'
-                    : 'border-sand bg-cream text-ink-soft hover:border-teal-300 hover:bg-paper shadow-[0_2px_0_0_var(--color-drop)]',
-                )}
-              >
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: isSelected ? lang.color : 'var(--color-ink-faint)' }} />
-                <span>{lvl.badge}</span>
-              </button>
-            )
-          })}
-        </div>
+        {mode === 'random_vocab' && (
+          <button
+            type="button"
+            onClick={handleShuffleRandomVocab}
+            className="flex items-center gap-2 rounded-2xl border-2 border-teal-500 bg-teal-50 px-4 py-2 font-display text-[13px] font-black text-teal-900 shadow-sm hover:bg-teal-100 active:scale-95 cursor-pointer"
+          >
+            <Icon name="reset" size={16} />
+            <span>Acak Soal Baru (Shuffle)</span>
+          </button>
+        )}
+      </div>
 
-        <p className="mt-3 text-[13px] font-medium text-ink-soft border-t border-sand pt-2.5">
-          📖 <strong>Fokus {currentLevel.name}:</strong> {currentLevel.desc}
-        </p>
-      </Card>
+      {/* Level Selector Tabs (When in scenario mode) */}
+      {mode === 'scenario' && currentLevel ? (
+        <Card className="!p-4 bg-paper border-2 border-sand shadow-[0_4px_0_0_var(--color-drop)]">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Icon name="exam" size={17} className="text-teal-600" />
+              <span className="font-display text-[14px] font-extrabold text-ink">
+                Pilih Tingkat Kesulitan / Level:
+              </span>
+              <span className="text-[12px] font-bold text-ink-soft">
+                ({levels.length} Tingkat Tersedia)
+              </span>
+            </div>
+            <div className="text-[12px] font-extrabold text-teal-700">
+              Progres Level: {levelProgress} / {questions.length} Selesai
+            </div>
+          </div>
+
+          {/* Level Badges Row */}
+          <div className="flex flex-wrap gap-2">
+            {levels.map((lvl) => {
+              const isSelected = lvl.id === activeLevelId
+              return (
+                <button
+                  key={lvl.id}
+                  type="button"
+                  onClick={() => handleSelectLevel(lvl.id)}
+                  className={cx(
+                    'flex items-center gap-1.5 rounded-xl border-2 px-3 py-2 text-[13px] font-extrabold transition-all cursor-pointer select-none',
+                    isSelected
+                      ? 'border-teal-500 bg-teal-50 text-teal-900 shadow-[0_3px_0_0_var(--color-teal-700)] -translate-y-0.5'
+                      : 'border-sand bg-cream text-ink-soft hover:border-teal-300 hover:bg-paper shadow-[0_2px_0_0_var(--color-drop)]',
+                  )}
+                >
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: isSelected ? lang.color : 'var(--color-ink-faint)' }} />
+                  <span>{lvl.badge}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="mt-3 flex items-start gap-2 text-[13px] font-medium text-ink-soft border-t border-sand pt-2.5">
+            <Icon name="words" size={16} className="shrink-0 text-teal-600 mt-0.5" />
+            <div>
+              <strong className="text-ink">Fokus {currentLevel.name}:</strong> {currentLevel.desc}
+            </div>
+          </div>
+        </Card>
+      ) : null}
 
       {/* Main Interactive Listening Card */}
       <Card className="relative overflow-hidden border-2 border-sand shadow-[0_6px_0_0_var(--color-drop)]">
         {/* Top Progress & Scenario Info */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-sand pb-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-teal-300 bg-teal-50 font-display text-[13px] font-extrabold text-teal-800">
               #{questionIndex + 1}
             </span>
@@ -191,17 +283,17 @@ export default function Listening() {
             <span className="text-[12px] font-bold text-ink-soft">
               Soal {questionIndex + 1} dari {questions.length}
             </span>
-            <div className="flex gap-1">
+            <div className="flex gap-1 max-w-[140px] overflow-hidden">
               {questions.map((q, idx) => (
                 <span
                   key={q.id}
                   className={cx(
-                    'h-2.5 w-6 rounded-full border transition-all',
+                    'h-2.5 min-w-3 rounded-full border transition-all',
                     idx === questionIndex
-                      ? 'border-teal-500 bg-teal-400 w-8'
+                      ? 'border-teal-500 bg-teal-400 w-6'
                       : completedQuestions[q.id]
-                        ? 'border-leaf-400 bg-leaf-400'
-                        : 'border-sand bg-shell',
+                        ? 'border-leaf-400 bg-leaf-400 w-3'
+                        : 'border-sand bg-shell w-3',
                   )}
                 />
               ))}
@@ -295,9 +387,12 @@ export default function Listening() {
             )}
 
             {/* Prompt */}
-            <h3 className="mb-3 font-display text-[17px] font-extrabold text-ink">
-              ❓ {question.prompt}
-            </h3>
+            <div className="mb-3 flex items-center gap-2">
+              <Icon name="help" size={20} className="text-teal-600" />
+              <h3 className="font-display text-[17px] font-extrabold text-ink">
+                {question.prompt}
+              </h3>
+            </div>
 
             {/* Options List */}
             <div className="grid gap-2.5 sm:grid-cols-1">
@@ -305,7 +400,7 @@ export default function Listening() {
                 const state = picked === null ? 'idle' : i === question.answer ? 'right' : i === picked ? 'wrong' : 'idle'
                 return (
                   <button
-                    key={option}
+                    key={`${option}-${i}`}
                     type="button"
                     disabled={picked !== null}
                     onClick={() => handlePickOption(i)}
@@ -326,7 +421,7 @@ export default function Listening() {
                             : 'border-sand bg-shell text-ink-soft',
                       )}
                     >
-                      {state === 'right' ? '✓' : state === 'wrong' ? '✕' : String.fromCharCode(65 + i)}
+                      {state === 'right' ? <Icon name="check" size={14} /> : state === 'wrong' ? <Icon name="close" size={14} /> : String.fromCharCode(65 + i)}
                     </span>
                     <span className="flex-1">{option}</span>
                   </button>
@@ -339,21 +434,21 @@ export default function Listening() {
               <div className="anim-rise mt-5 space-y-4 rounded-2xl border-2 border-sand bg-cream p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <span className={cx('text-xl', picked === question.answer ? 'text-leaf-600' : 'text-coral-600')}>
-                      {picked === question.answer ? '🎉' : '💡'}
+                    <span className={cx('flex h-7 w-7 items-center justify-center rounded-xl border-2', picked === question.answer ? 'border-leaf-400 bg-leaf-100 text-leaf-700' : 'border-coral-400 bg-coral-100 text-coral-700')}>
+                      <Icon name={picked === question.answer ? 'party' : 'tip'} size={16} />
                     </span>
                     <span className="font-display text-[15px] font-extrabold text-ink">
                       {picked === question.answer ? 'Jawaban Benar!' : 'Belum Tepat, Ini Pembahasannya:'}
                     </span>
                   </div>
-                  <Button size="sm" onClick={handleNextQuestion}>
-                    {questionIndex < questions.length - 1 ? 'Soal Berikutnya →' : 'Selesai Level Ini 🏆'}
+                  <Button size="sm" icon="next" onClick={handleNextQuestion}>
+                    {questionIndex < questions.length - 1 ? 'Soal Berikutnya' : 'Selesai Latihan Ini'}
                   </Button>
                 </div>
 
                 {/* Explanation */}
                 <div className="rounded-xl border border-sand bg-paper p-3 text-[13.5px] leading-relaxed text-ink-soft">
-                  <strong>Penjelasan Kunci:</strong> {question.explanation}
+                  <strong className="text-ink">Penjelasan Kunci:</strong> {question.explanation}
                 </div>
 
                 {/* Key Vocab */}
