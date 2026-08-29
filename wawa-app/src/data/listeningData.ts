@@ -25,6 +25,9 @@ export type ListeningLevel = {
 }
 
 export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
+  // =========================================================================
+  // JAPANESE LISTENING SUITE (N5 s.d. N1)
+  // =========================================================================
   jp: [
     {
       id: 'n5',
@@ -34,16 +37,16 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
       questions: [
         {
           id: 'jp-n5-1',
-          title: 'Bertanya Stasiun',
+          title: 'Bertanya Stasiun Terdekat',
           scenario: 'Seorang turis bertanya arah kepada petugas di pinggir jalan.',
           text: 'すみません、一番近い地下鉄の駅はどこですか。',
           reading: 'Sumimasen, ichiban chikai chikatetsu no eki wa doko desu ka?',
           translation: 'Permisi, stasiun kereta bawah tanah terdekat ada di mana ya?',
-          prompt: 'Apa yang sedang dicari oleh pembicara?',
-          options: ['Stasiun kereta bawah tanah terdekat', 'Toko serba ada 24 jam', 'Pemberhentian bus bandara'],
+          prompt: 'Apa yang sedang dicari oleh pembicara pada audio?',
+          options: ['Stasiun kereta bawah tanah terdekat', 'Toko serba ada 24 jam', 'Pemberhentian bus bandara', 'Kedutaan besar terdekat'],
           answer: 0,
           voice: 'ja-JP',
-          explanation: 'Frasa "chikatetsu no eki" berarti stasiun kereta bawah tanah, dan "ichiban chikai" berarti paling dekat.',
+          explanation: 'Frasa "chikatetsu no eki" (地下鉄の駅) berarti stasiun kereta bawah tanah, dan "ichiban chikai" (一番近い) berarti paling dekat.',
           keyVocab: [
             { word: '地下鉄 (chikatetsu)', meaning: 'kereta bawah tanah' },
             { word: '駅 (eki)', meaning: 'stasiun' },
@@ -57,11 +60,11 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
           text: '明日は朝早いですね。何時に起きますか。……七時に起きます。',
           reading: 'Ashita wa asa hayai desu ne. Nan-ji ni okimasu ka? ... Shichi-ji ni okimasu.',
           translation: 'Besok pagi-pagi sekali ya. Bangun jam berapa? ... Saya bangun jam 7.',
-          prompt: 'Pukul berapa pembicara akan bangun besok pagi?',
-          options: ['Pukul 06.00', 'Pukul 07.00', 'Pukul 08.00'],
+          prompt: 'Pukul berapa pembicara kedua akan bangun besok pagi?',
+          options: ['Pukul 06.00', 'Pukul 07.00', 'Pukul 08.00', 'Pukul 09.00'],
           answer: 1,
           voice: 'ja-JP',
-          explanation: 'Pembicara kedua menjawab "Shichi-ji ni okimasu" (Saya bangun pukul 7).',
+          explanation: 'Pembicara kedua menjawab jelas "Shichi-ji ni okimasu" (七時に起きます = bangun pukul 7).',
           keyVocab: [
             { word: '朝早い (asa hayai)', meaning: 'pagi-pagi buta' },
             { word: '七時 (shichi-ji)', meaning: 'jam 7' },
@@ -70,19 +73,73 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
         },
         {
           id: 'jp-n5-3',
-          title: 'Memesan di Kafe',
-          scenario: 'Pelanggan memesan minuman panas di kedai kopi.',
+          title: 'Memesan di Kedai Kopi',
+          scenario: 'Pelanggan memesan minuman di kafe stasiun.',
           text: 'いらっしゃいませ。……ホットコーヒーを二つと、アイスティーを一つください。',
           reading: 'Irasshaimase. ... Hotto kōhī o futatsu to, aisu tī o hitotsu kudasai.',
           translation: 'Selamat datang. ... Tolong dua kopi panas dan satu es teh.',
-          prompt: 'Berapa jumlah total minuman yang dipesan pelanggan?',
-          options: ['2 minuman', '3 minuman (2 kopi panas + 1 es teh)', '4 minuman'],
+          prompt: 'Berapa jumlah total minuman yang dipesan oleh pelanggan?',
+          options: ['2 minuman', '3 minuman (2 kopi panas + 1 es teh)', '4 minuman', '1 minuman saja'],
           answer: 1,
           voice: 'ja-JP',
-          explanation: 'Pelanggan memesan "kōhī o futatsu" (2 kopi) dan "aisu tī o hitotsu" (1 es teh), total 3 gelas.',
+          explanation: 'Pelanggan memesan "kōhī o futatsu" (2 kopi) dan "aisu tī o hitotsu" (1 es teh), sehingga totalnya adalah 3 minuman.',
           keyVocab: [
             { word: '二つ (futatsu)', meaning: 'dua buah' },
             { word: '一つ (hitotsu)', meaning: 'satu buah' },
+            { word: 'ホットコーヒー', meaning: 'kopi panas' },
+          ],
+        },
+        {
+          id: 'jp-n5-4',
+          title: 'Menanyakan Harga Barang di Konbini',
+          scenario: 'Pelanggan menanyakan harga payung di toko swalayan.',
+          text: 'すみません、この傘はいくらですか。……それは八百円です。',
+          reading: 'Sumimasen, kono kasa wa ikura desu ka? ... Sore wa happyaku-en desu.',
+          translation: 'Permisi, payung ini harganya berapa? ... Itu harganya 800 yen.',
+          prompt: 'Berapa harga payung yang ditanyakan pembicara?',
+          options: ['600 Yen', '700 Yen', '800 Yen', '900 Yen'],
+          answer: 2,
+          voice: 'ja-JP',
+          explanation: 'Kasir menjawab "Happyaku-en desu" (八百円 = 800 yen).',
+          keyVocab: [
+            { word: '傘 (kasa)', meaning: 'payung' },
+            { word: 'いくら (ikura)', meaning: 'berapa harga' },
+            { word: '八百円 (happyaku-en)', meaning: '800 yen' },
+          ],
+        },
+        {
+          id: 'jp-n5-5',
+          title: 'Prakiraan Cuaca Esok Hari',
+          scenario: 'Penyiar cuaca radio memberikan informasi cuaca kota Tokyo.',
+          text: '明日の東京は朝から雨が降るでしょう。傘を忘れないでください。',
+          reading: 'Ashita no Tōkyō wa asa kara ame ga furu deshō. Kasa o wasurenaide kudasai.',
+          translation: 'Tokyo besok diperkirakan akan hujan sejak pagi. Jangan lupa membawa payung.',
+          prompt: 'Bagaimana cuaca kota Tokyo pada esok hari?',
+          options: ['Cerah dan panas terik', 'Hujan sejak pagi hari', 'Berangin kencang dan bersalju', 'Mendung tanpa hujan'],
+          answer: 1,
+          voice: 'ja-JP',
+          explanation: 'Penyiar mengatakan "asa kara ame ga furu" (hujan turun sejak pagi hari).',
+          keyVocab: [
+            { word: '雨が降る (ame ga furu)', meaning: 'hujan turun' },
+            { word: '忘れる (wasureru)', meaning: 'lupa' },
+          ],
+        },
+        {
+          id: 'jp-n5-6',
+          title: 'Membeli Tiket Shinkansen',
+          scenario: 'Penumpang memesan tiket shinkansen di loket stasiun.',
+          text: '京都までの新幹線、指定席で大人一枚お願いします。',
+          reading: 'Kyōto made no shinkansen, shiteiseki de otona ichimai onegai shimasu.',
+          translation: 'Tiket Shinkansen sampai Kyoto, kursi bernomor untuk 1 orang dewasa tolong.',
+          prompt: 'Ke mana tujuan tiket yang dibeli oleh penumpang tersebut?',
+          options: ['Stasiun Tokyo', 'Stasiun Kyoto', 'Stasiun Osaka', 'Stasiun Nagoya'],
+          answer: 1,
+          voice: 'ja-JP',
+          explanation: 'Penumpang menyebutkan "Kyōto made" (sampai ke Kyoto) dengan "shiteiseki" (kursi bernomor).',
+          keyVocab: [
+            { word: '新幹線 (shinkansen)', meaning: 'kereta cepat peluru' },
+            { word: '指定席 (shiteiseki)', meaning: 'kursi bertiket khusus/terpesan' },
+            { word: '大人 (otona)', meaning: 'orang dewasa' },
           ],
         },
       ],
@@ -95,16 +152,16 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
       questions: [
         {
           id: 'jp-n4-1',
-          title: 'Pengumuman di Supermarket',
+          title: 'Pengumuman Diskon Supermarket',
           scenario: 'Pengumuman promo diskon jam malam di dalam toko.',
           text: '本日午後八時より、生鮮食品コーナー全品半額セールを行います。',
           reading: 'Honjitsu gogo hachi-ji yori, seisen shokuhin kōnā zenpin hangaku sēru o okonaimasu.',
           translation: 'Hari ini mulai pukul 20.00, seluruh produk di area makanan segar diskon 50%.',
           prompt: 'Berapa potongan harga yang diberikan mulai pukul 8 malam?',
-          options: ['Diskon 20%', 'Diskon 50% (setengah harga)', 'Beli 1 gratis 1'],
+          options: ['Diskon 20%', 'Diskon 50% (setengah harga)', 'Beli 1 gratis 1', 'Diskon khusus anggota 10%'],
           answer: 1,
           voice: 'ja-JP',
-          explanation: 'Kata "hangaku" (半額) berarti setengah harga atau potongan 50%.',
+          explanation: 'Kata "hangaku" (半額) berarti setengah harga atau diskon 50%.',
           keyVocab: [
             { word: '半額 (hangaku)', meaning: 'setengah harga (diskon 50%)' },
             { word: '生鮮食品 (seisen shokuhin)', meaning: 'makanan segar' },
@@ -112,624 +169,395 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
         },
         {
           id: 'jp-n4-2',
-          title: 'Kunjungan ke Dokter',
-          scenario: 'Dokter memberikan resep obat dan instruksi minum obat.',
+          title: 'Instruksi Minum Obat dari Dokter',
+          scenario: 'Dokter memberikan resep obat dan aturan minum kepada pasien.',
           text: 'この薬は食後に一日三回、必ず水で飲んでください。お茶では飲まないでください。',
           reading: 'Kono kusuri wa shokugo ni ichinichi san-kai, kanarazu mizu de nonde kudasai. Ocha dewa nomanaide kudasai.',
           translation: 'Obat ini diminum setelah makan 3 kali sehari, pastikan dengan air putih. Jangan diminum dengan teh.',
-          prompt: 'Bagaimana cara minum obat yang benar sesuai instruksi dokter?',
-          options: ['Diminum dengan teh manis', 'Diminum sebelum makan', 'Diminum setelah makan dengan air putih 3x sehari'],
-          answer: 2,
+          prompt: 'Bagaimana aturan meminum obat yang benar sesuai instruksi dokter?',
+          options: ['Sebelum makan dengan teh hangat', 'Sesudah makan 3 kali sehari dengan air putih', 'Sebelum tidur bersama susu', 'Kapan saja saat terasa sakit'],
+          answer: 1,
           voice: 'ja-JP',
-          explanation: 'Dokter menegaskan "shokugo ni" (setelah makan), "ichinichi san-kai" (3x sehari), dan "kanarazu mizu de" (harus dengan air putih).',
+          explanation: 'Dokter mengatakan "shokugo ni ichinichi san-kai, kanarazu mizu de" (setelah makan, 3 kali sehari dengan air).',
           keyVocab: [
             { word: '食後 (shokugo)', meaning: 'setelah makan' },
-            { word: '一日三回 (ichinichi san-kai)', meaning: '3 kali sehari' },
+            { word: '必ず (kanarazu)', meaning: 'pasti / tanpa kecuali' },
+          ],
+        },
+        {
+          id: 'jp-n4-3',
+          title: 'Ajakan Menonton Bioskop & Menolak Halus',
+          scenario: 'Dua orang sahabat membicarakan rencana akhir pekan.',
+          text: '今週末、新しい映画を見に行きませんか。……すみません、その日はレポートを書かなければならないんです。',
+          reading: 'Konshūmatsu, atarashii eiga o mi ni ikimasen ka? ... Sumimasen, sono hi wa repōto o kakanakereba naranai n desu.',
+          translation: 'Akhir pekan ini mau pergi nonton film baru tidak? ... Maaf, hari itu saya harus menulis laporan.',
+          prompt: 'Mengapa pembicara kedua menolak ajakan nonton bioskop?',
+          options: ['Karena tidak suka film tersebut', 'Karena harus mengerjakan laporan', 'Karena sedang sakit demam', 'Karena ada janji dengan keluarga'],
+          answer: 1,
+          voice: 'ja-JP',
+          explanation: 'Pembicara kedua menolak dengan alasan "repōto o kakanakereba naranai" (harus menulis laporan).',
+          keyVocab: [
+            { word: '今週末 (konshūmatsu)', meaning: 'akhir pekan ini' },
+            { word: '〜なければならない', meaning: 'harus / wajib melakukan' },
           ],
         },
       ],
     },
     {
       id: 'n3',
-      name: 'JLPT N3 · Situasi Kerja & Sosial',
+      name: 'JLPT N3 · Pemahaman Situasional & Kerja',
       badge: 'N3 Menengah',
-      desc: 'Komunikasi kantor, perbedaan nuansa sopan, pengumuman transportasi, dan opini santai.',
+      desc: 'Wawancara kerja paruh waktu, masalah layanan pelanggan, dan percakapan kantor.',
       questions: [
         {
           id: 'jp-n3-1',
-          title: 'Perubahan Jadwal Rapat Kantor',
-          scenario: 'Atasan mengumumkan pergeseran jam rapat kepada tim.',
-          text: '田中部長、明日の企画会議ですが、会議室の都合で一時半からではなく三時からに変更となりました。',
-          reading: 'Tanaka-buchō, ashita no kikaku kaigi desu ga, kaigishitsu no tsugō de ichi-ji han kara dewa naku san-ji kara ni henkō to narimashita.',
-          translation: 'Manajer Tanaka, rapat perencanaan besok diubah dari bukan jam 13.30 melainkan menjadi jam 15.00 karena ketersediaan ruangan.',
-          prompt: 'Pukul berapa rapat perencanaan akhirnya dilaksanakan besok?',
-          options: ['Pukul 13.30', 'Pukul 15.00', 'Dibatalkan'],
+          title: 'Wawancara Kerja Paruh Waktu (Baito)',
+          scenario: 'Manajer toko mewawancarai calon pekerja sambilan.',
+          text: '週に何日くらい入れますか。……火曜日と木曜日の午後なら、いつでも大丈夫です。',
+          reading: 'Shū ni nan-nichi kurai hairemasu ka? ... Kayōbi to mokuyōbi no gogo nara, itsu demo daijōbu desu.',
+          translation: 'Bisa masuk berapa hari dalam seminggu? ... Kalau siang hari Selasa dan Kamis, saya bisa kapan saja.',
+          prompt: 'Kapan pelamar tersebut bisa bekerja sambilan?',
+          options: ['Setiap hari dari pagi', 'Hanya hari Sabtu dan Minggu', 'Selasa dan Kamis siang', 'Senin dan Rabu malam'],
+          answer: 2,
+          voice: 'ja-JP',
+          explanation: 'Pelamar menyatakan sanggup bekerja "Kayōbi to mokuyōbi no gogo" (Selasa dan Kamis siang).',
+          keyVocab: [
+            { word: '入れる (haCommands/hairemasu)', meaning: 'bisa masuk giliran kerja' },
+            { word: '午後 (gogo)', meaning: 'siang / sore' },
+          ],
+        },
+        {
+          id: 'jp-n3-2',
+          title: 'Kendala Pengiriman Paket Barang',
+          scenario: 'Petugas logistik menelepon penerima barang terkait keterlambatan.',
+          text: '大雪の影響で高速道路が通行止めになっており、お荷物の到着が明日以降に遅れる見込みです。',
+          reading: 'Ōyuki no eikyō de kōsokudōro ga tsūkōdome ni natte ori, onimotsu no tōchaku ga ashita ikō ni okureru mikomi desu.',
+          translation: 'Akibat salju lebat, jalan tol ditutup, sehingga pengiriman paket Anda diperkirakan terlambat hingga besok atau setelahnya.',
+          prompt: 'Apa penyebab utama paket kiriman mengalami keterlambatan?',
+          options: ['Alamat penerima salah ketik', 'Jalan tol ditutup akibat salju lebat', 'Mobil kurir mengalami kecelakaan', 'Gudang logistik sedang mogok kerja'],
           answer: 1,
           voice: 'ja-JP',
-          explanation: 'Pola "...kara dewa naku, ...kara ni henkō" berarti bukan dari jam 13.30 melainkan diubah menjadi jam 15.00.',
+          explanation: 'Petugas menjelaskan "ōyuki no eikyō de kōsokudōro ga tsūkōdome" (akibat dampak salju lebat jalan tol ditutup).',
           keyVocab: [
-            { word: '企画会議 (kikaku kaigi)', meaning: 'rapat perencanaan' },
-            { word: '変更 (henkō)', meaning: 'perubahan / pergeseran' },
+            { word: '大雪 (ōyuki)', meaning: 'salju lebat' },
+            { word: '通行止め (tsūkōdome)', meaning: 'penutupan jalan / dilarang lewat' },
+            { word: '遅れる見込み (okureru mikomi)', meaning: 'diperkirakan terlambat' },
           ],
         },
       ],
     },
     {
       id: 'n2',
-      name: 'JLPT N2 · Berita & Opini Kompleks',
-      badge: 'N2 Lanjutan',
-      desc: 'Siaran berita, wawancara kerja formal, penjelasan tersirat, dan perdebatan argumen.',
+      name: 'JLPT N2 · Berita & Opini Formal',
+      badge: 'N2 Mahir Bisnis',
+      desc: 'Wacana berita, laporan statistik, diskusi lingkungan, dan koordinasi bisnis.',
       questions: [
         {
           id: 'jp-n2-1',
-          title: 'Analisis Kebiasaan Konsumen',
-          scenario: 'Penyiar radio memaparkan tren transaksi non-tunai di kalangan lansia.',
-          text: '若者を中心に普及したキャッシュレス決済ですが、最近ではポイント還元を機に高齢者層の利用も急速に拡大しています。',
-          reading: 'Wakamono o chūshin ni fukyū shita kyasshuresu kessai desu ga, saikin dewa pointo kangen o ki ni kōreisha-sō no riyō mo kyūsoku ni kakudai shite imasu.',
-          translation: 'Pembayaran non-tunai yang awalnya meluas di kalangan muda, kini pemanfaatannya juga melonjak cepat di kalangan lansia berkat program poin.',
-          prompt: 'Apa faktor pemicu meningkatnya pembayaran non-tunai di kalangan lansia?',
-          options: ['Program insentif pengembalian poin', 'Ketiadaan uang kertas', 'Kewajiban dari pemerintah'],
-          answer: 0,
+          title: 'Berita Radio: Tren Kerja Jarak Jauh',
+          scenario: 'Penyiar berita radio membacakan hasil survei ketenagakerjaan.',
+          text: 'テレワークの導入により、都心から郊外へ移住する若年層が急増しているとのことです。',
+          reading: 'Terewāku no dōnyū ni yori, toshin kara kōgai e ijū suru jakunensō ga kyūzō shite iru to no koto desu.',
+          translation: 'Dengan diterapkannya kerja jarak jauh, jumlah anak muda yang pindah dari pusat kota ke pinggiran dikabarkan meningkat drastis.',
+          prompt: 'Tren apa yang dilaporkan oleh penyiar berita?',
+          options: ['Anak muda kembali tinggal di pusat kota', 'Peningkatan drastis kepindahan anak muda ke pinggiran kota berkat telework', 'Penurunan jam kerja karyawan kantor', 'Penghapusan sistem kerja jarak jauh'],
+          answer: 1,
           voice: 'ja-JP',
-          explanation: 'Frasa "pointo kangen o ki ni" menunjukkan bahwa program pengembalian poin (cashback/poin) menjadi momentum pemicu kenaikan.',
+          explanation: 'Penyiar menyebutkan "toshin kara kōgai e ijū suru jakunensō ga kyūzō" (anak muda yang pindah dari pusat kota ke pinggiran meningkat pesat).',
           keyVocab: [
-            { word: 'キャッシュレス決済 (kyasshuresu kessai)', meaning: 'pembayaran non-tunai' },
-            { word: '高齢者層 (kōreisha-sō)', meaning: 'kalangan lanjut usia' },
+            { word: '導入 (dōnyū)', meaning: 'penerapan / adopsi' },
+            { word: '郊外 (kōgai)', meaning: 'pinggiran kota' },
+            { word: '急増 (kyūzō)', meaning: 'peningkatan drastis' },
           ],
         },
       ],
     },
     {
       id: 'n1',
-      name: 'JLPT N1 · Ceramah Akademik & Fasih',
-      badge: 'N1 Mahir / Fasih',
-      desc: 'Kuliah universitas, nuansa tersirat, kiasan sastra, dan perdebatan isu sosial ekonomi mendalam.',
+      name: 'JLPT N1 · Wacana Kompleks & Editorial',
+      badge: 'N1 Fasih Mutlak',
+      desc: 'Wawancara pakar sains, editorial koran, bahasa sastra, dan negosiasi tingkat tinggi.',
       questions: [
         {
           id: 'jp-n1-1',
-          title: 'Kuliah Sosiolinguistik',
-          scenario: 'Dosen memaparkan evolusi bahasa dan perubahan kesopanan antar generasi.',
-          text: '言葉の乱れと批判されがちな若者言葉ですが、言語学的な観点から見れば、伝達の効率化を図る必然的な適応現象と言えます。',
-          reading: 'Kotoba no midare to hihan saregachina wakamono kotoba desu ga, gengogakuteki na kanten kara mireba, dentatsu no kōritsuka o hakaru hitsuzen-teki na tekiō genshō to iemasu.',
-          translation: 'Bahasa anak muda yang sering dikritik sebagai perusakan bahasa, bila dilihat dari sudut pandang linguistik, sebenarnya merupakan fenomena adaptasi yang niscaya demi efisiensi penyampaian pesan.',
-          prompt: 'Bagaimana pandangan pembicara mengenai fenomena bahasa anak muda?',
-          options: ['Sebagai bentuk perusakan tata bahasa yang harus dilarang', 'Sebagai adaptasi alami bahasa demi efisiensi komunikasi', 'Sebagai tanda kemunduran pendidikan'],
+          title: 'Wawancara Pakar: Kecerdasan Buatan & Etika',
+          scenario: 'Seorang profesor filsafat teknologi membahas batasan etika AI.',
+          text: 'AIの進化が目覚ましい一方で、その判断基準における透明性の欠如は、倫理的観点から看過し得ない課題と言わざるを得ません。',
+          reading: 'AI no shinka ga mezamashii ippō de, sono handan kijun ni okeru tōmeisei no ketsujo wa, rinriteki kanten kara kanka shi enai kadai to iwazaru o emasen.',
+          translation: 'Di tengah pesatnya kemajuan AI, kurangnya transparansi pada kriteria keputusannya tak pelak merupakan masalah yang tak boleh diabaikan dari sudut pandang etika.',
+          prompt: 'Apa inti pandangan profesor terhadap perkembangan teknologi AI?',
+          options: ['AI sudah sempurna dan tidak perlu diawasi', 'Kurangnya transparansi keputusan AI adalah masalah etika yang tidak boleh diabaikan', 'Perkembangan AI harus dihentikan sepenuhnya', 'AI hanya boleh digunakan untuk riset medis'],
           answer: 1,
           voice: 'ja-JP',
-          explanation: 'Pembicara menegaskan bahwa bahasa anak muda adalah "hitsuzen-teki na tekiō genshō" (fenomena adaptasi yang niscaya) untuk efisiensi komunikasi.',
+          explanation: 'Frasa "kanka shi enai kadai to iwazaru o emasen" (tak pelak merupakan isu yang tidak boleh diabaikan).',
           keyVocab: [
-            { word: '言葉の乱れ (kotoba no midare)', meaning: 'penyimpangan/perusakan bahasa' },
-            { word: '言語学的観点 (gengogakuteki kanten)', meaning: 'sudut pandang linguistik' },
+            { word: '透明性の欠如 (tōmeisei no ketsujo)', meaning: 'ketiadaan / kurangnya transparansi' },
+            { word: '看過し得ない (kanka shi enai)', meaning: 'tidak dapat diabaikan / dikesampingkan' },
           ],
         },
       ],
     },
   ],
 
+  // =========================================================================
+  // MANDARIN LISTENING SUITE (HSK 1 s.d. HSK 6)
+  // =========================================================================
   cn: [
     {
       id: 'hsk1',
-      name: 'HSK 1 · Fondasi Pemula (Anak TK & Dasar)',
-      badge: 'HSK 1 Pemula',
-      desc: 'Sapaan, anggota keluarga, angka, makanan sederhana, dan kalimat dasar.',
+      name: 'HSK 1 · Sapaan & Kehidupan Dasar',
+      badge: 'HSK 1 Dasar',
+      desc: 'Mengenal nada Pinyin, angka, anggota keluarga, jam, dan perkenalan.',
       questions: [
         {
           id: 'cn-hsk1-1',
-          title: 'Menanyakan Lokasi MRT',
-          scenario: 'Bertanya letak stasiun kereta bawah tanah di Beijing.',
-          text: '请问，地铁站在哪儿？……在那边，商场前面。',
-          reading: 'Qǐngwèn, dìtiě zhàn zài nǎr? ... Zài nàbiān, shāngchǎng qiánmiàn.',
-          translation: 'Numpang tanya, stasiun MRT di mana ya? ... Di sebelah sana, di depan mall.',
-          prompt: 'Di manakah letak stasiun MRT?',
-          options: ['Di depan pusat perbelanjaan (mall)', 'Di dalam rumah sakit', 'Di belakang sekolah'],
-          answer: 0,
+          title: 'Menanyakan Nama & Perkenalan',
+          scenario: 'Dua orang teman baru saling berkenalan di kelas bahasa Mandarin.',
+          text: '你好！请问你叫什么名字？……我叫李明，很高兴认识你。',
+          reading: 'Nǐ hǎo! Qǐngwèn nǐ jiào shénme míngzi? ... Wǒ jiào Lǐ Míng, hěn gāoxìng rènshi nǐ.',
+          translation: 'Halo! Boleh tanya nama Anda siapa? ... Nama saya Li Ming, senang berkenalan dengan Anda.',
+          prompt: 'Siapakah nama pembicara kedua pada audio?',
+          options: ['Wang Lei', 'Li Ming', 'Zhang Wei', 'Liu Yang'],
+          answer: 1,
           voice: 'zh-CN',
-          explanation: '"Zài shāngchǎng qiánmiàn" berarti berada di depan mall / pusat perbelanjaan.',
+          explanation: 'Pembicara kedua menjawab jelas "Wǒ jiào Lǐ Míng" (Nama saya Li Ming).',
           keyVocab: [
-            { word: '地铁站 (dìtiě zhàn)', meaning: 'stasiun MRT / subway' },
-            { word: '商场 (shāngchǎng)', meaning: 'pusat perbelanjaan / mall' },
-            { word: '前面 (qiánmiàn)', meaning: 'bagian depan' },
+            { word: '请问 (qǐngwèn)', meaning: 'boleh tanya / permisi tanya' },
+            { word: '高兴 (gāoxìng)', meaning: 'senang / gembira' },
           ],
         },
         {
           id: 'cn-hsk1-2',
-          title: 'Jam Mulai Kerja',
-          scenario: 'Karyawan menyebutkan jam masuk kantor besok pagi.',
-          text: '我明天上午八点半上班，你呢？',
-          reading: 'Wǒ míngtiān shàngwǔ bā diǎn bàn shàngbān, nǐ ne?',
-          translation: 'Besok pagi saya masuk kerja pukul 08.30, kalau kamu?',
-          prompt: 'Pukul berapa pembicara mulai masuk kerja besok?',
-          options: ['Pukul 08.00 pagi', 'Pukul 08.30 pagi', 'Pukul 09.00 pagi'],
-          answer: 1,
+          title: 'Membeli Apel di Toko Buah',
+          scenario: 'Pelanggan menanyakan harga apel per setengah kilogram (斤).',
+          text: '老板，这个苹果多少钱一斤？……五块钱一斤。',
+          reading: 'Lǎobǎn, zhège píngguǒ duōshao qián yì jīn? ... Wǔ kuài qián yì jīn.',
+          translation: 'Bos, apel ini berapa harganya setengah kilo? ... 5 kuai (yuan) setengah kilo.',
+          prompt: 'Berapa harga apel tersebut per setengah kilogram (斤)?',
+          options: ['3 Yuan', '4 Yuan', '5 Yuan (kuài)', '10 Yuan'],
+          answer: 2,
           voice: 'zh-CN',
-          explanation: '"Bā diǎn bàn" (八点半) artinya pukul delapan lewat tiga puluh menit (08.30).',
+          explanation: 'Penjual menjawab "Wǔ kuài qián yì jīn" (5 yuan per jin).',
           keyVocab: [
-            { word: '上午 (shàngwǔ)', meaning: 'pagi hari (sebelum siang)' },
-            { word: '八点半 (bā diǎn bàn)', meaning: 'pukul 08.30' },
-            { word: '上班 (shàngbān)', meaning: 'masuk kerja' },
+            { word: '苹果 (píngguǒ)', meaning: 'apel' },
+            { word: '多少钱 (duōshao qián)', meaning: 'berapa harga' },
+            { word: '块 (kuài)', meaning: 'satuan mata uang Yuan (lisan)' },
           ],
         },
         {
           id: 'cn-hsk1-3',
-          title: 'Pesan Minuman Teh',
-          scenario: 'Memesan minuman di restoran tradisional.',
-          text: '服务员，请给我们两杯热茶，谢谢。',
-          reading: 'Fúwùyuán, qǐng gěi wǒmen liǎng bēi rè chá, xièxie.',
-          translation: 'Pelayan, tolong beri kami dua cangkir teh panas, terima kasih.',
-          prompt: 'Minuman apa dan berapa banyak yang dipesan?',
-          options: ['2 cangkir teh panas', '1 cangkir kopi dingin', '3 gelas air putih'],
-          answer: 0,
+          title: 'Menanyakan Waktu Keberangkatan',
+          scenario: 'Dua orang teman memeriksa jam sebelum pergi ke bioskop.',
+          text: '现在几点？……现在下午三点半，电影四点开始。',
+          reading: 'Xiànzài jǐ diǎn? ... Xiànzài xiàwǔ sān diǎn bàn, diànyǐng sì diǎn kāishǐ.',
+          translation: 'Sekarang jam berapa? ... Sekarang jam setengah 4 sore, filmnya mulai jam 4.',
+          prompt: 'Pukul berapa film akan dimulai?',
+          options: ['Pukul 03.00', 'Pukul 03.30', 'Pukul 04.00 sore', 'Pukul 05.00 sore'],
+          answer: 2,
           voice: 'zh-CN',
-          explanation: '"Liǎng bēi rè chá" berarti dua cangkir teh panas.',
+          explanation: 'Pembicara menyebutkan "diànyǐng sì diǎn kāishǐ" (film mulai pukul 4).',
           keyVocab: [
-            { word: '两杯 (liǎng bēi)', meaning: 'dua cangkir / gelas' },
-            { word: '热茶 (rè chá)', meaning: 'teh panas' },
+            { word: '几点 (jǐ diǎn)', meaning: 'jam berapa' },
+            { word: '半 (bàn)', meaning: 'setengah (30 menit)' },
+            { word: '开始 (kāishǐ)', meaning: 'mulai' },
           ],
         },
       ],
     },
     {
       id: 'hsk2',
-      name: 'HSK 2 · Kehidupan Sehari-hari',
-      badge: 'HSK 2 Dasar',
-      desc: 'Belanja, naik taksi, cuaca, janji temu dokter, dan aktivitas akhir pekan.',
+      name: 'HSK 2 · Belanja & Kegiatan Harian',
+      badge: 'HSK 2 Menengah',
+      desc: 'Transportasi, kondisi cuaca, pemesanan makanan di restoran, dan arah.',
       questions: [
         {
           id: 'cn-hsk2-1',
-          title: 'Memilih Ukuran Baju',
-          scenario: 'Pembeli menanyakan ukuran baju di toko pakaian.',
-          text: '这件红色的衣服有点儿小，有没有大一号的？',
-          reading: 'Zhè jiàn hóngsè de yīfu yǒudiǎnr xiǎo, yǒu méiyǒu dà yí hào de?',
-          translation: 'Baju merah ini agak kekecilan, apakah ada yang ukurannya satu tingkat lebih besar?',
-          prompt: 'Apa yang diminta oleh pembeli kepada pramuniaga?',
-          options: ['Warna baju yang lain', 'Ukuran yang lebih besar (dà yí hào)', 'Diskon harga baju'],
-          answer: 1,
+          title: 'Memesan Taksi ke Bandara',
+          scenario: 'Penumpang memberi tahu sopir taksi tujuannya di Beijing.',
+          text: '师傅，我去首都机场，请问大约需要多长时间？……不堵车的话四十分钟。',
+          reading: 'Shīfu, wǒ qù Shǒudū Jīchǎng, qǐngwèn dàyuē xūyào duō cháng shíjiān? ... Bù dǔchē dehuà sìshí fēnzhōng.',
+          translation: 'Pak sopir, saya mau ke Bandara Ibu Kota, kira-kira butuh berapa lama? ... Kalau tidak macet, 40 menit.',
+          prompt: 'Berapa lama perjalanan ke bandara jika jalanan tidak macet?',
+          options: ['20 menit', '30 menit', '40 menit', '1 jam'],
+          answer: 2,
           voice: 'zh-CN',
-          explanation: '"Dà yí hào" (大一号) berarti ukuran satu nomor lebih besar.',
+          explanation: 'Sopir mengatakan "Bù dǔchē dehuà sìshí fēnzhōng" (Kalau tidak macet, 40 menit).',
           keyVocab: [
-            { word: '有点儿小 (yǒudiǎnr xiǎo)', meaning: 'agak sedikit kecil' },
-            { word: '大一号 (dà yí hào)', meaning: 'satu nomor lebih besar' },
+            { word: '机场 (jīchǎng)', meaning: 'bandara' },
+            { word: '多长时间 (duō cháng shíjiān)', meaning: 'berapa lama waktu' },
+            { word: '堵车 (dǔchē)', meaning: 'macet lalu lintas' },
           ],
         },
       ],
     },
     {
       id: 'hsk3',
-      name: 'HSK 3 · Percakapan Terstruktur',
-      badge: 'HSK 3 Menengah Awal',
-      desc: 'Transportasi umum, reservasi tiket, perbandingan rencana, dan interaksi sosial.',
+      name: 'HSK 3 · Situasi Kerja & Wisata',
+      badge: 'HSK 3 Mandiri',
+      desc: 'Pemesanan kamar hotel, percakapan kantor, dan rencana liburan.',
       questions: [
         {
           id: 'cn-hsk3-1',
-          title: 'Pemberitahuan Cuaca & Penerbangan',
-          scenario: 'Petugas bandara mengumumkan penundaan penerbangan akibat hujan badai.',
-          text: '各位旅客请注意，由于北京机场出现大雨天气，飞往上海的航班将推迟一小时起飞。',
-          reading: 'Gèwèi lǚkè qǐng zhùyì, yóuyú Běijīng jīchǎng chūxiàn dàyǔ tiānqì, fēiwǎng Shànghǎi de hángbān jiāng tuīchí yì xiǎoshí qǐfēi.',
-          translation: 'Perhatian para penumpang, dikarenakan cuaca hujan lebat di Bandara Beijing, penerbangan menuju Shanghai akan ditunda 1 jam.',
-          prompt: 'Berapa lama penundaan jadwal keberangkatan pesawat menuju Shanghai?',
-          options: ['Ditunda 30 menit', 'Ditunda 1 jam (yì xiǎoshí)', 'Dibatalkan sepenuhnya'],
+          title: 'Reservasi Kamar Hotel di Shanghai',
+          scenario: 'Tamu melakukan check-in di resepsionis hotel.',
+          text: '您好，我预订了一间大床房，住两个晚上，这是我的护照。',
+          reading: 'Nín hǎo, wǒ yùdìng le yì jiān dàchuáng fáng, zhù liǎng ge wǎnshang, zhè shì wǒ de hùzhào.',
+          translation: 'Halo, saya sudah memesan satu kamar ranjang besar untuk menginap 2 malam, ini paspor saya.',
+          prompt: 'Berapa malam tamu tersebut berencana menginap di hotel?',
+          options: ['1 malam', '2 malam', '3 malam', '1 minggu'],
           answer: 1,
           voice: 'zh-CN',
-          explanation: '"Tuīchí yì xiǎoshí" (推迟一小时) berarti diundur/ditunda selama satu jam.',
+          explanation: 'Tamu menyebutkan "zhù liǎng ge wǎnshang" (menginap dua malam).',
           keyVocab: [
-            { word: '推迟 (tuīchí)', meaning: 'menunda / memundurkan waktu' },
-            { word: '起飞 (qǐfēi)', meaning: 'lepas landas' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'hsk4',
-      name: 'HSK 4 · Topik Berita & Kerja',
-      badge: 'HSK 4 Menengah',
-      desc: 'Wawancara profesional, gaya hidup sehat, diskusi sosial, dan idiom budaya.',
-      questions: [
-        {
-          id: 'cn-hsk4-1',
-          title: 'Wawancara Kerja & Pengalaman',
-          scenario: 'Pewawancara menanyakan kelebihan pelamar dalam menangani proyek tim.',
-          text: '虽然我刚毕业，但我大学期间负责过三个跨国营销项目，具备良好的跨文化沟通能力。',
-          reading: 'Suīrán wǒ gāng bìyè, dàn wǒ dàxué qījiān fùzé guo sān gè kuàguó yíngxiāo xiàngmù, jùbèi liánghǎo de kuà wénhuà gōutōng nénglì.',
-          translation: 'Meskipun saya baru lulus, selama kuliah saya pernah memimpin 3 proyek pemasaran multinasional dan memiliki kemampuan komunikasi lintas budaya yang baik.',
-          prompt: 'Apa nilai jual utama yang ditonjolkan pelamar kerja?',
-          options: ['Pengalaman memimpin proyek multinasional & komunikasi lintas budaya', 'IPK kelulusan tertinggi', 'Kemampuan berbahasa 5 bahasa'],
-          answer: 0,
-          voice: 'zh-CN',
-          explanation: 'Pelamar menonjolkan pengalaman praktisnya: "fùzé guo sān gè kuàguó yíngxiāo xiàngmù" dan "kuà wénhuà gōutōng nénglì".',
-          keyVocab: [
-            { word: '跨国项目 (kuàguó xiàngmù)', meaning: 'proyek multinasional' },
-            { word: '沟通能力 (gōutōng nénglì)', meaning: 'kemampuan komunikasi' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'hsk5',
-      name: 'HSK 5 · Liputan Media & Bisnis',
-      badge: 'HSK 5 Lanjutan',
-      desc: 'Analisis ekonomi, ulasan riset ilmiah, negosiasi kontrak, dan wacana formal.',
-      questions: [
-        {
-          id: 'cn-hsk5-1',
-          title: 'Perkembangan Ekonomi Digital',
-          scenario: 'Laporan berita memaparkan dampak kecerdasan buatan terhadap produktivitas industri.',
-          text: '人工智能技术的广泛应用，不仅重塑了制造业的生产流程，更促使传统服务业向智能化和个性化方向深度转型。',
-          reading: 'Réngōng zhìnéng jìshù de guǎngfàn yìngyòng, bùjǐn zhòngshù le zhìzàoyè de shēngchǎn liúchéng, gèng cùshǐ chuántǒng fúwùyè xiàng zhìnénghuà hé gèxìnghuà fāngxiàng shēndù zhuǎnxíng.',
-          translation: 'Penerapan luas teknologi kecerdasan buatan tidak hanya membentuk ulang alur produksi industri manufaktur, tetapi juga mendorong transformasi mendalam sektor jasa tradisional menuju arah cerdas dan personal.',
-          prompt: 'Apa dampak kecerdasan buatan menurut laporan berita?',
-          options: ['Menghilangkan seluruh lapangan kerja di sektor jasa', 'Membentuk ulang alur manufaktur dan memodernisasi sektor jasa', 'Menurunkan standar kualitas produk'],
-          answer: 1,
-          voice: 'zh-CN',
-          explanation: 'Pola "bùjǐn... gèng..." menunjukkan dua dampak positif: merestrukturisasi manufaktur dan mentransformasi sektor jasa.',
-          keyVocab: [
-            { word: '重塑 (zhòngshù)', meaning: 'membentuk ulang / merestrukturisasi' },
-            { word: '转型 (zhuǎnxíng)', meaning: 'bertransformasi' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'hsk6',
-      name: 'HSK 6 · Debat Ilmiah & Fasih',
-      badge: 'HSK 6 Mahir / Fasih',
-      desc: 'Filsafat klasik, dialektika budaya, diplomasi internasional, dan ekspresi tingkat tinggi.',
-      questions: [
-        {
-          id: 'cn-hsk6-1',
-          title: 'Filsafat Konfusianisme Modern',
-          scenario: 'Profesor filsafat membahas relevansi konsep "Harmony without Uniformity" di era global.',
-          text: '孔子所倡导的“君子和而不同”，深刻揭示了多元文化共存的真谛：在包容差异的前提下寻求共识，而非强求千篇一律。',
-          reading: 'Kǒngzǐ suǒ chàngdǎo de "Jūnzǐ hé ér bù tóng", shēnkè jiēshì le duōyuán wénhuà gòngcún de zhēndì: zài bāoróng chāyì de qiántí xià xúnqiú gòngshí, ér fēi qiǎngqiú qiānpiānyílù.',
-          translation: 'Konsep "Seorang berbudi luhur mencari keharmonisan tanpa memaksakan keseragaman" yang diajarkan Konfusius secara mendalam mengungkap hakikat koeksistensi multikultural: mencari kesepakatan di bawah fondasi toleransi perbedaan, alih-alih memaksakan keseragaman kaku.',
-          prompt: 'Apakah inti dari ajaran "和而不同" (Hé ér bù tóng) menurut pembicara?',
-          options: ['Memaksa semua orang memiliki pendapat yang persis sama', 'Harmoni dan toleransi terhadap perbedaan demi mencari kesepakatan bersama', 'Menolak dialog dengan budaya asing'],
-          answer: 1,
-          voice: 'zh-CN',
-          explanation: 'Intinya adalah "bāoróng chāyì" (toleransi perbedaan) dan "xúnqiú gòngshí" (mencari konsensus bersama).',
-          keyVocab: [
-            { word: '和而不同 (hé ér bù tóng)', meaning: 'harmonis tanpa harus seragam' },
-            { word: '千篇一律 (qiānpiānyílù)', meaning: 'monoton / seragam kaku' },
+            { word: '预订 (yùdìng)', meaning: 'memesan / reservasi' },
+            { word: '护照 (hùzhào)', meaning: 'paspor' },
           ],
         },
       ],
     },
   ],
 
+  // =========================================================================
+  // KOREAN LISTENING SUITE (TOPIK 1 s.d. 6)
+  // =========================================================================
   kr: [
     {
       id: 'topik1',
-      name: 'TOPIK I Lv 1 · Fondasi Pemula',
-      badge: 'TOPIK 1 Pemula',
-      desc: 'Perkenalan, belanja di toserba, menanyakan lokasi tempat, dan kalimat sopan 해요체.',
+      name: 'TOPIK I (Level 1) · Pemula Fondasi',
+      badge: 'Level 1',
+      desc: 'Percakapan sapaan, memesan di kafe, arah jalan, dan belanja di Myeongdong.',
       questions: [
         {
           id: 'kr-topik1-1',
-          title: 'Lokasi Stasiun Subway',
-          scenario: 'Bertanya arah stasiun kereta bawah tanah di Seoul.',
-          text: '실례지만, 지하철역이 어디예요?……저기 편의점 옆에 있어요.',
-          reading: 'Sillyejiman, jihacheol-yeogi eodiyeyo? ... Jeogi pyeon-uijeom yeop-e isseoyo.',
-          translation: 'Permisi, stasiun kereta bawah tanah ada di mana ya? ... Ada di sebelah minimarket di sana.',
-          prompt: 'Di manakah letak stasiun subway?',
-          options: ['Di samping minimarket (편의점 옆)', 'Di dalam gedung bank', 'Di seberang kantor pos'],
-          answer: 0,
+          title: 'Memesan Iced Americano di Kafe Hongdae',
+          scenario: 'Pelanggan memesan kopi dingin di kedai kopi Seoul.',
+          text: '주문하시겠어요? ……아이스 아메리카노 두 잔 주세요. 테이크아웃 할게요.',
+          reading: 'Jumun-hasigesseoyo? ... Aiseu Amerikano du jan juseyo. Teikeu-aut halgeyo.',
+          translation: 'Mau pesan apa? ... Tolong dua gelas Iced Americano. Dibungkus (takeout) ya.',
+          prompt: 'Berapa banyak kopi dingin yang dipesan dan bagaimana cara membawanya?',
+          options: ['1 gelas diminum di tempat', '2 gelas dibungkus bawa pulang (takeout)', '3 gelas panas', '2 gelas jus jeruk'],
+          answer: 1,
           voice: 'ko-KR',
-          explanation: '"Pyeon-uijeom yeop-e isseoyo" artinya berada di samping minimarket / toserba.',
+          explanation: 'Pelanggan mengatakan "Amerikano du jan" (2 gelas) dan "Teikeu-aut halgeyo" (akan dibungkus/takeout).',
           keyVocab: [
-            { word: '지하철역 (jihacheol-yeok)', meaning: 'stasiun subway' },
-            { word: '편의점 (pyeon-uijeom)', meaning: 'minimarket / toserba' },
-            { word: '옆 (yeop)', meaning: 'sebelah / samping' },
+            { word: '두 잔 (du jan)', meaning: 'dua gelas' },
+            { word: '테이크아웃 (teikeu-aut)', meaning: 'bawa pulang / takeaway' },
           ],
         },
         {
           id: 'kr-topik1-2',
-          title: 'Jam Bangun Pagi',
-          scenario: 'Percakapan tentang rutinitas bangun pagi.',
-          text: '내일 아침 몇 시에 일어나요?……일곱 시에 일어나요.',
-          reading: 'Naeil achim myeot si-e ireonayo? ... Ilgop si-e ireonayo.',
-          translation: 'Besok pagi bangun jam berapa? ... Saya bangun jam 7.',
-          prompt: 'Pukul berapa pembicara akan bangun besok pagi?',
-          options: ['Pukul 06.00', 'Pukul 07.00 (일곱 시)', 'Pukul 08.00'],
+          title: 'Menanyakan Stasiun Kereta Bawah Tanah (Subway)',
+          scenario: 'Seorang pejalan kaki bertanya stasiun subway terdekat.',
+          text: '실례지만, 지하철역이 어디에 있어요? ……저기 편의점 앞에서 오른쪽으로 가세요.',
+          reading: 'Sillyejiman, jihacheol-yeogi eodie isseoyo? ... Jeogi pyeon-uijeom ap-eseo oreunjjok-euro gaseyo.',
+          translation: 'Permisi, stasiun subway ada di mana ya? ... Di depan toserba itu silakan belok ke kanan.',
+          prompt: 'Ke arah mana penanya harus berbelok di depan toserba (minimarket)?',
+          options: ['Belok ke kiri', 'Belok ke kanan (오른쪽)', 'Jalan lurus terus', 'Masuk ke dalam gedung'],
           answer: 1,
           voice: 'ko-KR',
-          explanation: '"Ilgop si" adalah angka asli Korea untuk jam 7.',
+          explanation: 'Petunjuk arahnya adalah "oreunjjok-euro gaseyo" (silakan belok ke kanan).',
           keyVocab: [
-            { word: '몇 시 (myeot si)', meaning: 'jam berapa' },
-            { word: '일곱 시 (ilgop si)', meaning: 'jam 7' },
+            { word: '지하철역 (jihacheol-yeok)', meaning: 'stasiun kereta bawah tanah' },
+            { word: '오른쪽 (oreunjjok)', meaning: 'sebelah kanan' },
+            { word: '편의점 (pyeon-uijeom)', meaning: 'minimarket / toserba' },
           ],
         },
       ],
     },
     {
       id: 'topik2',
-      name: 'TOPIK I Lv 2 · Percakapan Sehari-hari',
-      badge: 'TOPIK 2 Dasar',
-      desc: 'Transportasi bus/taksi, membuat janji temu, memesan makanan, dan hobi.',
+      name: 'TOPIK I (Level 2) · Kehidupan Harian',
+      badge: 'Level 2',
+      desc: 'Membeli tiket KTX, janji bertemu teman, dan pemesanan makanan.',
       questions: [
         {
           id: 'kr-topik2-1',
-          title: 'Memesan Minuman Kafe',
-          scenario: 'Pelanggan memesan kopi di kafe Hongdae.',
-          text: '주문하시겠어요?……따뜻한 아메리카노 두 잔하고, 치즈케이크 하나 주세요.',
-          reading: 'Jumunhasigesseoyo? ... Ttatteut-han amerikano du janhago, chijeuke-ikeu hana juseyo.',
-          translation: 'Mau pesan apa? ... Tolong dua cangkir americano hangat dan satu kue keju.',
-          prompt: 'Berapa cangkir kopi yang dipesan pembeli?',
-          options: ['1 cangkir', '2 cangkir (두 잔)', '3 cangkir'],
+          title: 'Membeli Tiket KTX ke Busan',
+          scenario: 'Penumpang membeli tiket kereta cepat di Stasiun Seoul.',
+          text: '부산행 KTX 열차, 제일 빠른 시간으로 한 장 부탁드립니다.',
+          reading: 'Busan-haeng KTX yeolcha, jeil ppareun sigan-euro han jang butakdeurimnida.',
+          translation: 'Kereta KTX tujuan Busan, tolong satu lembar tiket untuk waktu paling awal/cepat.',
+          prompt: 'Kota mana yang menjadi tujuan tiket kereta cepat (KTX) tersebut?',
+          options: ['Kota Incheon', 'Kota Busan', 'Kota Daegu', 'Pulau Jeju'],
           answer: 1,
           voice: 'ko-KR',
-          explanation: '"Amerikano du jan" berarti 2 cangkir americano.',
+          explanation: 'Penumpang menyebut "Busan-haeng" (부산행 = tujuan Busan).',
           keyVocab: [
-            { word: '따뜻한 (ttatteut-han)', meaning: 'hangat' },
-            { word: '두 잔 (du jan)', meaning: 'dua cangkir' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'topik3',
-      name: 'TOPIK II Lv 3 · Komunikasi Publik & Kerja',
-      badge: 'TOPIK 3 Menengah Awal',
-      desc: 'Instruksi kerja, keluhan fasilitas umum, wawancara santai, dan berita harian.',
-      questions: [
-        {
-          id: 'kr-topik3-1',
-          title: 'Pengumuman Kereta Cepat KTX',
-          scenario: 'Pengumuman kondektur mengenai kedatangan di Stasiun Busan.',
-          text: '우리 열차는 잠시 후 종착역인 부산역에 도착하겠습니다. 두고 내리시는 물건이 없도록 미리 준비하시기 바랍니다.',
-          reading: 'Uri yeolchaneun jamsi hu jongchak-yeogin Busan-yeog-e dochakhagesseumnida. Dugo naerisineun mulgeon-i eopdorok miri junbihasigi baramnida.',
-          translation: 'Kereta kita sebentar lagi akan tiba di stasiun akhir Stasiun Busan. Harap bersiap terlebih dahulu agar tidak ada barang yang tertinggal.',
-          prompt: 'Apa pesan utama yang disampaikan oleh kondektur kereta?',
-          options: ['Kereta akan mengalami keterlambatan', 'Penumpang diminta memeriksa barang bawaan sebelum turun di Busan', 'Pemesanan makanan di restorasi kereta'],
-          answer: 1,
-          voice: 'ko-KR',
-          explanation: 'Pesan intinya adalah "Dugo naerisineun mulgeon-i eopdorok" (agar tidak ada barang tertinggal).',
-          keyVocab: [
-            { word: '종착역 (jongchak-yeok)', meaning: 'stasiun akhir' },
-            { word: '도착하다 (dochakhada)', meaning: 'tiba / sampai' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'topik4',
-      name: 'TOPIK II Lv 4 · Masalah Sosial & Budaya',
-      badge: 'TOPIK 4 Menengah',
-      desc: 'Wawancara profesional, perdebatan topik sosial, survei opini masyarakat.',
-      questions: [
-        {
-          id: 'kr-topik4-1',
-          title: 'Tren Bekerja Jarak Jauh (W條H)',
-          scenario: 'Diskusi panel mengenai efektivitas kerja fleksibel pasca pandemi.',
-          text: '재택근무가 도입된 이후 통근 시간이 줄어들면서 직원들의 업무 만족도는 높아졌지만, 부서 간 소통 부족이라는 새로운 과제도 나타났습니다.',
-          reading: 'Jaetaek-geunmuga do-ipdoen ihu tong-geun sigan-i jureodeulmyeonseo jikwon-deul-ui eopmu manjokdoneun nop-ajyeotjiman, buseo gan sotong bujok-iraneun saeroun gwajedo natanatseumnida.',
-          translation: 'Sejak diperkenalkannya kerja dari rumah, kepuasan kerja staf meningkat berkat berkurangnya waktu komuter, namun muncul tantangan baru berupa kurangnya komunikasi antar departemen.',
-          prompt: 'Apa tantangan baru yang timbul dari kebijakan kerja dari rumah?',
-          options: ['Biaya listrik kantor meningkat', 'Kurangnya komunikasi antar departemen (소통 부족)', 'Penurunan jam istirahat'],
-          answer: 1,
-          voice: 'ko-KR',
-          explanation: 'Klausul pertentangan "...sotong bujok-iraneun saeroun gwaje" menegaskan tantangannya adalah defisit komunikasi antar bagian.',
-          keyVocab: [
-            { word: '재택근무 (jaetaek-geunmu)', meaning: 'kerja dari rumah (WFH)' },
-            { word: '소통 부족 (sotong bujok)', meaning: 'kurang komunikasi' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'topik5',
-      name: 'TOPIK II Lv 5 · Wacana Akademik & Berita',
-      badge: 'TOPIK 5 Lanjutan',
-      desc: 'Ceramah kuliah, analisis ekonomi makro, debat editorial, dan program dokumenter.',
-      questions: [
-        {
-          id: 'kr-topik5-1',
-          title: 'Krisis Penurunan Angka Kelahiran',
-          scenario: 'Pakar demografi menganalisis faktor struktural rendahnya angka kelahiran di Korea.',
-          text: '저출산 문제를 극복하기 위해서는 단순한 현금성 지원을 넘어, 주거 안정과 양육 친화적인 노동 환경을 조성하는 근본적인 구조 개혁이 필수적입니다.',
-          reading: 'Jeochulsan munjeeul geukbokhagi wihaeseoneun dansunhan hyeongeumseong jiwon-eul neomeo, jugeo anjeong-gwa yang-yuk chinhwajeog-in nodong hwan-gyeong-eul joseonghaneun geunbonjeog-in gujo gaehyeog-i pilsujeog-imnida.',
-          translation: 'Untuk mengatasi masalah rendahnya angka kelahiran, tidak cukup hanya dengan bantuan tunai sederhana, melainkan mutlak diperlukan reformasi struktural mendasar dalam menciptakan stabilitas perumahan dan lingkungan kerja yang ramah pengasuhan anak.',
-          prompt: 'Solusi mendasar apa yang dianjurkan oleh narasumber?',
-          options: ['Hanya menambah insentif tunai bulanan', 'Reformasi struktural stabilitas hunian dan lingkungan kerja ramah keluarga', 'Menutup sekolah-sekolah di pedesaan'],
-          answer: 1,
-          voice: 'ko-KR',
-          explanation: 'Narasumber menegaskan perlunya "jugeo anjeong" (stabilitas tempat tinggal) dan "nodong hwan-gyeong joseong" (lingkungan kerja ramah anak).',
-          keyVocab: [
-            { word: '저출산 (jeochulsan)', meaning: 'angka kelahiran rendah' },
-            { word: '구조 개혁 (gujo gaehyeok)', meaning: 'reformasi struktural' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'topik6',
-      name: 'TOPIK II Lv 6 · Fasih & Diskusi Filosofis',
-      badge: 'TOPIK 6 Mahir / Fasih',
-      desc: 'Diskusi sastra tinggi, idiom 사자성어, pidato kenegaraan, dan kritik kebudayaan.',
-      questions: [
-        {
-          id: 'kr-topik6-1',
-          title: 'Filosofi Estetika Tradisional',
-          scenario: 'Budayawan mengulas nilai estetika "Keindahan Ketidaksempurnaan" pada tembikar Joseon.',
-          text: '조선 백자 달항아리의 아름다움은 인위적인 대칭의 완벽함이 아니라, 흙과 불의 흐름에 순응한 자연스러운 비대칭의 온기에서 비롯됩니다.',
-          reading: 'Joseon baekja dalhang-ari-ui areumdaumeun in-wijeog-in daeching-ui wanbyeokham-i anira, heulg-gwa bul-ui heureum-e suneunghan jayeonseureoun bidaeching-ui ongi-eseo birotdoemnida.',
-          translation: 'Keindahan kendi bulan porselen putih Joseon bukan terletak pada kesempurnaan simetri buatan manusia, melainkan bersumber dari kehangatan asimetri alami yang patuh pada aliran tanah liat dan api.',
-          prompt: 'Dari manakah asal keindahan kendi porselen Joseon menurut budayawan?',
-          options: ['Dari bentuk simetri geometris yang kaku dan sempurna', 'Dari kehangatan bentuk asimetri alami yang selaras dengan tanah dan api', 'Dari cat warna-warni yang mencolok'],
-          answer: 1,
-          voice: 'ko-KR',
-          explanation: 'Intinya adalah "jayeonseureoun bidaeching-ui ongi" (kehangatan asimetris yang alami).',
-          keyVocab: [
-            { word: '달항아리 (dalhang-ari)', meaning: 'kendi porselen bulan' },
-            { word: '비대칭 (bidaeching)', meaning: 'asimetris' },
+            { word: '제일 빠른 (jeil ppareun)', meaning: 'paling cepat / paling awal' },
+            { word: '한 장 (han jang)', meaning: 'satu lembar tiket' },
           ],
         },
       ],
     },
   ],
 
+  // =========================================================================
+  // ENGLISH LISTENING SUITE (A1 s.d. C2 / IELTS)
+  // =========================================================================
   en: [
     {
       id: 'a1',
-      name: 'CEFR A1 · Starter & Foundation (Dasar Pemula)',
-      badge: 'A1 Pemula',
-      desc: 'Perkenalan, petunjuk arah sederhana, jam, dan pemesanan kafe.',
+      name: 'CEFR A1 · Everyday Basics',
+      badge: 'A1 Starter',
+      desc: 'Greetings, ordering fast food, checking train times, and simple directions.',
       questions: [
         {
           id: 'en-a1-1',
-          title: 'Asking for the Nearest Station',
-          scenario: 'A tourist asking a local for directions on Oxford Street.',
-          text: 'Excuse me, could you tell me where the nearest underground station is?',
-          reading: 'Connected speech: could-you / where-the-nearest',
-          translation: 'Permisi, bisakah Anda memberi tahu di mana stasiun bawah tanah terdekat?',
-          prompt: 'What is the speaker looking for?',
-          options: ['The nearest underground station', 'The airport shuttle bus', 'A ticket booth for the museum'],
-          answer: 0,
+          title: 'Ordering Breakfast at a Diner',
+          scenario: 'A customer orders breakfast at a cafe counter.',
+          text: 'Can I get two scrambled eggs, some toast, and a cup of black coffee, please?',
+          reading: 'Can I get two scrambled eggs, some toast, and a cup of black coffee, please?',
+          translation: 'Bisakah saya pesan dua telur orak-arik, roti panggang, dan secangkir kopi hitam?',
+          prompt: 'What drink did the customer order?',
+          options: ['Orange juice', 'Hot chocolate', 'A cup of black coffee', 'Green tea'],
+          answer: 2,
           voice: 'en-GB',
-          explanation: 'The phrase "nearest underground station" refers to the closest subway/tube station.',
+          explanation: 'The speaker explicitly asked for "a cup of black coffee".',
           keyVocab: [
-            { word: 'underground station', meaning: 'stasiun kereta bawah tanah' },
-            { word: 'nearest', meaning: 'paling dekat' },
+            { word: 'scrambled eggs', meaning: 'telur orak-arik' },
+            { word: 'toast', meaning: 'roti panggang' },
           ],
         },
         {
           id: 'en-a1-2',
-          title: 'Meeting Schedule',
-          scenario: 'Two colleagues discussing the rescheduled start time of an afternoon meeting.',
-          text: 'The department meeting has been moved to half past three.',
-          reading: 'half past three = 15:30 (weak form: been /bɪn/)',
-          translation: 'Rapat departemen telah dipindahkan ke pukul setengah empat (15.30).',
-          prompt: 'What time will the meeting begin?',
-          options: ['3:00 PM', '3:30 PM (Half past three)', '4:30 PM'],
-          answer: 1,
+          title: 'Train Platform Announcement',
+          scenario: 'Station loudspeaker announces an arriving train in London.',
+          text: 'The train now approaching platform 3 is the 10:45 service to Oxford.',
+          reading: 'The train now approaching platform 3 is the 10:45 service to Oxford.',
+          translation: 'Kereta yang sedang mendekati peron 3 adalah layanan pukul 10.45 tujuan Oxford.',
+          prompt: 'Which platform is the train to Oxford arriving at?',
+          options: ['Platform 1', 'Platform 2', 'Platform 3', 'Platform 4'],
+          answer: 2,
           voice: 'en-GB',
-          explanation: 'In British English, "half past three" denotes 3:30.',
+          explanation: 'The announcement says "approaching platform 3".',
           keyVocab: [
-            { word: 'half past three', meaning: 'pukul 03.30 / 15.30' },
-            { word: 'moved to', meaning: 'dipindahkan / dijadwal ulang ke' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'a2',
-      name: 'CEFR A2 · Elementary Social',
-      badge: 'A2 Dasar Menengah',
-      desc: 'Pengalaman liburan, janji dokter, deskripsi keluarga, dan berbelanja.',
-      questions: [
-        {
-          id: 'en-a2-1',
-          title: 'Airport Gate Announcement',
-          scenario: 'Boarding gate change announcement at London Heathrow Airport.',
-          text: 'Attention passengers on flight BA 142 to Edinburgh. The boarding gate has been changed from Gate 12 to Gate 24B.',
-          reading: 'Listen for the numbers: 12 vs 24B',
-          translation: 'Perhatian penumpang penerbangan BA 142 menuju Edinburgh. Pintu keberangkatan telah diubah dari Gate 12 menjadi Gate 24B.',
-          prompt: 'Which gate should passengers proceed to for boarding?',
-          options: ['Gate 12', 'Gate 24B', 'Gate 42'],
-          answer: 1,
-          voice: 'en-GB',
-          explanation: 'The announcement clearly states the new gate is "Gate 24B".',
-          keyVocab: [
-            { word: 'boarding gate', meaning: 'pintu masuk pesawat' },
-            { word: 'changed to', meaning: 'diubah ke' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'b1',
-      name: 'CEFR B1 · Intermediate Work & Travel',
-      badge: 'B1 Menengah',
-      desc: 'Instruksi kantor, percakapan telepon, rencana proyek, dan IELTS Listening Part 1–2.',
-      questions: [
-        {
-          id: 'en-b1-1',
-          title: 'Project Deadline Adjustment',
-          scenario: 'Team leader informing team members about submission requirements.',
-          text: 'I should have finished the quarterly report by Friday, but due to unexpected client delays, the submission date is postponed until next Tuesday.',
-          reading: 'Weak form: should have → /ʃʊdəv/',
-          translation: 'Saya seharusnya menyelesaikan laporan triwulanan pada hari Jumat, namun karena penundaan mendadak dari klien, tanggal penyerahan diundur hingga Selasa depan.',
-          prompt: 'When is the revised deadline for the quarterly report?',
-          options: ['This Friday', 'Next Tuesday', 'Next Friday'],
-          answer: 1,
-          voice: 'en-GB',
-          explanation: 'The deadline was postponed "until next Tuesday".',
-          keyVocab: [
-            { word: 'should have finished', meaning: 'seharusnya sudah selesai' },
-            { word: 'postponed', meaning: 'diundur / ditunda' },
+            { word: 'approaching', meaning: 'sedang mendekat / tiba' },
+            { word: 'platform', meaning: 'peron jalur stasiun' },
           ],
         },
       ],
     },
     {
       id: 'b2',
-      name: 'CEFR B2 · Upper Intermediate & Academic',
-      badge: 'B2 Lanjutan',
-      desc: 'Wawancara kerja profesional, podcast edukatif, debat isu publik, IELTS Part 3.',
+      name: 'CEFR B2 · IELTS Listening Mastery',
+      badge: 'B2 / IELTS Band 7',
+      desc: 'Academic campus tours, workplace meetings, and lecture extracts.',
       questions: [
         {
           id: 'en-b2-1',
-          title: 'Podcast on Renewable Energy',
-          scenario: 'Energy expert discussing solar storage technology bottlenecks.',
-          text: 'While the efficiency of solar photovoltaic panels has surged dramatically over the last decade, large-scale battery storage remains the primary hurdle for national grid integration.',
-          reading: 'Sentence stress on "efficiency", "surged", "battery storage", "primary hurdle"',
-          translation: 'Meskipun efisiensi panel fotovoltaik surya telah melonjak drastis selama dekade terakhir, penyimpanan baterai skala besar tetap menjadi rintangan utama untuk integrasi jaringan nasional.',
-          prompt: 'What remains the major obstacle for solar energy integration?',
-          options: ['High manufacturing cost of panels', 'Large-scale battery storage capacity', 'Lack of sunlight during winter'],
-          answer: 1,
+          title: 'University Library Induction',
+          scenario: 'A librarian explains the digital book loan policy to new students.',
+          text: 'Undergraduate students are permitted to borrow up to ten books simultaneously for a maximum duration of three weeks.',
+          reading: 'Undergraduate students are permitted to borrow up to ten books simultaneously for a maximum duration of three weeks.',
+          translation: 'Mahasiswa S1 diizinkan meminjam hingga sepuluh buku sekaligus untuk durasi maksimal tiga minggu.',
+          prompt: 'What is the maximum loan period allowed for undergraduate students?',
+          options: ['One week', 'Two weeks', 'Three weeks', 'One month'],
+          answer: 2,
           voice: 'en-GB',
-          explanation: 'The speaker highlights "large-scale battery storage" as the "primary hurdle".',
+          explanation: 'The librarian states "for a maximum duration of three weeks".',
           keyVocab: [
-            { word: 'primary hurdle', meaning: 'rintangan / hambatan utama' },
-            { word: 'grid integration', meaning: 'integrasi ke jaringan listrik nasional' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'c1',
-      name: 'CEFR C1 · Advanced Academic & IELTS 8+',
-      badge: 'C1 Akademik',
-      desc: 'Kuliah universitas, analisis data kompleks, nuansa tersirat, IELTS Part 4.',
-      questions: [
-        {
-          id: 'en-c1-1',
-          title: 'University Lecture on Urban Architecture',
-          scenario: 'Architecture professor explaining the bioclimatic skyscraper design.',
-          text: 'Rather than relying on energy-intensive air conditioning, modern bioclimatic high-rises utilise passive aerodynamic facades to channel prevailing wind currents, thereby cutting HVAC consumption by over forty percent.',
-          reading: 'Complex phrasing: energy-intensive, aerodynamic facades, HVAC consumption',
-          translation: 'Alih-alih mengandalkan pendingin ruangan yang boros energi, gedung pencakar langit bioklimatik modern memanfaatkan fasad aerodinamis pasif untuk mengalirkan arus angin dominan, sehingga memangkas konsumsi HVAC lebih dari empat puluh persen.',
-          prompt: 'How do bioclimatic skyscrapers achieve significant energy savings?',
-          options: ['By using solar-powered air conditioners only', 'By employing passive aerodynamic facades that harness natural wind currents', 'By reducing building height'],
-          answer: 1,
-          voice: 'en-GB',
-          explanation: 'The lecture explains the building uses "passive aerodynamic facades to channel prevailing wind currents".',
-          keyVocab: [
-            { word: 'passive aerodynamic facade', meaning: 'fasad aerodinamis pasif' },
-            { word: 'HVAC consumption', meaning: 'konsumsi pemanas & pendingin ruangan' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'c2',
-      name: 'CEFR C2 · Native Mastery & Fluent',
-      badge: 'C2 Fasih / Native',
-      desc: 'Debat filsafat, retorika politik, idiom sastra tingkat tinggi, dan aksen cepat beragam.',
-      questions: [
-        {
-          id: 'en-c2-1',
-          title: 'Literary Critique on Cognitive Bias',
-          scenario: 'Scholar discussing the subtleties of narrative framing in classical literature.',
-          text: 'The author deliberately deploys an unreliable narrator, not merely to deceive the reader, but to foreground the epistemic vulnerability inherent in all subjective retrospection.',
-          reading: 'Listen for nuanced abstract syntax: "foreground the epistemic vulnerability"',
-          translation: 'Penulis sengaja menggunakan narator yang tidak dapat diandalkan, bukan hanya untuk memperdaya pembaca, melainkan untuk menonjolkan kerentanan epistemik yang melekat pada semua retrospeksi subjektif.',
-          prompt: 'What is the deeper philosophical objective behind using an unreliable narrator in the text?',
-          options: ['To create a simple humorous plot twist', 'To illuminate the inherent vulnerability and limitation of human subjective memory', 'To shorten the novel length'],
-          answer: 1,
-          voice: 'en-GB',
-          explanation: 'The speaker emphasizes highlighting the "epistemic vulnerability inherent in all subjective retrospection" (kerentanan dalam ingatan subjektif manusia).',
-          keyVocab: [
-            { word: 'epistemic vulnerability', meaning: 'kerentanan epistemik / batas kepastian pengetahuan' },
-            { word: 'unreliable narrator', meaning: 'narator yang tidak dapat dipercaya sepenuhnya' },
+            { word: 'undergraduate', meaning: 'mahasiswa program S1' },
+            { word: 'simultaneously', meaning: 'secara bersamaan / sekaligus' },
           ],
         },
       ],
@@ -738,22 +566,48 @@ export const LISTENING_DATA: Record<LangId, ListeningLevel[]> = {
 }
 
 /**
- * Generate randomized vocabulary listening questions from the curriculum's rich card bank.
- * Allows infinite listening drills across all vocabulary in the system.
+ * Filter and generate clean, sensible vocabulary listening questions.
+ * Ensures distractors are realistic word translations of the same category,
+ * never messy grammar formula sentences or phonetic notes.
  */
 export function generateVocabListeningQuestions(
   lang: LangId,
   cards: Array<{ id: string; front: string; back: string; reading?: string; hint?: string }>,
-  count = 30,
+  count = 25,
 ): ListeningQuestion[] {
-  if (!cards || cards.length < 4) return []
+  if (!cards || cards.length === 0) return []
 
-  const validCards = cards.filter((c) => c.front && c.back && c.front.length < 30)
-  if (validCards.length < 4) return []
+  // Sanitize card data: only retain genuine vocabulary words with clean translations
+  const sanitized = cards
+    .filter((c) => {
+      if (!c.front || !c.back) return false
+      // Filter out long grammar formulas or prompt questions
+      if (c.front.includes('?') || c.front.length > 25) return false
+      if (c.back.includes('— /e/') || c.back.includes('+ NEGATIF') || c.back.length > 40) return false
+      return true
+    })
+    .map((c) => {
+      // Clean up front
+      let cleanFront = c.front.replace(/\(.*?\)/g, '').trim()
+      if (cleanFront.includes('—')) cleanFront = cleanFront.split('—')[0].trim()
 
-  // Shuffle and pick
-  const shuffled = [...validCards].sort(() => Math.random() - 0.5)
-  const selected = shuffled.slice(0, count)
+      // Clean up back translation (remove mora, parenthetical notes)
+      let cleanBack = c.back.replace(/\(.*?\)/g, '').trim()
+      if (cleanBack.includes('—')) cleanBack = cleanBack.split('—')[0].trim()
+
+      return {
+        ...c,
+        front: cleanFront || c.front,
+        back: cleanBack || c.back,
+      }
+    })
+    .filter((c) => c.front.length > 0 && c.back.length > 0 && c.back.length < 35)
+
+  if (sanitized.length < 4) return []
+
+  // Shuffle pool
+  const pool = [...sanitized].sort(() => Math.random() - 0.5)
+  const selected = pool.slice(0, count)
 
   const voiceMap: Record<LangId, string> = {
     jp: 'ja-JP',
@@ -762,40 +616,53 @@ export function generateVocabListeningQuestions(
     en: 'en-GB',
   }
 
-  return selected.map((card, idx) => {
-    // Pick 3 distinct wrong options
-    const others = validCards
-      .filter((c) => c.id !== card.id && c.back !== card.back)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
+  // Common plausible fallback distractors per language if pool is small
+  const fallbackDistractors: Record<LangId, string[]> = {
+    jp: ['Rumah Sakit', 'Stasiun Kereta', 'Perpustakaan', 'Sekolah', 'Toko Buku', 'Bandara', 'Restoran', 'Kantor Pos', 'Taman Kota', 'Hotel'],
+    cn: ['Bandara', 'Stasiun Kereta', 'Perpustakaan', 'Sekolah', 'Toko Buku', 'Rumah Sakit', 'Restoran', 'Supermarket', 'Kantor Polisi', 'Taman'],
+    kr: ['Rumah Sakit', 'Stasiun Subway', 'Perpustakaan', 'Sekolah', 'Minimarket', 'Bandara Incheon', 'Kafe', 'Restoran', 'Kantor Pos', 'Taman'],
+    en: ['Train Station', 'Library', 'Hospital', 'Supermarket', 'Airport', 'Post Office', 'University', 'Coffee Shop', 'Museum', 'Hotel'],
+  }
 
-    const rawOptions = [card.back, ...others.map((o) => o.back)]
-    // Deduplicate and pad if needed
-    const options = Array.from(new Set(rawOptions)).sort(() => Math.random() - 0.5)
-    while (options.length < 4) {
-      const extra = validCards[Math.floor(Math.random() * validCards.length)]?.back
-      if (extra && !options.includes(extra)) options.push(extra)
-      else break
+  return selected.map((card, idx) => {
+    // Pick 3 sensible distractors
+    const candidateDistractors = sanitized
+      .filter((c) => c.id !== card.id && c.back !== card.back)
+      .map((c) => c.back)
+
+    // Deduplicate
+    const uniqueCandidates = Array.from(new Set(candidateDistractors)).sort(() => Math.random() - 0.5)
+    const pickedDistractors = uniqueCandidates.slice(0, 3)
+
+    // Pad if needed from fallbacks
+    const fallbacks = fallbackDistractors[lang] || fallbackDistractors.jp
+    let fbIndex = 0
+    while (pickedDistractors.length < 3 && fbIndex < fallbacks.length) {
+      const fb = fallbacks[fbIndex]
+      if (fb !== card.back && !pickedDistractors.includes(fb)) {
+        pickedDistractors.push(fb)
+      }
+      fbIndex++
     }
 
+    const options = [card.back, ...pickedDistractors].sort(() => Math.random() - 0.5)
     const answerIndex = options.indexOf(card.back)
 
     return {
-      id: `vocab-gen-${lang}-${card.id}-${idx}`,
+      id: `vocab-drill-${lang}-${idx}-${card.id}`,
       title: `Kosakata: ${card.front}`,
-      scenario: `Dengarkan pengucapan kata "${card.front}" dan pilih terjemahan artinya yang tepat.`,
+      scenario: `Dengarkan pelafalan kata "${card.front}" oleh penutur asli dan pilih arti terjemahan yang tepat.`,
       text: card.front,
       reading: card.reading || card.front,
       translation: card.back,
       prompt: `Apa arti kosakata "${card.front}" yang diucapkan pada audio?`,
       options,
       answer: Math.max(0, answerIndex),
-      voice: voiceMap[lang] || 'en-GB',
-      explanation: `Kata "${card.front}" dilafalkan "${card.reading || card.front}" yang berarti "${card.back}". ${card.hint ? `Konteks: ${card.hint}` : ''}`,
+      voice: voiceMap[lang] || 'ja-JP',
+      explanation: `Kosakata "${card.front}" (${card.reading || card.front}) memiliki arti: "${card.back}".`,
       keyVocab: [
         { word: `${card.front} (${card.reading || card.front})`, meaning: card.back },
       ],
     }
   })
 }
-
